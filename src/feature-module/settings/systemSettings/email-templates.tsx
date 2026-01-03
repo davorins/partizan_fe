@@ -32,6 +32,11 @@ const QuillEditor = forwardRef<ReactQuill, ReactQuillProps>((props, ref) => (
 
 QuillEditor.displayName = 'QuillEditor';
 
+interface AvailableVariable {
+  label: string;
+  value: string;
+}
+
 const EmailTemplates = () => {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
@@ -104,7 +109,7 @@ const EmailTemplates = () => {
     [key: string]: number;
   }>({});
 
-  const availableVariables = [
+  const availableVariables: AvailableVariable[] = [
     { label: "Parent's Full Name", value: '[parent.fullName]' },
     { label: "Parent's Email", value: '[parent.email]' },
     { label: "Parent's Phone", value: '[parent.phone]' },
@@ -773,7 +778,7 @@ const EmailTemplates = () => {
           return;
         }
 
-        const response = await axios.get<ApiResponse>(
+        const response = await axios.get<ApiResponse<EmailTemplate[]>>(
           `${process.env.REACT_APP_API_BASE_URL}/email-templates`,
           {
             headers: {
@@ -1340,15 +1345,100 @@ const EmailTemplates = () => {
     setShowEditModal(true);
   };
 
-  // Email Preview Component
-  const EmailPreview: React.FC<{
+  // Email Preview Component Props
+  interface EmailPreviewProps {
     content: string;
     includeSignature?: boolean;
     signatureConfig?: any;
-  }> = ({ content, includeSignature = false, signatureConfig = null }) => {
-    // For preview, show the complete email
+    attachments?: any[];
+  }
+
+  // Email Preview Component
+  const EmailPreview: React.FC<EmailPreviewProps> = ({
+    content,
+    includeSignature = false,
+    signatureConfig = null,
+    attachments = [],
+  }) => {
+    // Helper function for file icons
+    const getFileIcon = (mimeType: string) => {
+      if (mimeType.startsWith('image/')) return '🖼️';
+      if (mimeType === 'application/pdf') return '📄';
+      if (mimeType.includes('word') || mimeType.includes('document'))
+        return '📝';
+      if (mimeType.includes('excel') || mimeType.includes('spreadsheet'))
+        return '📊';
+      if (mimeType === 'text/plain') return '📃';
+      if (mimeType.includes('zip') || mimeType.includes('rar')) return '📦';
+      return '📎';
+    };
+
+    // Helper function to format file size
+    const formatFileSizePreview = (bytes: number) => {
+      if (!bytes || bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
+    // Generate attachments HTML for preview
+    const generateAttachmentsHTML = () => {
+      if (!attachments || attachments.length === 0) return '';
+
+      const attachmentItems = attachments
+        .map(
+          (att) => `
+      <div style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #594230;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 24px; line-height: 1;">${getFileIcon(
+            att.mimeType
+          )}</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; color: #333; margin-bottom: 4px;">${
+              att.filename
+            }</div>
+            <div style="font-size: 12px; color: #666;">
+              ${formatFileSizePreview(att.size)} • ${att.mimeType}
+            </div>
+          </div>
+        </div>
+        ${
+          att.url
+            ? `
+          <div style="margin-top: 8px; font-size: 13px;">
+            <a href="${att.url}" 
+               style="color: #594230; text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;"
+               target="_blank" rel="noopener noreferrer">
+              🔗 Direct download link
+            </a>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `
+        )
+        .join('');
+
+      return `
+      <div style="margin-top: 30px; padding-top: 25px; border-top: 2px solid #eaeaea;">
+        <h3 style="color: #333; margin-bottom: 20px; font-size: 18px;">
+          📎 Attachments (${attachments.length})
+        </h3>
+        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+          ${attachmentItems}
+        </div>
+      </div>
+    `;
+    };
+
+    // Combine content with attachments for preview
+    const contentWithAttachments =
+      content + (attachments.length > 0 ? generateAttachmentsHTML() : '');
+
     const completeEmail = getCompleteEmailHTML(
-      content,
+      contentWithAttachments,
       includeSignature,
       signatureConfig
     );

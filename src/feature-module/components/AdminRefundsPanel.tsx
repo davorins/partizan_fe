@@ -619,8 +619,6 @@ const AdminRefundsPanel: React.FC = () => {
                 <p className='text-muted small'>This could mean:</p>
                 <ul className='text-muted small text-start d-inline-block'>
                   <li>There are no refunds in the system</li>
-                  <li>The API endpoint might be incorrect</li>
-                  <li>There might be an authentication issue</li>
                 </ul>
               </div>
             )}

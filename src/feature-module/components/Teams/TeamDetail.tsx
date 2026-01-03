@@ -452,8 +452,8 @@ const TeamDetail: React.FC = () => {
         const avatarUrl =
           record.avatar ||
           (record.gender === 'Female'
-            ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-            : 'https://bothell-select.onrender.com/uploads/avatars/boy.png');
+            ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+            : 'https://partizan-be.onrender.com/uploads/avatars/boy.png');
 
         return (
           <div className='d-flex align-items-center'>
@@ -466,8 +466,8 @@ const TeamDetail: React.FC = () => {
                   const target = e.target as HTMLImageElement;
                   target.src =
                     record.gender === 'Female'
-                      ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-                      : 'https://bothell-select.onrender.com/uploads/avatars/boy.png';
+                      ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+                      : 'https://partizan-be.onrender.com/uploads/avatars/boy.png';
                 }}
               />
             </div>
@@ -614,9 +614,7 @@ const TeamDetail: React.FC = () => {
             onClick={() => handleCoachClick(record)}
           >
             <img
-              src={
-                'https://bothell-select.onrender.com/uploads/avatars/coach.png'
-              }
+              src={'https://partizan-be.onrender.com/uploads/avatars/coach.png'}
               className='img-fluid rounded-circle'
               alt={`${text} avatar`}
             />

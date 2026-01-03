@@ -465,7 +465,7 @@ const ParentDetails = () => {
           ...parentData,
           avatar:
             parentData.avatar && !parentData.avatar.startsWith('http')
-              ? `https://bothell-select.onrender.com${parentData.avatar}`
+              ? `https://partizan-be.onrender.com${parentData.avatar}`
               : parentData.avatar,
         };
 
@@ -474,7 +474,7 @@ const ParentDetails = () => {
           ...player,
           imgSrc:
             player.avatar && !player.avatar.startsWith('http')
-              ? `https://bothell-select.onrender.com${player.avatar}`
+              ? `https://partizan-be.onrender.com${player.avatar}`
               : player.avatar,
         }));
 
@@ -570,7 +570,7 @@ const ParentDetails = () => {
   };
 
   const getDefaultAvatar = (gender?: string): string => {
-    const baseUrl = 'https://bothell-select.onrender.com/uploads/avatars';
+    const baseUrl = 'https://partizan-be.onrender.com/uploads/avatars';
     return gender === 'Female' ? `${baseUrl}/girl.png` : `${baseUrl}/boy.png`;
   };
 
@@ -961,9 +961,9 @@ const ParentDetails = () => {
         relationship: guardian.relationship || 'Guardian',
         avatar:
           guardian.avatar && !guardian.avatar.startsWith('http')
-            ? `https://bothell-select.onrender.com${guardian.avatar}`
+            ? `https://partizan-be.onrender.com${guardian.avatar}`
             : guardian.avatar ||
-              'https://bothell-select.onrender.com/uploads/avatars/parents.png',
+              'https://partizan-be.onrender.com/uploads/avatars/parents.png',
         aauNumber: guardian.aauNumber || 'Not Available',
         isPrimary: false,
       }))
@@ -1037,14 +1037,14 @@ const ParentDetails = () => {
                                 <img
                                   src={
                                     parent.avatar ||
-                                    'https://bothell-select.onrender.com/uploads/avatars/parents.png'
+                                    'https://partizan-be.onrender.com/uploads/avatars/parents.png'
                                   }
                                   className='img-fluid rounded'
                                   alt={`${parent.fullName} avatar`}
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     target.src =
-                                      'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+                                      'https://partizan-be.onrender.com/uploads/avatars/parents.png';
                                   }}
                                 />
                               </span>
@@ -1104,7 +1104,7 @@ const ParentDetails = () => {
                                         const target =
                                           e.target as HTMLImageElement;
                                         target.src =
-                                          'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+                                          'https://partizan-be.onrender.com/uploads/avatars/parents.png';
                                       }}
                                     />
                                   </span>

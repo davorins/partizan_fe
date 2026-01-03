@@ -10,7 +10,7 @@ export const useCoachData = () => {
   const [coaches, setCoaches] = useState<Coach[]>([]);
 
   const DEFAULT_COACH_AVATAR =
-    'https://bothell-select.onrender.com/uploads/avatars/coach.png';
+    'https://partizan-be.onrender.com/uploads/avatars/coach.png';
 
   const transformToExtendedRecord = useCallback(
     (coach: Coach): ExtendedCoachRecord => ({

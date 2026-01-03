@@ -284,7 +284,7 @@ const AdminDashboard = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-danger-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/boy.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/boy.png'
                       alt='Players'
                     />
                   </div>
@@ -337,7 +337,7 @@ const AdminDashboard = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-warning-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/pendingPayment.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/pendingPayment.png'
                       alt='Pending Payments'
                     />
                   </div>
@@ -381,7 +381,7 @@ const AdminDashboard = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-success-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/parents.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/parents.png'
                       alt='Parents'
                     />
                   </div>
@@ -421,7 +421,7 @@ const AdminDashboard = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-info-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/coach.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/coach.png'
                       alt='Coaches'
                     />
                   </div>

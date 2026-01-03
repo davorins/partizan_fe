@@ -417,7 +417,7 @@ export const getParentTableColumns = ({
                     ? record.imgSrc.startsWith('http')
                       ? record.imgSrc
                       : `${API_BASE_URL}${record.imgSrc}`
-                    : 'https://bothell-select.onrender.com/uploads/avatars/parents.png'
+                    : 'https://partizan-be.onrender.com/uploads/avatars/parents.png'
                 }
                 className='img-fluid rounded-circle'
                 alt={

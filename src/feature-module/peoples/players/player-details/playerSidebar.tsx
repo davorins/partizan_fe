@@ -239,11 +239,11 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({
                       ? player.avatar.includes('res.cloudinary.com')
                         ? `${player.avatar}?${Date.now()}` // Add timestamp to prevent caching
                         : player.avatar.startsWith('/')
-                        ? `https://bothell-select.onrender.com${player.avatar}`
+                        ? `https://partizan-be.onrender.com${player.avatar}`
                         : player.avatar
                       : player.gender === 'Female'
-                      ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-                      : 'https://bothell-select.onrender.com/uploads/avatars/boy.png'
+                      ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+                      : 'https://partizan-be.onrender.com/uploads/avatars/boy.png'
                   }
                   className='img-fluid rounded-circle'
                   alt={`${player.fullName || player.name || 'Player'} avatar`}
@@ -251,8 +251,8 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({
                     const target = e.target as HTMLImageElement;
                     target.src =
                       player.gender === 'Female'
-                        ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-                        : 'https://bothell-select.onrender.com/uploads/avatars/boy.png';
+                        ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+                        : 'https://partizan-be.onrender.com/uploads/avatars/boy.png';
                   }}
                 />
               </div>
@@ -483,11 +483,11 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({
                                         )
                                         ? `${sibling.avatar}?${Date.now()}`
                                         : sibling.avatar.startsWith('/')
-                                        ? `https://bothell-select.onrender.com${sibling.avatar}`
+                                        ? `https://partizan-be.onrender.com${sibling.avatar}`
                                         : sibling.avatar
                                       : sibling.gender === 'Female'
-                                      ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-                                      : 'https://bothell-select.onrender.com/uploads/avatars/boy.png'
+                                      ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+                                      : 'https://partizan-be.onrender.com/uploads/avatars/boy.png'
                                   }
                                   className='img-fluid rounded-circle'
                                   alt={`${
@@ -499,8 +499,8 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({
                                     const target = e.target as HTMLImageElement;
                                     target.src =
                                       sibling.gender === 'Female'
-                                        ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-                                        : 'https://bothell-select.onrender.com/uploads/avatars/boy.png';
+                                        ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+                                        : 'https://partizan-be.onrender.com/uploads/avatars/boy.png';
                                   }}
                                 />
                               </span>

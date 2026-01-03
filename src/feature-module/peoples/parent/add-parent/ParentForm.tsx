@@ -46,7 +46,7 @@ const ParentForm: React.FC<ParentFormProps> = ({
       if (formData.avatar.startsWith('http')) {
         return formData.avatar;
       }
-      return `https://bothell-select.onrender.com${formData.avatar}`;
+      return `https://partizan-be.onrender.com${formData.avatar}`;
     }
     return null;
   };
@@ -80,7 +80,7 @@ const ParentForm: React.FC<ParentFormProps> = ({
                   />
                 ) : formData.avatar ? (
                   <img
-                    src={`https://bothell-select.onrender.com${formData.avatar}`}
+                    src={`https://partizan-be.onrender.com${formData.avatar}`}
                     alt='Avatar'
                     className='img-fluid rounded'
                     style={{

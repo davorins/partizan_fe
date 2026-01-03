@@ -8,7 +8,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const DEFAULT_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+  'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 
 interface User {
   _id: string;

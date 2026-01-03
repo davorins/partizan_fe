@@ -32,7 +32,7 @@ const Header = () => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const DEFAULT_AVATAR =
-    'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+    'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 
   // ✅ NEW: Determine dashboard route based on role
   const getDashboardRoute = () => {
@@ -170,7 +170,7 @@ const Header = () => {
 
     const avatarUrl =
       parent.avatar && parent.avatar.trim() !== ''
-        ? `https://bothell-select.onrender.com${parent.avatar}`
+        ? `https://partizan-be.onrender.com${parent.avatar}`
         : avatarSrc || DEFAULT_AVATAR;
 
     return (

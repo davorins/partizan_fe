@@ -6,13 +6,13 @@ import { SearchResult } from '../../../types/types';
 import { formatPhoneNumber } from '../../../utils/phone';
 
 const DEFAULT_PARENT_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+  'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 const DEFAULT_COACH_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/coach.png';
+  'https://partizan-be.onrender.com/uploads/avatars/coach.png';
 const DEFAULT_GIRL_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/girl.png';
+  'https://partizan-be.onrender.com/uploads/avatars/girl.png';
 const DEFAULT_BOY_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/boy.png';
+  'https://partizan-be.onrender.com/uploads/avatars/boy.png';
 
 interface SearchBarProps {
   role?: string;
@@ -77,7 +77,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ role }) => {
         return result.image;
       }
       if (result.image.startsWith('/')) {
-        return `https://bothell-select.onrender.com${result.image}`;
+        return `https://partizan-be.onrender.com${result.image}`;
       }
     }
 

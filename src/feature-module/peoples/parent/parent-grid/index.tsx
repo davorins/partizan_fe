@@ -234,7 +234,7 @@ const ParentGrid = () => {
                                 ? parent.imgSrc.startsWith('http')
                                   ? parent.imgSrc // Use Cloudinary URL directly
                                   : `${API_BASE_URL}${parent.imgSrc}` // Handle local paths
-                                : 'https://bothell-select.onrender.com/uploads/avatars/parents.png'
+                                : 'https://partizan-be.onrender.com/uploads/avatars/parents.png'
                             }
                             className='img-fluid rounded-circle'
                             alt={

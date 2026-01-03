@@ -219,7 +219,7 @@ export const getCoachTableColumns = <T extends ExtendedCoachTableRecord>(
                   ? record.imgSrc.startsWith('http')
                     ? record.imgSrc // Use Cloudinary URL directly
                     : `${API_BASE_URL}${record.imgSrc}` // Handle local paths
-                  : 'https://bothell-select.onrender.com/uploads/avatars/coach.png'
+                  : 'https://partizan-be.onrender.com/uploads/avatars/coach.png'
               }
               className='img-fluid rounded-circle'
               alt={

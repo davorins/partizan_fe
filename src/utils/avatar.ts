@@ -4,9 +4,9 @@ export const optimizeCloudinaryUrl = (
   type: 'parent' | 'coach' | 'player' = 'parent'
 ): string => {
   const defaultAvatars = {
-    coach: 'https://bothell-select.onrender.com/uploads/avatars/coaches.png',
-    parent: 'https://bothell-select.onrender.com/uploads/avatars/parents.png',
-    player: 'https://bothell-select.onrender.com/uploads/avatars/players.png',
+    coach: 'https://partizan-be.onrender.com/uploads/avatars/coaches.png',
+    parent: 'https://partizan-be.onrender.com/uploads/avatars/parents.png',
+    player: 'https://partizan-be.onrender.com/uploads/avatars/players.png',
   };
 
   if (!avatarPath) return defaultAvatars[type];
@@ -29,7 +29,7 @@ export const optimizeCloudinaryUrl = (
 
   // Handle local paths
   if (avatarPath.startsWith('/uploads/')) {
-    return `https://bothell-select.onrender.com${avatarPath}`;
+    return `https://partizan-be.onrender.com${avatarPath}`;
   }
 
   return defaultAvatars[type];

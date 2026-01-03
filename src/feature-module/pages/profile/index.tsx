@@ -193,7 +193,7 @@ const Profile = () => {
 
     const url = isCloudinaryUrl
       ? `${parent.avatar}?${Date.now()}`
-      : 'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+      : 'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 
     console.log('Setting avatar URL:', url);
 
@@ -552,7 +552,7 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     const parentId = localStorage.getItem('parentId');
     const DEFAULT_AVATAR =
-      'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+      'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 
     if (!token || !parentId) return;
 
@@ -601,7 +601,7 @@ const Profile = () => {
 
       // Optionally, you could set the avatar to a default value if needed
       setAvatarSrc(
-        'https://bothell-select.onrender.com/uploads/avatars/parents.png'
+        'https://partizan-be.onrender.com/uploads/avatars/parents.png'
       );
     } catch (error) {
       console.error('Deletion failed:', error);
@@ -666,7 +666,7 @@ const Profile = () => {
                       src={
                         avatarSrc && avatarSrc.trim() !== ''
                           ? avatarSrc
-                          : 'https://bothell-select.onrender.com/uploads/avatars/parents.png'
+                          : 'https://partizan-be.onrender.com/uploads/avatars/parents.png'
                       }
                       alt='Profile'
                       className='profile-image'

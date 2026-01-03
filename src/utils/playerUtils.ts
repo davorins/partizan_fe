@@ -104,8 +104,8 @@ export const transformPlayerData = async (
     players.map(async (player) => {
       const getDefaultAvatar = (gender: string | undefined): string => {
         return gender?.toLowerCase() === 'female'
-          ? 'https://bothell-select.onrender.com/uploads/avatars/girl.png'
-          : 'https://bothell-select.onrender.com/uploads/avatars/boy.png';
+          ? 'https://partizan-be.onrender.com/uploads/avatars/girl.png'
+          : 'https://partizan-be.onrender.com/uploads/avatars/boy.png';
       };
 
       const avatarUrl =

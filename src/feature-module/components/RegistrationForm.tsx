@@ -1303,8 +1303,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <h5>Next Steps:</h5>
             <p className='mb-0'>
               You will receive a welcome email with team details, practice
-              schedules, and coach information shortly. Welcome to the Bothell
-              Select Team!
+              schedules, and coach information shortly. Welcome to the Partizan
+              Team!
             </p>
           </div>
         </div>

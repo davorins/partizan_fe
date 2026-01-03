@@ -226,8 +226,8 @@ const Notificationssettings = () => {
                   <div className='mb-3'>
                     <h5>Email Communication Preferences</h5>
                     <p>
-                      Control what types of emails you receive from Bothell
-                      Select. You can update these preferences at any time.
+                      Control what types of emails you receive from Partizan.
+                      You can update these preferences at any time.
                     </p>
                   </div>
                 </div>

@@ -94,11 +94,11 @@ const Terms = () => {
                     </li>
                     <li className='mb-2'>
                       <strong>Release of Liability:</strong> To the fullest
-                      extent permitted by law, you release and discharge Bothell
-                      Basketball camp, its officers, directors, employees, and
-                      agents from any and all claims, liabilities, damages, or
-                      expenses arising out of or in connection with your
-                      participation in the Camp.
+                      extent permitted by law, you release and discharge
+                      Partizan Basketball camp, its officers, directors,
+                      employees, and agents from any and all claims,
+                      liabilities, damages, or expenses arising out of or in
+                      connection with your participation in the Camp.
                     </li>
                   </ul>
                 </div>
@@ -108,7 +108,7 @@ const Terms = () => {
                     <li className='mb-2'>
                       <strong>Ownership:</strong> All intellectual property
                       rights related to the Camp, including but not limited to
-                      logos, designs, and materials, are owned by Bothell
+                      logos, designs, and materials, are owned by Partizan
                       Basketball camp or its licensors.
                     </li>
                     <li className='mb-2'>

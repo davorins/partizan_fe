@@ -2275,19 +2275,19 @@ input[type='text'] {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: #e9ecef;
-      color: #6c757d;
+      background-color: rgba(89, 66, 48, 0.9);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       margin-bottom: 0.5rem;
-      border: 3px solid #e9ecef;
+      border: 3px solid rgba(89, 66, 48, 1);
     }
 
     .step-label {
       font-size: 0.75rem;
-      color: #6c757d;
+      color: rgba(89, 66, 48, 1);
       font-weight: 500;
     }
 
@@ -2305,12 +2305,12 @@ input[type='text'] {
 
     &.completed {
       .step-number {
-        background-color: #28a745;
+        background-color: rgba(89, 66, 48, 1);
         color: white;
-        border-color: #28a745;
+        border-color: rgba(89, 66, 48, 1);
       }
       .step-label {
-        color: #28a745;
+        color: rgba(89, 66, 48, 1);
       }
     }
   }
@@ -2318,12 +2318,12 @@ input[type='text'] {
   .step-connector {
     flex: 1;
     height: 3px;
-    background-color: #e9ecef;
+    background-color: rgba(89, 66, 48, 0.7);
     margin: 0 1rem;
     margin-top: 18px;
 
     .step.completed + & {
-      background-color: #28a745;
+      background-color: rgba(89, 66, 48, 1);
     }
   }
 }
@@ -2341,7 +2341,7 @@ input[type='text'] {
 }
 
 .pricing-package.selected {
-  border-color: #28a745;
+  border-color: rgba(89, 66, 48, 1);
   background-color: rgba(40, 167, 69, 0.05);
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
@@ -2363,14 +2363,14 @@ input[type='text'] {
   background: #f8f9fa;
   padding: 1rem;
   border-radius: 0.5rem;
-  border-left: 4px solid #28a745;
+  border-left: 4px solid rgba(89, 66, 48, 1);
 }
 
 /* Form Preview Styles */
 .form-payment-amount {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #28a745;
+  color: rgba(89, 66, 48, 1);
 }
 
 /* Drag and Drop Styles */

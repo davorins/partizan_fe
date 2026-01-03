@@ -619,8 +619,8 @@ export interface ManualEmailRequest {
   variables?: Record<string, any>;
 }
 
-export interface ApiResponse {
-  data?: EmailTemplate[] | EmailTemplate;
+export interface ApiResponse<T = any> {
+  data?: T;
   error?: string;
   success?: boolean;
   message?: string;

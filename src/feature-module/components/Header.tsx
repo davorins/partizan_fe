@@ -234,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
             </li>
           </ul>
         </div>
-        <div className='d-none d-md-flex align-items-center'>
+        {/* <div className='d-none d-md-flex align-items-center'>
           <span>Our Partners:</span>
           <div
             className={`sponsor-logo-container ${
@@ -259,7 +259,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className='d-none d-md-flex align-items-center'>
           <NotificationDropdown avatarSrc={avatarSrc || DEFAULT_AVATAR} />
           {isAuthenticated && parent ? (

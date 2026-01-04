@@ -167,6 +167,10 @@ const PageBuilder: React.FC<PageBuilderProps> = ({ initialPage }) => {
   // Update ref whenever sections change
   useEffect(() => {
     sectionsRef.current = sections;
+    console.log('🔄 sectionsRef updated with sections:', sections.length);
+    sections.forEach((section, index) => {
+      console.log(`  ${index}: "${section.title}" (${section.type})`);
+    });
   }, [sections]);
 
   // Load page by ID
@@ -547,7 +551,7 @@ const PageBuilder: React.FC<PageBuilderProps> = ({ initialPage }) => {
     }
   };
 
-  // Save page - FIXED VERSION
+  // Save page
   const savePage = useCallback(
     async (showAlert = true) => {
       if (!page?._id) {
@@ -573,19 +577,34 @@ const PageBuilder: React.FC<PageBuilderProps> = ({ initialPage }) => {
 
       try {
         // Prepare sections data - using currentSections from ref
-        const processedSections = currentSections.map((section, index) => ({
-          id: section.id || `${section.type}-${Date.now()}-${index}`,
-          type: section.type,
-          position: index,
-          title: section.title || '',
-          subtitle: section.subtitle || '',
-          content: section.content || '',
-          config: section.config || {},
-          styles: section.styles || {},
-          isActive: section.isActive !== undefined ? section.isActive : true,
-          createdAt: section.createdAt || new Date(),
-          updatedAt: new Date(), // Always use current time
-        }));
+        const processedSections = currentSections.map((section, index) => {
+          // Get all config properties (including new alignment and typography properties)
+          const config = {
+            ...section.config,
+            // Ensure new properties are included
+            titleAlignment: section.config?.titleAlignment,
+            contentAlignment: section.config?.contentAlignment,
+            subtitleAlignment: section.config?.subtitleAlignment,
+            titleFontFamily: section.config?.titleFontFamily,
+            titleFontSize: section.config?.titleFontSize,
+            titleFontWeight: section.config?.titleFontWeight,
+            titleColor: section.config?.titleColor,
+          };
+
+          return {
+            id: section.id || `${section.type}-${Date.now()}-${index}`,
+            type: section.type,
+            position: index,
+            title: section.title || '',
+            subtitle: section.subtitle || '',
+            content: section.content || '',
+            config: config,
+            styles: section.styles || {},
+            isActive: section.isActive !== undefined ? section.isActive : true,
+            createdAt: section.createdAt || new Date(),
+            updatedAt: new Date(), // Always use current time
+          };
+        });
 
         console.log(
           '📦 Processed sections titles:',

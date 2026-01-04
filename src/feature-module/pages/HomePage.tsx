@@ -286,7 +286,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   }}
                 >
                   <ImageWithBasePath
-                    src='assets/img/authentication/authentication.png'
+                    src='assets/img/watermark-logo.png'
                     alt='Partizan AAU Basketball'
                     className='img-fluid'
                   />

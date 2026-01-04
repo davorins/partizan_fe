@@ -31,7 +31,7 @@ $warning-hover: darken($warning, 10%);
 $danger: #e82646;
 $danger-hover: darken($danger, 10%);
 $dark: #202c4b;
-$light: rgba(89, 66, 48, 0.25);
+$light: rgba(89, 66, 48, 0.075);
 $white: #fff;
 $black: #000;
 $purple: #4a00e5;
@@ -151,15 +151,15 @@ $indigo-800: #33a8e9;
 $indigo-900: #1a9de7;
 
 // Light
-$light-100: #fdfdfe;
-$light-200: #fbfbfd;
-$light-300: #f8fafc;
-$light-400: #f6f8fb;
-$light-500: #f4f6fa;
-$light-600: #f2f4f8;
-$light-700: #f0f2f7;
-$light-800: #edf1f6;
-$light-900: #e9edf4;
+$light-100: rgba(89, 66, 48, 0.01);
+$light-200: rgba(89, 66, 48, 0.02);
+$light-300: rgba(89, 66, 48, 0.03);
+$light-400: rgba(89, 66, 48, 0.04);
+$light-500: rgba(89, 66, 48, 0.05);
+$light-600: rgba(89, 66, 48, 0.06);
+$light-700: rgba(89, 66, 48, 0.07);
+$light-800: rgba(89, 66, 48, 0.08);
+$light-900: rgba(89, 66, 48, 0.09);
 
 // Gray
 $gray-100: #e6e8eb;

@@ -1,232 +1,231 @@
 .bg-primary {
-    background-color: $primary !important;
+  background-color: $primary !important;
 }
 .bg-secondary {
-    background-color: $secondary !important;
+  background-color: $secondary !important;
 }
 .bg-info {
-    background-color: $info !important;
+  background-color: $info !important;
 }
 .bg-success {
-    background-color: $success !important;
+  background-color: $success !important;
 }
 .bg-warning {
-    background-color: $warning !important;
+  background-color: $warning !important;
 }
 .bg-danger {
-    background-color: $danger !important;
+  background-color: $danger !important;
 }
 .bg-dark {
-    background-color: $dark !important;
+  background-color: $dark !important;
 }
 .bg-light {
-    background-color: $light !important;
+  background-color: $light !important;
 }
 .bg-white {
-    background-color: $white;
+  background-color: $white;
 }
 .bg-pink {
-    background-color: $pink !important;
+  background-color: $pink !important;
 }
 .bg-purple {
-    background-color: $purple !important;
+  background-color: $purple !important;
 }
 .bg-teal {
-    background-color: $teal !important;
+  background-color: $teal !important;
 }
 .bg-blue {
-    background-color: $blue !important;
+  background-color: $blue !important;
 }
 
 .bg-gray {
-    background: $light-500;
+  background: $light-500;
 }
 .bg-primary {
-    background-color: $primary !important;
-    &.bg-opacity-10 {
-        background-color: rgba($primary,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($primary,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($primary,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($primary,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($primary,1) !important;
-    }
+  background-color: $primary !important;
+  &.bg-opacity-10 {
+    background-color: rgba($primary, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($primary, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($primary, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($primary, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($primary, 1) !important;
+  }
 }
 .bg-secondary {
-    background-color: $secondary !important;
-    &.bg-opacity-10 {
-        background-color: rgba($secondary,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($secondary,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($secondary,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($secondary,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($secondary,1) !important;
-    }
+  background-color: $secondary !important;
+  &.bg-opacity-10 {
+    background-color: rgba($secondary, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($secondary, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($secondary, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($secondary, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($secondary, 1) !important;
+  }
 }
 .bg-info {
-    background-color: $info !important;
-    &.bg-opacity-10 {
-        background-color: rgba($info,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($info,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($info,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($info,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($info,1) !important;
-    }
+  background-color: $info !important;
+  &.bg-opacity-10 {
+    background-color: rgba($info, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($info, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($info, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($info, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($info, 1) !important;
+  }
 }
 .bg-success {
-    background-color: $success !important;
-    &.bg-opacity-10 {
-        background-color: rgba($success,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($success,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($success,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($success,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($success,1) !important;
-    }
+  background-color: $success !important;
+  &.bg-opacity-10 {
+    background-color: rgba($success, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($success, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($success, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($success, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($success, 1) !important;
+  }
 }
 .bg-warning {
-    background-color: $warning !important;
-    &.bg-opacity-10 {
-        background-color: rgba($warning,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($warning,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($warning,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($warning,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($warning,1) !important;
-    }
+  background-color: $warning !important;
+  &.bg-opacity-10 {
+    background-color: rgba($warning, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($warning, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($warning, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($warning, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($warning, 1) !important;
+  }
 }
 .bg-danger {
-    background-color: $danger !important;
-    &.bg-opacity-10 {
-        background-color: rgba($danger,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($danger,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($danger,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($danger,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($danger,1) !important;
-    }
+  background-color: $danger !important;
+  &.bg-opacity-10 {
+    background-color: rgba($danger, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($danger, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($danger, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($danger, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($danger, 1) !important;
+  }
 }
 .bg-dark {
-    background-color: $dark !important;
-    &.bg-opacity-10 {
-        background-color: rgba($dark,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($dark,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($dark,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($dark,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($dark,1) !important;
-    }
+  background-color: $dark !important;
+  &.bg-opacity-10 {
+    background-color: rgba($dark, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($dark, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($dark, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($dark, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($dark, 1) !important;
+  }
 }
 .bg-light {
-    background-color: $light !important;
-    &.bg-opacity-10 {
-        background-color: rgba($light,0.1) !important;
-    }
-    &.bg-opacity-25 {
-        background-color: rgba($light,0.25) !important;
-    }
-    &.bg-opacity-50 {
-        background-color: rgba($light,0.50) !important;
-    }
-    &.bg-opacity-75 {
-        background-color: rgba($light,0.75) !important;
-    }
-    &.bg-opacity-100 {
-        background-color: rgba($light,1) !important;
-    }
+  background-color: $light !important;
+  &.bg-opacity-10 {
+    background-color: rgba($light, 0.1) !important;
+  }
+  &.bg-opacity-25 {
+    background-color: rgba($light, 0.25) !important;
+  }
+  &.bg-opacity-50 {
+    background-color: rgba($light, 0.5) !important;
+  }
+  &.bg-opacity-75 {
+    background-color: rgba($light, 0.75) !important;
+  }
+  &.bg-opacity-100 {
+    background-color: rgba($light, 1) !important;
+  }
 }
 .bg-skyblue {
-    background-color: $skyblue !important;
+  background-color: $skyblue !important;
 }
-@each $color,
-$value in $theme-colors {
-    .bg-#{$color} {
-        background-color: #{$value} !important;
-        border: 1px solid #{$value} !important;
-        color: $white;
-    }
+@each $color, $value in $theme-colors {
+  .bg-#{$color} {
+    background-color: #{$value} !important;
+    border: 1px solid #{$value} !important;
+    color: $white;
+  }
 }
 .bg-soft-primary {
-    background-color: $primary-100;
-    color: $primary;
+  background-color: $primary-100;
+  color: $primary;
 }
 .bg-soft-secondary {
-    background-color: $secondary-300;
-    color: $secondary;
+  background-color: $secondary-300;
+  color: $secondary;
 }
 .bg-soft-success {
-    background-color: $success-300;
-    color: $success;
+  background-color: $success-300;
+  color: $success;
 }
 .bg-soft-danger {
-    background-color: $danger-300;
-    color: $danger;
+  background-color: $danger-300;
+  color: $danger;
 }
 .bg-soft-warning {
-    background-color: $warning-300;
-    color: $warning;
+  background-color: $warning-300;
+  color: $warning;
 }
 .bg-soft-info {
-    background-color: rgba($info, 0.3);
-    color: $info;
+  background-color: rgba($info, 0.3);
+  color: $info;
 }
 .bg-soft-light {
-    background-color: rgba($light, 0.9);
-    color: $text-color;
+  background-color: rgba($light, 0.9);
+  color: $text-color;
 }
 .bg-soft-dark {
-    background-color: rgba($dark, 0.3);
-    color: $white;
+  background-color: rgba($dark, 0.3);
+  color: $white;
 }
 .bg-light {
   color: $text-color;
@@ -317,149 +316,149 @@ $value in $theme-colors {
   color: $black !important;
 }
 .bg-primary-transparent {
+  background-color: $primary-transparent !important;
+  color: $primary !important;
+  &:hover {
     background-color: $primary-transparent !important;
     color: $primary !important;
-    &:hover {
-        background-color: $primary-transparent !important;
-        color: $primary !important;
-    }
+  }
 }
 .bg-secondary-transparent {
+  background-color: $secondary-transparent !important;
+  color: $secondary !important;
+  &:hover {
     background-color: $secondary-transparent !important;
     color: $secondary !important;
-    &:hover {
-        background-color: $secondary-transparent !important;
-        color: $secondary !important;
-    }
+  }
 }
 .bg-info-transparent {
+  background-color: $info-100 !important;
+  color: $info !important;
+  &:hover {
     background-color: $info-100 !important;
     color: $info !important;
-    &:hover {
-        background-color: $info-100 !important;
-        color: $info !important;
-    }
+  }
 }
 .bg-success-transparent {
+  background-color: $success-100 !important;
+  color: $success !important;
+  &:hover {
     background-color: $success-100 !important;
     color: $success !important;
-    &:hover {
-        background-color: $success-100 !important;
-        color: $success !important;
-    }
+  }
 }
 .bg-warning-transparent {
+  background-color: $warning-100 !important;
+  color: $warning !important;
+  &:hover {
     background-color: $warning-100 !important;
     color: $warning !important;
-    &:hover {
-        background-color: $warning-100 !important;
-        color: $warning !important;
-    }
+  }
 }
 .bg-danger-transparent {
+  background-color: $danger-100 !important;
+  color: $danger !important;
+  &:hover {
     background-color: $danger-100 !important;
     color: $danger !important;
-    &:hover {
-        background-color: $danger-100 !important;
-        color: $danger !important;
-    }
+  }
 }
 .bg-light-transparent {
+  background-color: rgba($light, 0.5) !important;
+  color: $light !important;
+  &:hover {
     background-color: rgba($light, 0.5) !important;
-    color: $light !important;
-    &:hover {
-        background-color: rgba($light, 0.5) !important;
-        color: $text-color !important;
-    }
+    color: $text-color !important;
+  }
 }
 .bg-skyblue-transparent {
+  background-color: $skyblue-100 !important;
+  color: $skyblue !important;
+  &:hover {
     background-color: $skyblue-100 !important;
     color: $skyblue !important;
-    &:hover {
-        background-color: $skyblue-100 !important;
-        color: $skyblue !important;
-    }
+  }
 }
 .bg-gray-100 {
-    background-color: $gray-100; 
+  background-color: $gray-100;
 }
 .bg-gray-200 {
-    background-color: $gray-200;
+  background-color: $gray-200;
 }
 .bg-gray-300 {
-    background-color: $gray-300;
+  background-color: $gray-300;
 }
 .bg-gray-400 {
-    background-color: $gray-400;
+  background-color: $gray-400;
 }
 .bg-gray-500 {
-    background-color: $gray-500;
+  background-color: $gray-500;
 }
 .bg-gray-600 {
-    background-color: $gray-600;
+  background-color: $gray-600;
 }
 .bg-gray-700 {
-    background-color: $gray-700;
+  background-color: $gray-700;
 }
 .bg-gray-800 {
-    background-color: $gray-800;
+  background-color: $gray-800;
 }
 .bg-gray-900 {
-    background-color: $gray-900;
+  background-color: $gray-900;
 }
 .bg-light-100 {
-    background-color: $light-100 !important;
+  background-color: $light-100 !important;
 }
 .bg-light-300 {
-    background-color: $light-300 !important;
+  background-color: $light-300 !important;
 }
 .bg-light-400 {
-    background-color: $light-400 !important;
+  background-color: $light-400 !important;
 }
 .bg-light-500 {
-    background-color: $light-500 !important;
+  background-color: $light-500 !important;
 }
 .bg-success-800 {
-    background-color: $success-800 !important;
+  background-color: $success-800 !important;
 }
 .svg-primary {
-    fill: $primary;
+  fill: $primary;
 }
 .svg-secondary {
-    fill: $secondary;
+  fill: $secondary;
 }
 .svg-success {
-    fill: $success;
+  fill: $success;
 }
 .svg-danger {
-    fill: $danger;
+  fill: $danger;
 }
 .svg-warning {
-    fill: $warning;
+  fill: $warning;
 }
 .svg-white {
-    fill: $white;
+  fill: $white;
 }
 .svg-black {
-    fill: $black;
+  fill: $black;
 }
 .svg-pink {
-    fill: $pink;
+  fill: $pink;
 }
 .svg-orange {
-    fill: $orange;
+  fill: $orange;
 }
 .svg-purple {
-    fill: $purple;
+  fill: $purple;
 }
 .svg-indigo {
-    fill: $indigo;
+  fill: $indigo;
 }
 .svg-info {
-    fill: $info;
+  fill: $info;
 }
 .svg-yellow {
-    fill: $yellow;
+  fill: $yellow;
 }
 .svg-light {
   fill: $light;
@@ -488,94 +487,71 @@ $value in $theme-colors {
   box-shadow: $box-shadow;
 }
 .color-box {
-    width: 80px;
-    height: 80px;
-    border-radius: $border-radius;
-    margin-right: 0.75rem;
-    margin-bottom: 0.75rem;
+  width: 80px;
+  height: 80px;
+  border-radius: $border-radius;
+  margin-right: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 .badge-soft-pending {
-    background: $pending-100;
-    color: $pending;
+  background: $pending-100;
+  color: $pending;
 }
 .bg-pending {
-    background: $pending;
-    color: $white;
+  background: $pending;
+  color: $white;
 }
 .bg-light-200 {
-    background: $light-200;
+  background: $light-200;
 }
 .bg-light-300 {
-    background: $light-300;
+  background: $light-300;
 }
 .bg-teal-transparent {
-    background: $teal-transparent;
+  background: $teal-transparent;
 }
 .bg-transparent-primary {
-    background: $primary-transparent;
+  background: $primary-transparent;
 }
 .bg-transparent-dark {
-    background: $dark-transparent;
+  background: $dark-transparent;
 }
 .bg-transparent-pending {
-    background: $pending-100;
+  background: $pending-100;
 }
 .bg-transparent-warning {
-    background: $warning-100;
+  background: $warning-100;
 }
 .bg-transparent-light {
-    background: $light;
+  background: $light;
 }
 .bg-transparent-danger {
-    background: $danger-100;
+  background: $danger-100;
 }
 .bg-transparent-success {
-    background: $success-100;
+  background: $success-100;
 }
 .bg-transparent-info {
-    background: $info-100;
+  background: $info-100;
 }
 .bg-light-gray {
-    background: $light-500;
+  background: $light-500;
 }
 .bg-light-orange {
+  background: $primary-200;
+  span {
     background: $primary-200;
-    span {
-        background: $primary-200;
-    }
+  }
 }
 .bg-light-red {
+  background: $danger-200;
+  span {
     background: $danger-200;
-    span {
-        background: $danger-200;
-    }
+  }
 }
 .bg-light-green {
+  background: $success-300;
+  span {
     background: $success-300;
-    span {
-        background: $success-300;
-    }
-}
-.bg-01 {
-    background: url('../../../../public/assets/img/bg/star-bg-01.svg')  no-repeat;
-}
-.bg-02 {
-    background: url('../../../../public/assets/img/bg/star-bg-02.svg')  no-repeat;
-}
-.bg-03 {
-    background-image: url('../../../../public/assets/img/bg/bg-01.png'),  url('../../../../public/assets/img/bg/shape-05.png');
-    background-position: right, right;
-    background-size: contain;
-    background-repeat: no-repeat;
-    @include respond-below(sm) {
-        background-image: none;
-    }
-}
-.account-page {
-    .bg-01 {
-        background-image: url(../../../../public/assets/img/authentication/authentication-bg.svg);
-        background-repeat: no-repeat;
-        background-position: bottom left;
-        background-size: 100%;
-    }
+  }
 }

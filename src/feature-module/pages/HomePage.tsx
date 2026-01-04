@@ -288,7 +288,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   <ImageWithBasePath
                     src='assets/img/watermark-logo-dark.png'
                     alt='Partizan AAU Basketball'
-                    className='img-fluid'
+                    className='img-fluid hover-zoom'
                   />
                 </div>
               </div>

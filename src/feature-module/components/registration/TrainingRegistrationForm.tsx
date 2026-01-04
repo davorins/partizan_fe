@@ -1137,6 +1137,32 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     ).length;
     const totalSelectedCount = selectedUnpaidPlayers.length + newPlayersCount;
 
+    const packages = defaultFormConfig.pricing.packages;
+    const packageCount = packages.length;
+
+    // Determine grid layout based on number of packages
+    const getGridClass = () => {
+      if (packageCount === 1) {
+        // Single package - take full width
+        return 'col-12';
+      } else if (packageCount === 2) {
+        // Two packages - 2 columns
+        return 'col-md-6';
+      } else if (packageCount === 3) {
+        // Three packages - 3 columns
+        return 'col-md-4';
+      } else if (packageCount === 4) {
+        // Four packages - 2 rows, 2 columns each
+        return 'col-md-6';
+      } else if (packageCount <= 6) {
+        // 5-6 packages - 2 rows, 3 columns each
+        return 'col-md-4';
+      } else {
+        // More than 6 packages - 3 columns
+        return 'col-md-4';
+      }
+    };
+
     return (
       <div className='card mb-4'>
         <div className='card-header bg-light'>
@@ -1158,20 +1184,20 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
           </div>
 
           <div className='row'>
-            {defaultFormConfig.pricing.packages.map((pkg) => {
+            {packages.map((pkg) => {
               const totalPrice = pkg.price * totalSelectedCount;
+              const gridClass = getGridClass();
+
               return (
-                <div key={pkg.id} className='col-md-4 mb-3'>
+                <div key={pkg.id} className={`${gridClass} mb-3`}>
                   <div
-                    className={`card border ${
-                      selectedPackage?.id === pkg.id
-                        ? 'border-primary bg-light'
-                        : ''
+                    className={`card border h-100 ${
+                      selectedPackage?.id === pkg.id ? 'border-primary' : ''
                     }`}
                     style={{ cursor: 'pointer' }}
                     onClick={() => setSelectedPackage(pkg)}
                   >
-                    <div className='card-body text-center'>
+                    <div className='card-body text-center d-flex flex-column'>
                       <div className='form-check mb-2'>
                         <input
                           className='form-check-input'
@@ -1187,6 +1213,16 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                         <p className='text-muted small mb-0 mt-2'>
                           {pkg.description}
                         </p>
+                      )}
+                      {totalSelectedCount > 0 && (
+                        <div className='mt-auto pt-3'>
+                          <div className='text-muted small'>
+                            <i className='ti ti-users me-1'></i>
+                            For {totalSelectedCount} player
+                            {totalSelectedCount !== 1 ? 's' : ''}:
+                          </div>
+                          <div className='fw-bold'>${totalPrice} total</div>
+                        </div>
                       )}
                     </div>
                   </div>

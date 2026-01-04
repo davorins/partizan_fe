@@ -9,7 +9,7 @@ const AboutUsPage = () => {
         <div className='row'>
           {/* Left Column - Fixed Image with Striped Background */}
           <div className='col-lg-6'>
-            <div className='d-lg-flex align-items-center justify-content-center bg-light-300 d-lg-block d-none flex-wrap vh-100 overflow-auto position-relative striped-bg'>
+            <div className='d-lg-flex align-items-center justify-content-center d-lg-block d-none flex-wrap vh-100 overflow-auto position-relative striped-bg'>
               <ImageWithBasePath
                 src='assets/img/aboutus.png'
                 alt='About Us'
@@ -54,11 +54,6 @@ const AboutUsPage = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: radial-gradient(
-            circle,
-            transparent 40%,
-            rgba(89, 66, 48, 0.2) 100%
-          );
           z-index: 1;
         }
 

@@ -230,7 +230,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
 
   return (
     <div className='container-fluid'>
-      <SponsorSplashScreen onClose={onSplashClose} />
+      {/* <SponsorSplashScreen onClose={onSplashClose} /> */}
       <div className='login-wrapper w-100 overflow-hidden position-relative flex-wrap d-block vh-100'>
         <div className='row'>
           {/* Left Column - Video */}
@@ -472,7 +472,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             right: 0,
           }}
         >
-          <div className='sponsor-container'>
+          {/* <div className='sponsor-container'>
             <a
               href='https://concreterestorationinc.com/'
               target='_blank'
@@ -503,7 +503,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                 }}
               />
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
 

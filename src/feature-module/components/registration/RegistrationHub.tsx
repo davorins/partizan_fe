@@ -124,7 +124,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                 onClick={() => setActiveForm('training')}
                 type='button'
               >
-                <i className='ti ti-dumbbell me-2'></i>
+                <i className='ti ti-info-circle me-2'></i>
                 {trainingConfig.season || 'Training Registration'}
               </button>
             </li>

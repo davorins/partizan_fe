@@ -44,7 +44,7 @@ const InTheSpotlight = () => {
       <div
         className='spotlight-overlay'
         style={{
-          backgroundColor: 'rgba(80, 110, 228, 0.05)',
+          backgroundColor: 'rgba(89, 66, 48, 0.05)',
           minHeight: '100vh',
           padding: '2rem 0',
         }}
@@ -52,10 +52,8 @@ const InTheSpotlight = () => {
         <div className='container py-5'>
           <div className='spotlight'>
             <div className='text-center mb-5'>
-              <h1 className='text-dark mb-3 display-4 fw-bold'>
-                In The Spotlight
-              </h1>
-              <h4 className='text-dark mb-5'>
+              <h1 className='mb-3 display-4 fw-bold'>In The Spotlight</h1>
+              <h4 className='mb-5'>
                 Celebrating player achievements and team highlights.
               </h4>
             </div>
@@ -73,7 +71,7 @@ const InTheSpotlight = () => {
               </div>
             ) : items.length === 0 ? (
               <div className='text-center py-5'>
-                <div className='card bg-dark text-white border-0'>
+                <div className='card bg-light border-0'>
                   <div className='card-body py-5'>
                     <h3 className='text-muted'>No spotlight items yet</h3>
                     <p className='text-muted'>

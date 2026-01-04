@@ -128,8 +128,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log('isAuthenticated set to false');
     setParent(null);
     console.log('Parent set to null');
+
     navigate('/login');
-    console.log('Redirected to login page');
+
+    // Force page refresh to clear all user data from memory
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
+
+    console.log('Redirected to login page and page refreshed');
   }, [navigate]);
 
   const fetchPlayersData = useCallback(
@@ -507,6 +514,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setParent(response.data.parent);
       setIsEmailVerified(false); // Will be set to true after verification
 
+      navigate(all_routes.adminDashboard);
+
+      // Reload the page to refresh context
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+
       return response.data.parent;
     } catch (error: any) {
       throw new Error(
@@ -567,6 +581,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         '✅ Registration successful, parent ID:',
         response.data.parent._id
       );
+
+      navigate(all_routes.adminDashboard);
+
+      // Reload the page to refresh context
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
 
       // ⭐⭐⭐ IMPORTANT: RETURN THE PARENT DATA ⭐⭐⭐
       return response.data.parent;
@@ -999,6 +1020,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       navigate(all_routes.adminDashboard);
+
+      // Force page refresh to ensure all data is reloaded
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (error) {
       console.error('Login Error:', error);
       throw error;

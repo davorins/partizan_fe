@@ -1,118 +1,154 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import ImageWithBasePath from '../../core/common/imageWithBasePath';
+import PageRenderer from '../../components/page-builder/PageRenderer';
 
 const OurTeamPage = () => {
-  const navigate = useNavigate();
-
-  const handleRegisterClick = () => {
-    navigate('/home-page');
-  };
-
   return (
     <div className='container-fuild'>
       <div className='login-wrapper w-100 overflow-hidden position-relative flex-wrap d-block vh-100'>
         <div className='row'>
+          {/* Left Column - Fixed Image with Striped Background */}
           <div className='col-lg-6'>
-            <div className='d-lg-flex align-items-center justify-content-center bg-light-300 d-lg-block d-none flex-wrap vh-100 overflowy-auto bg-01'>
-              <div>
-                <ImageWithBasePath src='assets/img/ourteam.png' alt='Img' />
-              </div>
+            <div className='d-lg-flex align-items-center justify-content-center d-lg-block d-none flex-wrap vh-100 overflow-auto position-relative striped-bg'>
+              <ImageWithBasePath
+                src='assets/img/ourteam.png'
+                alt='Our Team and Coaches'
+                className='hover-zoom'
+              />
             </div>
           </div>
+
+          {/* Right Column - Dynamic Content */}
           <div className='col-lg-6 col-md-12 col-sm-12'>
             <div className='row justify-content-center align-items-center vh-100 overflow-auto flex-wrap'>
               <div className='ourteam-page'>
                 <div className='mx-auto p-4'>
-                  <h1 className='mb-4 text-center'>Our Team and Coaches</h1>
-                  <h5 className='mb-5 text-center'>
-                    At Partizan, we take pride in assembling a team of dedicated
-                    and experienced coaches who are passionate about basketball
-                    and committed to providing an enriching experience for all
-                    participants. Our coaches bring a wealth of knowledge,
-                    skills, and enthusiasm to each session, ensuring that every
-                    player receives top-notch instruction and guidance.
-                  </h5>
-                  <h2 className='mb-2 text-center'>Our Coaching Philosophy</h2>
-                  <p className='mb-2'>
-                    At Partizan, we believe that basketball is more than just a
-                    game – it’s an opportunity for growth, development, and
-                    personal excellence. Our coaching philosophy is grounded in
-                    the following principles:
-                  </p>
-                  <ul className='mb-5'>
-                    <li className='mb-2'>
-                      <strong>Skill Development:</strong> We prioritize
-                      individual skill development in all aspects of the game,
-                      including shooting, ball-handling, passing, defense, and
-                      more.
-                    </li>
-                    <li className='mb-2'>
-                      <strong>Teamwork and Collaboration:</strong> We emphasize
-                      the importance of teamwork, communication, and
-                      collaboration both on and off the court. Campers learn to
-                      work together, support each other, and celebrate success
-                      as a team.
-                    </li>
-                    <li className='mb-2'>
-                      <strong>Sportsmanship and Respect:</strong> We instill
-                      values of sportsmanship, respect, and integrity in our
-                      campers, teaching them to compete with honor and respect
-                      for their opponents, coaches, and officials.
-                    </li>
-                    <li className='mb-2'>
-                      <strong>Fun and Positive Environment:</strong> We believe
-                      that learning and improvement are most effective in a fun,
-                      positive, and supportive environment. Our coaches strive
-                      to create an atmosphere where campers feel motivated,
-                      encouraged, and inspired to do their best.
-                    </li>
-                  </ul>
-                  <h2 className='mb-2 text-center'>
-                    Join Us for an Unforgettable Experience!
-                  </h2>
-                  <p className='mb-2'>
-                    Whether your child is a beginner looking to learn the
-                    fundamentals of basketball or an experienced player seeking
-                    to take his game to the next level, Partizan is the perfect
-                    place for your kiddo. Enroll your child today for an
-                    unforgettable basketball experience led by our team of
-                    dedicated coaches.
-                  </p>
-                  <p className='mb-5'>
-                    For more information about our coaching staff, camp
-                    sessions, and registration details, please contact us at{' '}
-                    <a href='mailto:bcpartizan@proton.me'>
-                      bcpartizan@proton.me
-                    </a>
-                  </p>
-                  <h2 className='mb-2 text-center'>Join Us!</h2>
-                  <p className='mb-2'>
-                    Join us at our camp for an unforgettable basketball
-                    experience. Come be a part of our vibrant community, learn
-                    from expert coaches, make new friends, and take your
-                    basketball skills to new heights!
-                  </p>
-                  <p className='mb-4'>
-                    For more information about our camp programs, coaching
-                    staff, registration details, and upcoming sessions, please
-                    explore our website or contact us directly. We can’t wait to
-                    welcome you to our family!
-                  </p>
-                  <div className='align-items-center text-center mb-5'>
-                    <button
-                      onClick={handleRegisterClick}
-                      className='btn btn-primary me-2'
-                    >
-                      Signup Now
-                    </button>
-                  </div>
+                  <PageRenderer pageSlug='our-team' isEditing={false} />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+       .striped-bg {
+          position: relative;
+        }
+
+         .striped-bg::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: 
+            /* Stripe 1: Colored */
+            linear-gradient(
+              90deg,
+              rgba(89, 66, 48, .035) 0%,
+              rgba(89, 66, 48, .035) 14.2857%,
+              transparent 14.2857%
+            ),
+            /* Stripe 2: White */
+            linear-gradient(
+              90deg,
+              #ffffff 14.2857%,
+              #ffffff 28.5714%,
+              transparent 28.5714%
+            ),
+            /* Stripe 3: Colored */
+            linear-gradient(
+              90deg,
+              rgba(89, 66, 48, .035) 28.5714%,
+              rgba(89, 66, 48, .035) 42.8571%,
+              transparent 42.8571%
+            ),
+            /* Stripe 4: White */
+            linear-gradient(
+              90deg,
+              #ffffff 42.8571%,
+              #ffffff 57.1428%,
+              transparent 57.1428%
+            ),
+            /* Stripe 5: Colored */
+            linear-gradient(
+              90deg,
+              rgba(89, 66, 48, .035) 57.1428%,
+              rgba(89, 66, 48, .035) 71.4285%,
+              transparent 71.4285%
+            ),
+            /* Stripe 6: White */
+            linear-gradient(
+              90deg,
+              #ffffff 71.4285%,
+              #ffffff 85.7142%,
+              transparent 85.7142%
+            ),
+            /* Stripe 7: Colored */
+            linear-gradient(
+              90deg,
+              rgba(89, 66, 48, .035) 85.7142%,
+              rgba(89, 66, 48, .035) 100%
+            );
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          z-index: 1;
+        }
+
+        /* Ensure the image sits above the stripes */
+        .striped-bg img {
+          position: relative;
+          z-index: 2;
+          max-width: 80%;
+          max-height: 80%;
+          object-fit: contain;
+        }
+
+        /* Hover zoom effect for the image */
+        .hover-zoom {
+          transition: transform 0.3s ease;
+        }
+        
+        .hover-zoom:hover {
+          transform: scale(1.05);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 991.98px) {
+          .col-lg-6:first-child {
+            display: none !important;
+          }
+        }
+
+        /* Alternative method using CSS custom properties */
+        /* This is cleaner and more maintainable */
+        .striped-bg-alt {
+          position: relative;
+        }
+
+        .striped-bg-alt::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          --stripe-width: calc(100% / 7);
+          background-image: repeating-linear-gradient(
+            90deg,
+            rgba(89, 66, 48, .035) 0 var(--stripe-width),
+            #ffffff var(--stripe-width) calc(var(--stripe-width) * 2),
+            rgba(89, 66, 48, .035) calc(var(--stripe-width) * 2) calc(var(--stripe-width) * 3),
+            #ffffff calc(var(--stripe-width) * 3) calc(var(--stripe-width) * 4),
+            rgba(89, 66, 48, .035) calc(var(--stripe-width) * 4) calc(var(--stripe-width) * 5),
+            #ffffff calc(var(--stripe-width) * 5) calc(var(--stripe-width) * 6),
+            rgba(89, 66, 48, .035) calc(var(--stripe-width) * 6) 100%
+          );
+          z-index: 1;
+        }
+      `}</style>
     </div>
   );
 };

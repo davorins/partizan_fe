@@ -323,19 +323,19 @@ ul .btn-primary:not(:disabled):not(.disabled).active:focus {
 }
 
 .bg-light {
-  background-color: rgba(89, 66, 48, 0.25) !important;
+  background-color: rgba(89, 66, 48, 0.025) !important;
 }
 .bg-light.bg-opacity-10 {
-  background-color: rgba(253, 253, 254, 0.1) !important;
+  background-color: rgba(253, 253, 254, 0.01) !important;
 }
 .bg-light.bg-opacity-25 {
-  background-color: rgba(253, 253, 254, 0.15) !important;
+  background-color: rgba(253, 253, 254, 0.015) !important;
 }
 .bg-light.bg-opacity-50 {
-  background-color: rgba(253, 253, 254, 0.5) !important;
+  background-color: rgba(253, 253, 254, 0.05) !important;
 }
 .bg-light.bg-opacity-75 {
-  background-color: rgba(253, 253, 254, 0.75) !important;
+  background-color: rgba(253, 253, 254, 0.075) !important;
 }
 .bg-light.bg-opacity-100 {
   background-color: rgba(89, 66, 48, 1) !important;
@@ -1002,7 +1002,7 @@ ul .btn-primary:not(:disabled):not(.disabled).active:focus {
   text-align: center;
   width: 276px;
   z-index: 1;
-  background: #fff;
+  background: transparent;
   padding: 0 15px;
   -webkit-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;

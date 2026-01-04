@@ -110,7 +110,7 @@
     text-align: center;
     width: 252px;
     z-index: 1;
-    background: $white;
+    background: transparent;
     padding: 0 15px;
     @include transition(all 0.5s ease);
     .logo {

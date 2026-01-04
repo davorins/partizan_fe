@@ -22,7 +22,7 @@ export type SectionType =
   | 'image'
   | 'image-gallery'
   | 'stats'
-  | 'cta' // Added CTA
+  | 'cta'
   | 'team'
   | 'schedule'
   | 'pricing'
@@ -156,11 +156,32 @@ export interface DynamicContentConfig {
 }
 
 // Main config type that includes all section-specific configs
+// src/types/page-builder-types.ts
+
 export interface PageSectionConfig {
   // Common properties
   showTitle?: boolean;
   showSubtitle?: boolean;
   title?: string;
+
+  // Text alignment properties
+  titleAlignment?: 'left' | 'center' | 'right' | 'justify';
+  contentAlignment?: 'left' | 'center' | 'right' | 'justify';
+  subtitleAlignment?: 'left' | 'center' | 'right' | 'justify';
+
+  // Typography properties
+  titleFontFamily?:
+    | 'inherit'
+    | "'Helvetica Neue', Helvetica, Arial, sans-serif"
+    | "Georgia, 'Times New Roman', Times, serif"
+    | "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    | "'Roboto', 'Open Sans', sans-serif"
+    | "'Montserrat', sans-serif"
+    | "'Poppins', sans-serif";
+
+  titleFontSize?: string;
+  titleFontWeight?: string;
+  titleColor?: string;
 
   // Section-specific configs
   cta?: CTASectionConfig;
@@ -261,7 +282,7 @@ export interface PageSection {
   title?: string;
   subtitle?: string;
   content?: string;
-  config?: PageSectionConfig; // Updated to use the new interface
+  config?: PageSectionConfig;
   styles?: {
     // Layout
     layout?: 'full-width' | 'container' | 'boxed';
@@ -286,8 +307,13 @@ export interface PageSection {
     titleSize?: string;
     titleWeight?: string;
     titleColor?: string;
+    titleFontFamily?: string;
     contentSize?: string;
     contentColor?: string;
+    contentFontFamily?: string;
+    subtitleSize?: string;
+    subtitleWeight?: string;
+    subtitleColor?: string;
 
     // Borders
     borderRadius?: string;

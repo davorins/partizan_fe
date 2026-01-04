@@ -503,6 +503,9 @@ const PageRenderer: React.FC<PageRendererProps> = ({
       section.config?.secondaryButtonStyle || 'secondary';
     const buttonClass = section.config?.buttonClass || '';
 
+    // Get title alignment
+    const titleAlignment = section.config?.titleAlignment || 'center';
+
     // Button class based on size and custom class
     const btnClass = `btn btn-${buttonStyle} btn-${buttonSize} ${buttonClass}`;
 
@@ -538,6 +541,15 @@ const PageRenderer: React.FC<PageRendererProps> = ({
       padding: backgroundImage ? '4rem 1rem' : '0rem',
     };
 
+    // Title style with alignment
+    const titleStyle = {
+      textAlign: titleAlignment as 'left' | 'center' | 'right',
+      fontSize: section.styles?.titleSize,
+      fontWeight: section.styles?.titleWeight,
+      color:
+        section.styles?.titleColor || (backgroundImage ? '#ffffff' : '#333333'),
+    };
+
     return (
       <div
         className={`cta-section ${section.styles?.className || ''}`}
@@ -551,7 +563,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
           {showTitle && section.title && (
             <h2
               className={`cta-title mb-3 ${section.styles?.titleClass || ''}`}
-              style={{ fontSize: section.styles?.titleSize }}
+              style={titleStyle}
             >
               {section.title}
             </h2>
@@ -559,7 +571,12 @@ const PageRenderer: React.FC<PageRendererProps> = ({
 
           {/* Subtitle */}
           {showSubtitle && section.subtitle && (
-            <p className='cta-subtitle mb-4'>{section.subtitle}</p>
+            <p
+              className='cta-subtitle mb-4'
+              style={{ textAlign: titleAlignment }}
+            >
+              {section.subtitle}
+            </p>
           )}
 
           {/* Button Group */}
@@ -642,7 +659,45 @@ const PageRenderer: React.FC<PageRendererProps> = ({
       }
     };
 
-    // FIX: For spotlight sections, NEVER show the section header in PageRenderer
+    // Get alignment configurations with defaults
+    const titleAlignment = section.config?.titleAlignment || 'center';
+    const contentAlignment = section.config?.contentAlignment || 'left';
+    const subtitleAlignment = section.config?.subtitleAlignment || 'center';
+
+    // Title style
+    const titleStyle = {
+      textAlign: titleAlignment as 'left' | 'center' | 'right' | 'justify',
+      fontSize: section.styles?.titleSize || section.config?.titleFontSize,
+      fontWeight:
+        section.styles?.titleWeight || section.config?.titleFontWeight,
+      color:
+        section.styles?.titleColor ||
+        section.config?.titleColor ||
+        section.styles?.textColor ||
+        '#333333',
+      fontFamily:
+        section.styles?.titleFontFamily || section.config?.titleFontFamily,
+    };
+
+    // Subtitle style
+    const subtitleStyle = {
+      textAlign: subtitleAlignment as 'left' | 'center' | 'right' | 'justify',
+      fontSize: section.styles?.subtitleSize,
+      fontWeight: section.styles?.subtitleWeight,
+      color:
+        section.styles?.subtitleColor || section.styles?.textColor || '#666666',
+    };
+
+    // Content style - Apply content size and font family
+    const contentStyle = {
+      textAlign: contentAlignment as 'left' | 'center' | 'right' | 'justify',
+      fontSize: section.styles?.contentSize,
+      color:
+        section.styles?.contentColor || section.styles?.textColor || '#333333',
+      fontFamily: section.styles?.contentFontFamily,
+      lineHeight: '1.6',
+    };
+
     // SpotlightContent handles its own header
     const shouldShowSectionHeader = section.type !== 'spotlight';
 
@@ -661,20 +716,20 @@ const PageRenderer: React.FC<PageRendererProps> = ({
           {shouldShowSectionHeader &&
             section.title &&
             section.config?.showTitle !== false && (
-              <div className='section-header mb-4'>
+              <div className='section-header mb-4' style={contentStyle}>
                 <h2
                   className={`section-title ${
                     section.styles?.titleClass || ''
                   }`}
-                  style={{
-                    fontSize: section.styles?.titleSize,
-                    fontWeight: section.styles?.titleWeight,
-                  }}
+                  style={titleStyle}
                 >
                   {section.title}
                 </h2>
                 {section.subtitle && (
-                  <p className='section-subtitle text-muted'>
+                  <p
+                    className='section-subtitle text-muted'
+                    style={subtitleStyle}
+                  >
                     {section.subtitle}
                   </p>
                 )}
@@ -684,13 +739,17 @@ const PageRenderer: React.FC<PageRendererProps> = ({
           {/* Section Content based on type */}
           <div
             className={`section-content ${section.styles?.contentClass || ''}`}
+            style={contentStyle}
           >
             {renderSectionContent(section)}
           </div>
 
           {/* View All Link - Also handle for spotlight sections */}
           {section.config?.showViewAll && section.config?.viewAllLink && (
-            <div className='section-footer mt-4 text-end'>
+            <div
+              className='section-footer mt-4'
+              style={{ textAlign: contentAlignment }}
+            >
               <a
                 href={section.config.viewAllLink}
                 className='btn btn-outline-primary'

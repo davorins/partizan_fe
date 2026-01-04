@@ -68,8 +68,13 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
       const updated = { ...editedSection, ...updates };
       setEditedSection(updated);
       setHasChanges(true);
+
+      // AUTO-SAVE: Update parent immediately
+      console.log('💾 SectionEditor: Auto-saving changes...');
+      onUpdate(updated);
+      setHasChanges(false); // Reset since we're auto-saving
     },
-    [editedSection]
+    [editedSection, onUpdate]
   );
 
   // Handle content change for text-based sections
@@ -102,12 +107,6 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
     handleUpdate({ [field]: value });
   };
 
-  // Save changes
-  const handleSave = () => {
-    onUpdate(editedSection);
-    setHasChanges(false);
-  };
-
   // Render content editor based on section type
   const renderContentEditor = () => {
     const commonFields = (
@@ -121,6 +120,92 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
             onChange={(e) => handleInputChange('title', e.target.value)}
           />
         </div>
+
+        {/* Add Text Alignment Controls */}
+        <div className='mb-3'>
+          <label className='form-label'>Title Alignment</label>
+          <div className='btn-group w-100' role='group'>
+            {[
+              { value: 'left', icon: '≡', label: 'Left' },
+              { value: 'center', icon: '☰', label: 'Center' },
+              { value: 'right', icon: '≡', label: 'Right' },
+            ].map((alignment) => (
+              <button
+                key={alignment.value}
+                type='button'
+                className={`btn btn-outline-secondary ${
+                  (editedSection.config?.titleAlignment || 'center') ===
+                  alignment.value
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={() =>
+                  handleConfigChange('titleAlignment', alignment.value)
+                }
+                title={alignment.label}
+              >
+                <span
+                  style={{
+                    transform:
+                      alignment.value === 'left'
+                        ? 'none'
+                        : alignment.value === 'right'
+                        ? 'scaleX(-1)'
+                        : 'none',
+                  }}
+                >
+                  {alignment.icon}
+                </span>
+                <span className='ms-1 d-none d-sm-inline'>
+                  {alignment.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className='mb-3'>
+          <label className='form-label'>Content Alignment</label>
+          <div className='btn-group w-100' role='group'>
+            {[
+              { value: 'left', icon: '≡', label: 'Left' },
+              { value: 'center', icon: '☰', label: 'Center' },
+              { value: 'right', icon: '≡', label: 'Right' },
+            ].map((alignment) => (
+              <button
+                key={alignment.value}
+                type='button'
+                className={`btn btn-outline-secondary ${
+                  (editedSection.config?.contentAlignment || 'left') ===
+                  alignment.value
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={() =>
+                  handleConfigChange('contentAlignment', alignment.value)
+                }
+                title={alignment.label}
+              >
+                <span
+                  style={{
+                    transform:
+                      alignment.value === 'left'
+                        ? 'none'
+                        : alignment.value === 'right'
+                        ? 'scaleX(-1)'
+                        : 'none',
+                  }}
+                >
+                  {alignment.icon}
+                </span>
+                <span className='ms-1 d-none d-sm-inline'>
+                  {alignment.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className='mb-3'>
           <label className='form-label'>Subtitle (Optional)</label>
           <input
@@ -965,6 +1050,93 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
 
   const renderStyleEditor = () => (
     <div className='style-editor'>
+      <h6 className='mb-3'>Typography</h6>
+      <div className='row mb-3'>
+        <div className='col-6'>
+          <label className='form-label'>Title Size</label>
+          <select
+            className='form-select'
+            value={editedSection.styles?.titleSize || '2rem'}
+            onChange={(e) => handleStyleChange('titleSize', e.target.value)}
+          >
+            <option value='1.5rem'>Small (1.5rem)</option>
+            <option value='2rem'>Medium (2rem)</option>
+            <option value='2.5rem'>Large (2.5rem)</option>
+            <option value='3rem'>Extra Large (3rem)</option>
+            <option value='custom'>Custom</option>
+          </select>
+        </div>
+        <div className='col-6'>
+          <label className='form-label'>Title Weight</label>
+          <select
+            className='form-select'
+            value={editedSection.styles?.titleWeight || 'bold'}
+            onChange={(e) => handleStyleChange('titleWeight', e.target.value)}
+          >
+            <option value='normal'>Normal</option>
+            <option value='500'>Medium</option>
+            <option value='600'>Semi Bold</option>
+            <option value='bold'>Bold</option>
+            <option value='800'>Extra Bold</option>
+          </select>
+        </div>
+      </div>
+
+      <div className='row mb-3'>
+        <div className='col-6'>
+          <label className='form-label'>Title Color</label>
+          <div className='d-flex align-items-center'>
+            <input
+              type='color'
+              className='form-control form-control-color me-2'
+              value={
+                editedSection.styles?.titleColor ||
+                editedSection.styles?.textColor ||
+                '#333333'
+              }
+              onChange={(e) => handleStyleChange('titleColor', e.target.value)}
+            />
+            <input
+              type='text'
+              className='form-control'
+              value={
+                editedSection.styles?.titleColor ||
+                editedSection.styles?.textColor ||
+                ''
+              }
+              onChange={(e) => handleStyleChange('titleColor', e.target.value)}
+              placeholder='#333333'
+            />
+          </div>
+        </div>
+        <div className='col-6'>
+          <label className='form-label'>Title Font Family</label>
+          <select
+            className='form-select'
+            value={editedSection.styles?.titleFontFamily || 'inherit'}
+            onChange={(e) =>
+              handleStyleChange('titleFontFamily', e.target.value)
+            }
+          >
+            <option value='inherit'>Default (Inherit)</option>
+            <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">
+              Helvetica/Arial
+            </option>
+            <option value="Georgia, 'Times New Roman', Times, serif">
+              Georgia/Times
+            </option>
+            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
+              Segoe UI
+            </option>
+            <option value="'Roboto', 'Open Sans', sans-serif">
+              Roboto/Open Sans
+            </option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+            <option value="'Poppins', sans-serif">Poppins</option>
+          </select>
+        </div>
+      </div>
+
       <h6 className='mb-3'>Layout & Spacing</h6>
       <div className='mb-3'>
         <label className='form-label'>Layout Type</label>
@@ -1222,19 +1394,13 @@ const SectionEditor: React.FC<SectionEditorProps> = ({
       </div>
 
       <div className='mt-3'>
-        <button
-          className='btn btn-primary w-100'
-          onClick={handleSave}
-          disabled={!hasChanges}
-        >
+        <button className='btn btn-primary w-100' onClick={onClose}>
           <Save size={16} className='me-1' />
-          Save Section Changes
+          Done Editing
         </button>
-        {hasChanges && (
-          <small className='text-muted d-block mt-1 text-center'>
-            Changes will be saved to the page
-          </small>
-        )}
+        <small className='text-muted d-block mt-1 text-center'>
+          Changes are saved automatically
+        </small>
       </div>
     </div>
   );

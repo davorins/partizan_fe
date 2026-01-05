@@ -131,7 +131,16 @@ const AdminRefundsPanel: React.FC = () => {
   ): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(
+
+      console.log('🔄 Processing refund:', {
+        paymentId,
+        refundId,
+        action,
+        notes,
+        endpoint: `${API_BASE_URL}/refunds/process`,
+      });
+
+      const response = await axios.post(
         `${API_BASE_URL}/refunds/process`,
         {
           paymentId,
@@ -140,18 +149,54 @@ const AdminRefundsPanel: React.FC = () => {
           adminNotes: notes,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000,
         }
       );
 
-      alert(`Refund ${action}d successfully`);
-      fetchAllRefunds();
-    } catch (error) {
-      console.error('Error processing refund:', error);
+      console.log('✅ Refund response:', response.data);
+
+      if (response.data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: `Refund ${action}d`,
+          text: response.data.message || `Refund ${action}d successfully`,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745',
+          customClass: {
+            confirmButton: 'btn btn-success',
+          },
+        });
+
+        // Refresh the refunds list
+        fetchAllRefunds();
+      } else {
+        throw new Error(response.data.error || 'Failed to process refund');
+      }
+    } catch (error: any) {
+      console.error('❌ Error processing refund:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+
+      let errorMessage = 'Failed to process refund';
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Server error. Please check backend configuration.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      }
+
       Swal.fire({
         icon: 'error',
         title: 'Refund Failed',
-        text: 'Failed to process refund.',
+        text: errorMessage,
         confirmButtonText: 'OK',
         confirmButtonColor: '#dc3545',
         customClass: {

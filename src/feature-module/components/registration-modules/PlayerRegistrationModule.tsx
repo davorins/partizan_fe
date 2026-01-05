@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Player } from '../../../types/registration-types';
 import { calculateGradeFromDOB } from '../../../utils/registration-utils';
 import SchoolAutocomplete from '../../../components/SchoolAutocomplete';
+import { RegistrationFormConfig } from '../../../types/registration-types';
 import axios from 'axios';
 
 interface PlayerRegistrationModuleProps {
@@ -75,7 +76,7 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
   authToken,
   maxPlayers = 10,
   allowMultiple = true,
-  requiresPayment = true, // Default to true for backward compatibility
+  requiresPayment = true,
 }) => {
   const [showNewPlayerForm, setShowNewPlayerForm] = useState(false);
   const [validationErrors, setValidationErrors] = useState<
@@ -109,7 +110,7 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
       return false;
     }
 
-    // Enhanced duplicate prevention
+    // Duplicate prevention
     if (hasSavedPlayers) {
       console.log('ℹ️ Players already saved, skipping duplicate save');
       return true;
@@ -121,11 +122,12 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
         parentId,
         season,
         registrationYear,
+        requiresPayment, // Log whether payment is required
       });
 
       const savedPlayers: Player[] = [];
 
-      // ENHANCED: Better duplicate detection
+      // Duplicate detection
       const newPlayersToSave = playersToSave.filter((p) => {
         // Skip if already has an ID (already exists in DB)
         if (p._id) {
@@ -186,6 +188,7 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
           parentId,
           season,
           year: registrationYear,
+          requiresPayment, // Log payment requirement
         });
 
         const playerData = {
@@ -200,7 +203,8 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
           parentId: parentId,
           grade: player.grade || '',
           isGradeOverridden: player.isGradeOverridden || false,
-          skipSeasonRegistration: true, // Don't auto-register for season
+          // FIXED: Only skip season registration if payment is NOT required
+          skipSeasonRegistration: !requiresPayment,
         };
 
         const response = await axios.post(
@@ -214,7 +218,10 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
           }
         );
 
-        console.log('✅ Player saved successfully:', response.data);
+        console.log('✅ Player saved successfully:', {
+          response: response.data,
+          skipSeasonRegistration: !requiresPayment,
+        });
 
         // Handle duplicate response from backend
         if (
@@ -264,7 +271,11 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
           }
         });
 
-        console.log('FINAL PLAYERS LIST TO SEND TO PARENT:', finalPlayers);
+        console.log('FINAL PLAYERS LIST TO SEND TO PARENT:', {
+          finalPlayers,
+          requiresPayment,
+          seasonAdded: requiresPayment ? 'yes' : 'no',
+        });
         onPlayersChange(finalPlayers);
         setHasSavedPlayers(true);
         return true;

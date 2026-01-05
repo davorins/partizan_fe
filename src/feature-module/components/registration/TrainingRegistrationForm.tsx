@@ -1450,11 +1450,11 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   return (
     <div>
       <div className='form-header'>
-        <h2 className='mt-3'>Training Registration</h2>
+        <h2 className='mt-3'>Registration</h2>
         <p>
           {currentStep === 'success'
             ? 'Your players have been successfully registered for training!'
-            : `Register players for the ${dynamicSeasonEvent.season} ${dynamicSeasonEvent.year} training program.`}
+            : ''}
         </p>
       </div>
 

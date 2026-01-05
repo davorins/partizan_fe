@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { Select, Button, Tooltip, Input, Table, Alert } from 'antd';
+import Swal from 'sweetalert2';
+import type { SweetAlertIcon, SweetAlertInput } from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 interface RefundData {
   _id: string;
@@ -145,7 +148,16 @@ const AdminRefundsPanel: React.FC = () => {
       fetchAllRefunds();
     } catch (error) {
       console.error('Error processing refund:', error);
-      alert('Failed to process refund');
+      Swal.fire({
+        icon: 'error',
+        title: 'Refund Failed',
+        text: 'Failed to process refund.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc3545',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+        },
+      });
     }
   };
 
@@ -402,32 +414,70 @@ const AdminRefundsPanel: React.FC = () => {
                   <Button
                     className='btn btn-outline-primary btn-sm'
                     icon={<i className='ti ti-check me-1'></i>}
-                    onClick={() => {
-                      const notes = prompt('Enter any notes for this refund:');
-                      processRefund(
-                        record.payment._id,
-                        record.refund._id || record.refund.refundId || '',
-                        'approve',
-                        notes || ''
-                      );
+                    onClick={async () => {
+                      const { isConfirmed, value: notes } = await Swal.fire({
+                        icon: 'question',
+                        title: 'Approve Refund',
+                        text: 'Add any notes for this refund (optional)',
+                        input: 'textarea',
+                        inputPlaceholder: 'Enter notes...',
+                        showCancelButton: true,
+                        confirmButtonText: 'Approve',
+                        confirmButtonColor: '#594230',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                          confirmButton: 'btn btn-primary',
+                          cancelButton: 'btn btn-outline-secondary',
+                        },
+                      });
+
+                      if (isConfirmed) {
+                        processRefund(
+                          record.payment._id,
+                          record.refund._id || record.refund.refundId || '',
+                          'approve',
+                          notes || ''
+                        );
+                      }
                     }}
                   >
                     Approve
                   </Button>
                 </Tooltip>
+
                 <Tooltip title='Reject this refund request'>
                   <Button
                     danger
                     className='btn btn-outline-danger btn-sm'
                     icon={<i className='ti ti-x me-1'></i>}
-                    onClick={() => {
-                      const notes = prompt('Enter reason for rejection:');
-                      processRefund(
-                        record.payment._id,
-                        record.refund._id || record.refund.refundId || '',
-                        'reject',
-                        notes || ''
-                      );
+                    onClick={async () => {
+                      const { isConfirmed, value: notes } = await Swal.fire({
+                        icon: 'warning',
+                        title: 'Reject Refund',
+                        text: 'Please provide a reason for rejecting this refund',
+                        input: 'textarea',
+                        inputPlaceholder: 'Enter rejection reason...',
+                        inputAttributes: {
+                          required: 'true',
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Reject',
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                          confirmButton: 'btn btn-danger',
+                          cancelButton: 'btn btn-outline-secondary',
+                        },
+                      });
+
+                      if (isConfirmed) {
+                        processRefund(
+                          record.payment._id,
+                          record.refund._id || record.refund.refundId || '',
+                          'reject',
+                          notes || ''
+                        );
+                      }
                     }}
                   >
                     Reject

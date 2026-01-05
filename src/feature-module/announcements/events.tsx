@@ -31,16 +31,16 @@ const categoryColorMap: Record<string, string> = {
   game: 'danger',
   holidays: 'info',
   celebration: 'warning',
-  camp: 'secondary',
+  camp: 'purple',
   tryout: 'primary',
 };
 
 const calendarCategoryColorMap: Record<string, string> = {
   training: '#1abe17',
   game: '#dc3545',
-  holidays: '#594230',
+  holidays: '#0f65cd',
   celebration: '#eab300',
-  camp: '#6c757d',
+  camp: '#9b25b7',
   tryout: '#0d6efd',
 };
 
@@ -375,6 +375,7 @@ const Events = () => {
       backgroundColor:
         event.backgroundColor ||
         (event.category ? calendarCategoryColorMap[event.category] : '#adb5bd'),
+      allDay: event.allDay || false,
       extendedProps: {
         caption: event.caption,
         price: event.price,
@@ -504,6 +505,19 @@ const Events = () => {
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     initialView='dayGridMonth'
                     events={formatEventsForCalendar(filteredEvents)}
+                    allDaySlot={true}
+                    allDayText='All Day'
+                    slotMinTime='06:00:00' // Start showing events from 6 AM
+                    slotMaxTime='22:00:00' // End showing events at 10 PM
+                    displayEventTime={true} // Show time for events that have it
+                    eventDisplay='block' // Use 'block' for colored blocks
+                    eventTimeFormat={{
+                      // Time format
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      omitZeroMinute: true,
+                      meridiem: 'short',
+                    }}
                     headerToolbar={{
                       start: 'title',
                       center: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -619,7 +633,7 @@ const Events = () => {
                         className='dropdown-item rounded-1 d-flex align-items-center'
                         onClick={() => setSelectedCategory('all')}
                       >
-                        <i className='ti ti-circle-filled fs-8 text-secondary me-2' />
+                        <i className='ti ti-circle-filled fs-8 text-teal me-2' />
                         All Categories
                       </button>
                     </li>

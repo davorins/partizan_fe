@@ -87,13 +87,13 @@ h6,
   font-size: 0.3125rem !important; //5px
 }
 .fs-6 {
-  font-size: 0.375rem  !important; //6px
+  font-size: 0.375rem !important; //6px
 }
 .fs-7 {
   font-size: 0.4375rem; //7px
 }
 .fs-8 {
-  font-size: 0.5rem  !important; //8px
+  font-size: 0.5rem !important; //8px
 }
 .fs-9 {
   font-size: 0.5625rem; //9px
@@ -193,7 +193,7 @@ h6,
     color: rgba($primary, 0.25) !important;
   }
   &.text-opacity-50 {
-    color: rgba($primary, 0.50) !important;
+    color: rgba($primary, 0.5) !important;
   }
 }
 .text-secondary {
@@ -388,7 +388,7 @@ hr {
   border-radius: $border-radius;
   position: relative;
   &:before {
-    content: "\f10d";
+    content: '\f10d';
     font-family: $font-awesome;
     z-index: 0;
     font-size: 2rem;
@@ -440,7 +440,7 @@ hr {
   }
 }
 
-[data-theme-mode="dark"] {
+[data-theme-mode='dark'] {
   .shadow-sm {
     box-shadow: 0 0.125rem 0.25rem rgba(33, 37, 41, 0.3) !important;
   }
@@ -458,7 +458,7 @@ hr {
   }
 }
 
-[dir="rtl"] {
+[dir='rtl'] {
   .text-break {
     word-wrap: break-word !important;
     word-break: break-word !important;
@@ -468,6 +468,6 @@ hr {
   transform: none !important;
 }
 .list-circle {
-    list-style: circle;
-    padding-left: 2rem;
+  list-style: circle;
+  padding-left: 2rem;
 }

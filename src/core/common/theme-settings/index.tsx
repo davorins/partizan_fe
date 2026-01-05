@@ -11,7 +11,7 @@ const categoryColorMap: Record<string, string> = {
   game: 'danger',
   holidays: 'info',
   celebration: 'warning',
-  camp: 'secondary',
+  camp: 'purple',
   tryout: 'primary',
 };
 
@@ -151,7 +151,7 @@ const ThemeSettings = () => {
                   className='dropdown-item rounded-1 d-flex align-items-center'
                   onClick={() => setSelectedCategory('all')}
                 >
-                  <i className='ti ti-circle-filled fs-8 text-secondary me-2' />
+                  <i className='ti ti-circle-filled fs-8 text-teal me-2' />
                   All Categories
                 </button>
               </li>
@@ -196,7 +196,7 @@ const ThemeSettings = () => {
                   className='dropdown-item rounded-1 d-flex align-items-center'
                   onClick={() => setSelectedCategory('camp')}
                 >
-                  <i className='ti ti-circle-filled fs-8 text-secondary me-2' />
+                  <i className='ti ti-circle-filled fs-8 text-purple me-2' />
                   Camp
                 </button>
               </li>

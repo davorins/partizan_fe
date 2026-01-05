@@ -605,19 +605,36 @@ const ParentDetails = () => {
 
   // Refund submission handler
   const handleRefundSubmit = async (
-    paymentId: string,
+    paymentId: string, // This is the MongoDB _id passed from the modal
     amount: number,
     reason: string
   ) => {
     try {
       const token = localStorage.getItem('token');
 
-      console.log('Submitting refund request:', { paymentId, amount, reason });
+      // First, find the payment in our local state to get the Square paymentId
+      const payment = payments.find((p) => p._id === paymentId);
 
+      if (!payment) {
+        throw new Error('Payment not found in local data');
+      }
+
+      if (!payment.paymentId) {
+        throw new Error('Square payment ID is missing for this payment');
+      }
+
+      console.log('Submitting refund request:', {
+        mongoId: payment._id,
+        squareId: payment.paymentId,
+        amount,
+        reason,
+      });
+
+      // Use Square payment ID
       const response = await axios.post(
         `${API_BASE_URL}/payment/refund`,
         {
-          paymentId,
+          paymentId: payment.paymentId, // Square ID
           amount,
           reason,
           parentId: parent?._id,

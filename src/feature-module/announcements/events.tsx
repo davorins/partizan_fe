@@ -757,7 +757,7 @@ const Events = () => {
           </Modal.Title>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
-          <Modal.Body>
+          <Modal.Body style={{ maxHeight: '70vh', overflowY: 'auto' }}>
             <div className='row'>
               <div className='mb-3'>
                 <label className='form-label'>Event Title</label>

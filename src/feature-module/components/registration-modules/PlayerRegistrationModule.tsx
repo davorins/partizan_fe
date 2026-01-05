@@ -203,7 +203,6 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
           parentId: parentId,
           grade: player.grade || '',
           isGradeOverridden: player.isGradeOverridden || false,
-          // FIXED: Only skip season registration if payment is NOT required
           skipSeasonRegistration: !requiresPayment,
         };
 

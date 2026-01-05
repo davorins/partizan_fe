@@ -69,12 +69,12 @@ interface PaymentFormMethods {
 }
 
 // PROD
-const appId = 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
-const locationId = 'L26Q50FWRCQW5';
+// const appId = 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
+// const locationId = 'L26Q50FWRCQW5';
 
 // QA
-//const appId = 'sandbox-sq0idb-I4PAJ1f1XKYqYSwLovq0xQ';
-//const locationId = 'LCW4GM814GWXK';
+const appId = 'sandbox-sq0idb-I4PAJ1f1XKYqYSwLovq0xQ';
+const locationId = 'LCW4GM814GWXK';
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';

@@ -7,7 +7,6 @@ import AuthFeature from '../authFeature';
 import MainLayout from '../components/MainLayout';
 import HomePage from '../pages/HomePage';
 import ContactUsPage from '../pages/ContactUsPage';
-import TournamentRegistrationForm from '../components/tournamentRegistrationForm';
 import AboutUsPage from '../pages/AboutUsPage';
 import OurTeamPage from '../pages/OurTeamPage';
 import FAQUserView from '../content/FAQUserView';
@@ -17,7 +16,6 @@ import EventCards from '../announcements/eventCards';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import PlayerRegistrationForm from '../components/PlayerRegistrationForm';
 import InTheSpotlight from '../pages/InTheSpotlight';
 import PublicTicketLookup from '../../components/PublicTicketLookup';
 import PublicTournamentPage from '../pages/tournament/PublicTournamentPage';
@@ -54,18 +52,6 @@ const ALLRoutes = ({ showSponsorLogo, onSplashClose }: ALLRoutesProps) => {
         element={
           <MainLayout showSponsorLogo={showSponsorLogo}>
             <ContactUsPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/tournament'
-        element={
-          <MainLayout showSponsorLogo={showSponsorLogo}>
-            <TournamentRegistrationForm
-              isExistingUser={isAuthenticated}
-              skipToPayment={true}
-              onSuccess={() => console.log('Registration successful')}
-            />
           </MainLayout>
         }
       />
@@ -177,18 +163,6 @@ const ALLRoutes = ({ showSponsorLogo, onSplashClose }: ALLRoutesProps) => {
           />
         ))}
       </Route>
-
-      {/* Player Registration Route (Protected) */}
-      <Route
-        path='/player-registration'
-        element={
-          <ProtectedRoute allowedRoles={['user', 'admin', 'coach']}>
-            <Feature>
-              <PlayerRegistrationForm playerId={parentId} />
-            </Feature>
-          </ProtectedRoute>
-        }
-      />
       {/* Fallback route */}
       <Route path='*' element={<Navigate to='/' replace />} />
     </Routes>

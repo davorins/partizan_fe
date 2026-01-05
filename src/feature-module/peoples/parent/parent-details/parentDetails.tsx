@@ -99,10 +99,34 @@ const RefundModal: React.FC<RefundModalProps> = ({
 
     setIsSubmitting(true);
     try {
+      console.log('🔄 Submitting refund...');
       await onRefundSubmit(payment._id, amount, finalReason);
+
+      // Show success message
+      alert('✅ Refund processed successfully!');
       onClose();
+
+      // Optional: Refresh page data
+      if (window.location.reload) {
+        setTimeout(() => window.location.reload(), 1000);
+      }
     } catch (error: any) {
-      setError(error.message || 'Failed to process refund');
+      console.error('Refund error:', error);
+
+      // Show user-friendly error message
+      let userMessage = error.message || 'Failed to process refund';
+
+      // Make error messages more user-friendly
+      if (userMessage.includes('already been refunded')) {
+        userMessage = 'This payment has already been refunded.';
+      } else if (userMessage.includes('not found')) {
+        userMessage =
+          'Payment not found. Please refresh the page and try again.';
+      } else if (userMessage.includes('authentication')) {
+        userMessage = 'Session expired. Please log in again.';
+      }
+
+      setError(userMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -603,7 +627,7 @@ const ParentDetails = () => {
     }
   };
 
-  // Refund submission handler
+  // Refund submission handler - COMPLETE FIXED VERSION
   const handleRefundSubmit = async (
     paymentId: string, // This is the MongoDB _id passed from the modal
     amount: number,
@@ -612,25 +636,33 @@ const ParentDetails = () => {
     try {
       const token = localStorage.getItem('token');
 
-      // First, find the payment in our local state to get the Square paymentId
+      console.log('🔄 Starting refund submission...');
+      console.log('Payment ID (MongoDB):', paymentId);
+      console.log('Refund amount:', amount);
+      console.log('Refund reason:', reason);
+      console.log('Parent ID:', parent?._id);
+
+      // Find the payment in our local state to get the Square paymentId
       const payment = payments.find((p) => p._id === paymentId);
 
       if (!payment) {
+        console.error('❌ Payment not found in local data');
         throw new Error('Payment not found in local data');
       }
 
       if (!payment.paymentId) {
+        console.error('❌ Square payment ID is missing for this payment');
         throw new Error('Square payment ID is missing for this payment');
       }
 
-      console.log('Submitting refund request:', {
+      console.log('✅ Payment found:', {
         mongoId: payment._id,
         squareId: payment.paymentId,
-        amount,
-        reason,
+        amount: payment.amount,
+        alreadyRefunded: payment.totalRefunded || 0,
       });
 
-      // Use Square payment ID
+      console.log('📤 Sending refund request to backend...');
       const response = await axios.post(
         `${API_BASE_URL}/payment/refund`,
         {
@@ -640,25 +672,68 @@ const ParentDetails = () => {
           parentId: parent?._id,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000, // 30 second timeout
         }
       );
 
-      console.log('Refund response:', response.data);
+      console.log('✅ Refund response from backend:', response.data);
 
       if (response.data.success) {
+        console.log('✅ Refund processed successfully, refreshing payments...');
+
         // Refresh payments to show updated refund status
         await refreshPayments();
+
+        // Show success message
+        alert(
+          '✅ Refund processed successfully! The payment has been refunded.'
+        );
+
+        return response.data;
       } else {
+        console.error('❌ Refund failed:', response.data.error);
         throw new Error(response.data.error || 'Refund request failed');
       }
     } catch (error: any) {
-      console.error('Refund request error:', error);
-      const errorMessage =
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to submit refund request. Please try again.';
+      console.error('❌ Refund request error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: {
+          url: error.config?.url,
+          data: error.config?.data,
+        },
+      });
+
+      // Handle specific error cases
+      let errorMessage = 'Failed to submit refund request. Please try again.';
+
+      if (error.response?.status === 400) {
+        const errorData = error.response.data;
+        if (errorData?.error?.includes('already been refunded')) {
+          errorMessage = 'This payment has already been refunded.';
+        } else if (errorData?.error?.includes('not found')) {
+          errorMessage = 'Payment not found in Square.';
+        } else if (errorData?.error) {
+          errorMessage = errorData.error;
+        }
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      } else if (error.response?.status === 403) {
+        errorMessage = 'You do not have permission to process refunds.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Payment not found.';
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'Request timed out. Please try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      console.error('Final error message:', errorMessage);
       throw new Error(errorMessage);
     }
   };

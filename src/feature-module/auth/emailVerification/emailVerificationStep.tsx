@@ -29,6 +29,7 @@ const EmailVerificationStep: React.FC<EmailVerificationStepProps> = ({
   const [isResending, setIsResending] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [manualToken, setManualToken] = useState('');
+  const [showHandAnimation, setShowHandAnimation] = useState(true);
 
   // 🔥 FIX: Get email from localStorage as primary source
   const [actualEmail, setActualEmail] = useState(() => {
@@ -75,6 +76,18 @@ const EmailVerificationStep: React.FC<EmailVerificationStepProps> = ({
       return () => clearInterval(interval);
     }
   }, [status, isEmailVerified]);
+
+  // Stop hand animation when user starts typing or pastes token
+  useEffect(() => {
+    if (manualToken.length > 0 && showHandAnimation) {
+      setShowHandAnimation(false);
+    }
+
+    // Re-enable animation if user clears the input
+    if (manualToken.length === 0 && !showHandAnimation) {
+      setShowHandAnimation(true);
+    }
+  }, [manualToken, showHandAnimation]);
 
   // 🔥 Resend function that uses actualEmail
   const handleResendVerification = async () => {
@@ -175,8 +188,47 @@ const EmailVerificationStep: React.FC<EmailVerificationStepProps> = ({
     email ||
     'your email';
 
+  // Add CSS styles for animations
+  const styles = `
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    
+    @keyframes pulse-border {
+      0% { 
+        box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.7);
+        border-color: #4299e1;
+      }
+      70% { 
+        box-shadow: 0 0 0 6px rgba(66, 153, 225, 0);
+        border-color: #4299e1;
+      }
+      100% { 
+        box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
+        border-color: #4299e1;
+      }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .flashing-hand {
+      animation: flash 1.5s infinite, bounce 1.5s infinite;
+      cursor: pointer;
+    }
+    
+    .pulse-input {
+      animation: pulse-border 2s infinite;
+    }
+  `;
+
   return (
     <div className='card'>
+      <style>{styles}</style>
+
       <div className='card-header bg-light'>
         <div className='d-flex align-items-center'>
           <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
@@ -253,12 +305,30 @@ const EmailVerificationStep: React.FC<EmailVerificationStepProps> = ({
               <div className='input-group'>
                 <input
                   type='text'
-                  className='form-control'
+                  className={`form-control ${
+                    showHandAnimation && manualToken.length === 0
+                      ? 'pulse-input'
+                      : ''
+                  }`}
                   placeholder='Paste verification token from email'
                   value={manualToken}
-                  onChange={(e) => setManualToken(e.target.value)}
+                  onChange={(e) => {
+                    setManualToken(e.target.value);
+                    if (e.target.value.length > 0) {
+                      setShowHandAnimation(false);
+                    }
+                  }}
+                  onPaste={() => setShowHandAnimation(false)}
                   disabled={status === 'verifying'}
+                  style={{
+                    paddingLeft: showHandAnimation ? '3rem' : '1rem',
+                  }}
                 />
+                {showHandAnimation && manualToken.length === 0 && (
+                  <div className='position-absolute start-0 top-50 translate-middle-y ms-3'>
+                    <span className='flashing-hand fs-16'>👉</span>
+                  </div>
+                )}
                 <button
                   type='button'
                   className='btn btn-primary'

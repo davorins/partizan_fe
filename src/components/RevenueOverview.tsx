@@ -151,7 +151,7 @@ const RevenueOverview: React.FC = () => {
         height: 350,
         toolbar: { show: false },
       },
-      colors: ['#594230'],
+      colors: ['#1abe17'],
       dataLabels: { enabled: false },
       stroke: {
         curve: 'smooth',

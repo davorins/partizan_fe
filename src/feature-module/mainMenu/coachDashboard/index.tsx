@@ -60,7 +60,7 @@ const chartOptions = {
     height: 300,
   },
   labels: ['Active Players', 'Inactive Players'],
-  colors: ['#594230', '#E82646'],
+  colors: ['#1abe17', '#E82646'],
   legend: {
     position: 'bottom' as const,
   },

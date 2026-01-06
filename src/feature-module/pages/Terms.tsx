@@ -146,7 +146,7 @@ const Terms = () => {
                   <p className='mb-0'>
                     If you have any questions or concerns about these Terms and
                     Conditions,please send us an{' '}
-                    <a href='mailto:bcpartizan@proton.me'>email</a>.
+                    <a href='mailto:partizanhoops@proton.me'>email</a>.
                   </p>
                 </div>
               </div>

@@ -112,7 +112,7 @@ const Register = () => {
     healthConcerns: '',
     aauNumber: '',
     registrationYear: currentYear,
-    season: 'Basketball Select Team',
+    season: 'Partizan Team',
     grade: '',
   });
 
@@ -359,7 +359,7 @@ const Register = () => {
           healthConcerns: player.healthConcerns || '',
           aauNumber: player.aauNumber || '',
           registrationYear: currentYear,
-          season: 'Basketball Select Team',
+          season: 'Partizan Team',
           parentId: parentId,
           grade: player.grade || '',
           isGradeOverridden: player.isGradeOverridden || false,
@@ -560,7 +560,7 @@ const Register = () => {
                 players={players}
                 onPlayersChange={handlePlayersChange}
                 registrationYear={currentYear}
-                season='Basketball Select Team'
+                season='Partizan Team'
                 onValidationChange={(isValid) => {
                   // Store validation state if needed
                   console.log('Players validation:', isValid);

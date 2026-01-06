@@ -134,9 +134,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   const defaultSeasonEvent = useMemo(
     () =>
       seasonEvent || {
-        season: 'Basketball Select Team',
+        season: 'Partizan Team',
         year: new Date().getFullYear(),
-        eventId: 'basketball-select-2025',
+        eventId: 'partizan-2026',
       },
     [seasonEvent]
   );

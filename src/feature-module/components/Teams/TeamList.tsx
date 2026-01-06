@@ -137,7 +137,7 @@ const TeamList: React.FC = () => {
         setMetadata({
           years: [2024, 2025],
           grades: ['K', '1', '2', '3', '4', '5', '6', '7', '8'],
-          tryoutSeasons: ['Basketball Select Tryout'],
+          tryoutSeasons: ['Partizan Tryout'],
         });
       }
     } catch (err) {
@@ -145,7 +145,7 @@ const TeamList: React.FC = () => {
       setMetadata({
         years: [2024, 2025],
         grades: ['K', '1', '2', '3', '4', '5', '6', '7', '8'],
-        tryoutSeasons: ['Basketball Select Tryout'],
+        tryoutSeasons: ['Partizan Tryout'],
       });
     }
   };

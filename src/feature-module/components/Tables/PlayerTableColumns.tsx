@@ -178,11 +178,11 @@ const getCompactSeasonsDisplay = (player: PlayerTableData): string => {
 
     // Use full season names but abbreviated for common terms
     let seasonName = season.season;
-    if (seasonName.includes('Basketball Select Tryout')) {
+    if (seasonName.includes('Partizan Tryout')) {
       seasonName = 'Select Tryout';
-    } else if (seasonName.includes('Basketball Select Team')) {
+    } else if (seasonName.includes('Partizan Team')) {
       seasonName = 'Select Team';
-    } else if (seasonName.includes('Basketball Select')) {
+    } else if (seasonName.includes('Partizan')) {
       seasonName = 'Select';
     } else if (seasonName.includes('Tryout')) {
       seasonName = seasonName.replace('Tryout', 'Try');

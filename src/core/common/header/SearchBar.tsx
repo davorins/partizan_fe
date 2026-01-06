@@ -196,7 +196,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ role }) => {
               // Enhanced seasons data structure with detailed information - use type assertion
               seasons: (result.seasons || [
                 {
-                  season: result.season || 'Basketball Select',
+                  season: result.season || 'Partizan',
                   year: result.registrationYear || new Date().getFullYear(),
                   tryoutId: result.season?.toLowerCase().includes('tryout')
                     ? `${result.season?.toLowerCase().replace(/\s+/g, '')}-${
@@ -257,7 +257,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ role }) => {
               avatar: result.image,
               seasons: [
                 {
-                  season: result.season || 'Basketball Select',
+                  season: result.season || 'Partizan',
                   year: result.registrationYear || new Date().getFullYear(),
                   tryoutId: result.season?.toLowerCase().includes('tryout')
                     ? `${result.season?.toLowerCase().replace(/\s+/g, '')}-${

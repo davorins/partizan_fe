@@ -141,7 +141,7 @@ const TeamForm: React.FC = () => {
           year: currentYear,
           tryoutYear: currentYear,
           gender: 'Male',
-          tryoutSeason: 'Basketball Select Tryout',
+          tryoutSeason: 'Partizan Tryout',
         });
 
         // Load players for default values

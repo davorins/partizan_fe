@@ -1149,11 +1149,11 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
     const appId =
       paymentField.paymentConfig?.squareAppId ||
       formData!.settings?.paymentSettings?.squareAppId ||
-      'sandbox-sq0idb-I4PAJ1f1XKYqYSwLovq0xQ';
+      'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
     const locationId =
       paymentField.paymentConfig?.squareLocationId ||
       formData!.settings?.paymentSettings?.squareLocationId ||
-      'LCW4GM814GWXK';
+      'L26Q50FWRCQW5';
 
     return (
       <div className='payment-step'>

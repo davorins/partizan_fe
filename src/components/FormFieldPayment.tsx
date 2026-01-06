@@ -161,11 +161,11 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
       appId:
         paymentConfig.squareAppId ||
         field.squareAppId ||
-        'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
+        'sq0idp-jKCpX1oYcB5S-Qo5ncMMzw',
       locationId:
         paymentConfig.squareLocationId ||
         field.squareLocationId ||
-        'L26Q50FWRCQW5',
+        'LVGR2HHGZP0WY',
     };
   };
 

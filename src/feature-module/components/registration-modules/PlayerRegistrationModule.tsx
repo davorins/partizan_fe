@@ -770,23 +770,9 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
             </div>
           )}
 
-          {/* Add Player Button - Show regardless of payment requirement */}
-          {(hasUnpaidPlayers() || allExistingPlayers().length === 0) &&
-            !showNewPlayerForm && (
-              <div className='text-center mt-4'>
-                <button
-                  type='button'
-                  className='btn btn-outline-primary'
-                  onClick={addPlayer}
-                >
-                  <i className='ti ti-plus me-2'></i>
-                  {requiresPayment ? 'Add Additional Player' : 'Add New Player'}
-                </button>
-              </div>
-            )}
-
-          {/* Show new player form automatically if all existing players are paid */}
-          {allExistingPlayersPaid() && !showNewPlayerForm && (
+          {/* =================== CRITICAL FIX =================== */}
+          {/* Always show Add Player button when not currently adding new players */}
+          {!showNewPlayerForm && (
             <div className='text-center mt-4'>
               <button
                 type='button'
@@ -794,12 +780,29 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
                 onClick={addPlayer}
               >
                 <i className='ti ti-plus me-2'></i>
-                Register New Player
+                {requiresPayment
+                  ? allExistingPlayersPaid()
+                    ? 'Register New Player'
+                    : 'Add Additional Player'
+                  : isExistingUser &&
+                    (existingPlayers.length > 0 || paidPlayers.length > 0)
+                  ? 'Add New Player to Account'
+                  : 'Add New Player'}
               </button>
-              <p className='text-muted mt-2 small'>
-                All your current players are registered and paid. Add a new
-                player to register them for this season.
-              </p>
+              {allExistingPlayersPaid() && requiresPayment && (
+                <p className='text-muted mt-2 small'>
+                  All your current players are registered and paid. Add a new
+                  player to register them for this season.
+                </p>
+              )}
+              {!requiresPayment &&
+                isExistingUser &&
+                (existingPlayers.length > 0 || paidPlayers.length > 0) && (
+                  <p className='text-muted mt-2 small'>
+                    Add a new player to your account for future season
+                    registrations.
+                  </p>
+                )}
             </div>
           )}
         </div>
@@ -836,29 +839,150 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
     // - If we only have selected players, that's automatically valid
     const isFormValid = hasPlayersToProcess && isNewPlayersSectionValid;
 
+    // ================== FIX FOR BOTH SCENARIOS ==================
+    // When payment is NOT required (either off-season OR post-payment add more)
+    if (!requiresPayment) {
+      // Determine if this is an off-season initial registration OR post-payment add more
+
+      // Off-season initial registration: No existing unpaid players, no paid players
+      // User is creating account + players for the first time
+      const isOffSeasonInitialRegistration =
+        !isExistingUser ||
+        (existingPlayers.length === 0 && paidPlayers.length === 0);
+
+      // Post-payment scenario: Parent has already registered/purchased before
+      const isPostPaymentScenario =
+        isExistingUser &&
+        (existingPlayers.length > 0 || paidPlayers.length > 0);
+
+      // For OFF-SEASON INITIAL REGISTRATION
+      if (isOffSeasonInitialRegistration) {
+        // Show CTA for completing the initial registration
+        if (!hasNewPlayers && !hasSelectedUnpaidPlayers) {
+          return null; // Don't show CTA when no players are being added
+        }
+
+        return (
+          <div className='card mt-4'>
+            <div className='card-body'>
+              <div className='d-flex justify-content-between align-items-center'>
+                <div>
+                  <h5 className='mb-1'>Ready to Complete Registration</h5>
+                  <p className='text-muted mb-0'>
+                    {hasNewPlayers
+                      ? `${players.filter((p) => !p._id).length} new player${
+                          players.filter((p) => !p._id).length !== 1 ? 's' : ''
+                        } ready to be registered`
+                      : hasSelectedUnpaidPlayers
+                      ? `${selectedPlayerIds.length} existing player${
+                          selectedPlayerIds.length !== 1 ? 's' : ''
+                        } selected`
+                      : 'No players selected'}
+                  </p>
+                  {!isFormValid && (
+                    <p className='text-warning small mb-0 mt-1'>
+                      <i className='ti ti-alert-triangle me-1'></i>
+                      {hasNewPlayers && !areNewPlayersValid
+                        ? 'Complete all required information for new players'
+                        : 'Select at least one player or add a new player'}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type='button'
+                  className={`btn btn-lg ${
+                    isFormValid ? 'btn-primary' : 'btn-secondary'
+                  }`}
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !isFormValid}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className='spinner-border spinner-border-sm me-2'></span>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <i className='ti ti-check me-2'></i>
+                      Complete Registration
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // For POST-PAYMENT SCENARIO (adding more players after previous payment)
+      if (isPostPaymentScenario) {
+        // Only show CTA when we have new players to add
+        if (!hasNewPlayers) {
+          return null; // Don't show any CTA when no new players are being added
+        }
+
+        return (
+          <div className='card mt-4'>
+            <div className='card-body'>
+              <div className='d-flex justify-content-between align-items-center'>
+                <div>
+                  <h5 className='mb-1'>Ready to Add Players</h5>
+                  <p className='text-muted mb-0'>
+                    {players.filter((p) => !p._id).length} new player
+                    {players.filter((p) => !p._id).length !== 1 ? 's' : ''}{' '}
+                    ready to be added to your account
+                  </p>
+                  {!isFormValid && (
+                    <p className='text-warning small mb-0 mt-1'>
+                      <i className='ti ti-alert-triangle me-1'></i>
+                      Complete all required information for new players
+                    </p>
+                  )}
+                </div>
+                <button
+                  type='button'
+                  className={`btn btn-lg ${
+                    isFormValid ? 'btn-primary' : 'btn-secondary'
+                  }`}
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !isFormValid}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className='spinner-border spinner-border-sm me-2'></span>
+                      Adding Players...
+                    </>
+                  ) : (
+                    <>
+                      <i className='ti ti-user-plus me-2'></i>
+                      Add Players to Account
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    // ================== ORIGINAL PAYMENT-REQUIRED LOGIC ==================
+    // This only runs when requiresPayment = true (regular season registration)
     const totalPlayersNeedingPayment = requiresPayment
       ? selectedPlayerIds.length + players.filter((p) => !p._id).length
       : 0;
 
-    // Determine button text and icon based on whether payment is required
-    const buttonText = requiresPayment
-      ? 'Continue to Payment'
-      : 'Complete Registration';
-    const buttonIcon = requiresPayment ? 'ti ti-credit-card' : 'ti ti-check';
+    const buttonText = 'Continue to Payment';
+    const buttonIcon = 'ti ti-credit-card';
+    const readyText = 'Ready to Make Payment';
 
-    const readyText = requiresPayment
-      ? 'Ready to Make Payment'
-      : 'Ready to Complete Registration';
+    const statusText = 'ready for payment';
 
-    const statusText = requiresPayment
-      ? 'ready for payment'
-      : 'ready for registration';
-
-    // NEW LOGIC: Don't show CTA when:
+    // Don't show CTA when:
     // 1. No payment required AND
     // 2. No new players added AND
     // 3. No existing players selected
-    if (!requiresPayment && !hasNewPlayers && !hasSelectedUnpaidPlayers) {
+    if (!hasPlayersToProcess) {
       return null; // Don't show any CTA section
     }
 
@@ -1354,8 +1478,9 @@ const PlayerRegistrationModule: React.FC<PlayerRegistrationModuleProps> = ({
         selectedPlayerIds.length === 0 && (
           <div className='alert alert-info text-center'>
             <i className='ti ti-info-circle me-2'></i>
-            Please select existing players to register or add new players to
-            continue.
+            {allExistingPlayersPaid()
+              ? 'All your players are already registered and paid. Click "Register New Player" to add another player.'
+              : 'Please select existing players to register or add new players to continue.'}
           </div>
         )}
     </div>

@@ -71,7 +71,7 @@ const chartOptions = {
     height: 300,
   },
   labels: ['Active Players', 'Inactive Players'],
-  colors: ['#594230', '#E82646'],
+  colors: ['#1abe17', '#E82646'],
   legend: {
     position: 'bottom' as const,
   },
@@ -481,7 +481,7 @@ const AdminDashboard = () => {
                 <div className='row text-center mt-3'>
                   <div className='col-6'>
                     <div className='border rounded p-2'>
-                      <h6 className='text-primary mb-1'>
+                      <h6 className='text-info mb-1'>
                         {dashboardData.playerStats.byGender.male}
                       </h6>
                       <p className='mb-0 small'>Male Players</p>
@@ -489,7 +489,7 @@ const AdminDashboard = () => {
                   </div>
                   <div className='col-6'>
                     <div className='border rounded p-2'>
-                      <h6 className='text-success mb-1'>
+                      <h6 className='text-danger mb-1'>
                         {dashboardData.playerStats.byGender.female}
                       </h6>
                       <p className='mb-0 small'>Female Players</p>

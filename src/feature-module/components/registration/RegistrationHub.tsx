@@ -1,8 +1,9 @@
+// components/registration/RegistrationHub.tsx
 import React, { useState, useEffect } from 'react';
 import PlayerRegistrationForm from './PlayerRegistrationForm';
 import TournamentRegistrationForm from './TournamentRegistrationForm';
 import TrainingRegistrationForm from './TrainingRegistrationForm';
-import TryoutRegistrationForm from './TryoutRegistrationForm'; // Add this import
+import TryoutRegistrationForm from './TryoutRegistrationForm';
 import {
   RegistrationFormConfig,
   SeasonEvent,
@@ -13,11 +14,22 @@ import {
 interface RegistrationHubProps {
   playerConfig?: RegistrationFormConfig | null;
   trainingConfig?: RegistrationFormConfig | null;
-  tournamentConfig?: RegistrationFormConfig | null;
+  tournamentConfig?: RegistrationFormConfig | TournamentSpecificConfig | null;
   tryoutConfig?: RegistrationFormConfig | TryoutSpecificConfig | null;
   seasonEvent?: SeasonEvent;
   onRegistrationComplete?: () => void;
 }
+
+// Helper type guard functions
+const isTournamentConfig = (
+  config: any
+): config is TournamentSpecificConfig => {
+  return config && typeof config === 'object' && 'tournamentName' in config;
+};
+
+const isTryoutConfig = (config: any): config is TryoutSpecificConfig => {
+  return config && typeof config === 'object' && 'tryoutName' in config;
+};
 
 const RegistrationHub: React.FC<RegistrationHubProps> = ({
   playerConfig,
@@ -31,11 +43,108 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     'player' | 'tournament' | 'training' | 'tryout'
   >('player');
 
+  // Determine display names based on config types
+  const getDisplayName = (
+    config:
+      | RegistrationFormConfig
+      | TournamentSpecificConfig
+      | TryoutSpecificConfig
+      | null
+      | undefined
+  ): string => {
+    if (!config) return 'Registration';
+
+    // If it's a tournament config
+    if (isTournamentConfig(config)) {
+      return (
+        config.displayName || config.tournamentName || 'Tournament Registration'
+      );
+    }
+
+    // If it's a tryout config
+    if (isTryoutConfig(config)) {
+      return config.displayName || config.tryoutName || 'Tryout Registration';
+    }
+
+    // If it's a regular training config with season event
+    // Use eventId to get proper season name if available
+    const registrationConfig = config as RegistrationFormConfig;
+
+    // If we have a seasonEvent prop, use it for the display name
+    if (seasonEvent) {
+      return seasonEvent.season;
+    }
+
+    // Otherwise use the config's season field
+    return registrationConfig.season || 'Registration';
+  };
+
+  // Get the proper season event for a config
+  const getSeasonEventForConfig = (
+    config:
+      | RegistrationFormConfig
+      | TournamentSpecificConfig
+      | TryoutSpecificConfig
+      | null
+      | undefined
+  ): SeasonEvent | undefined => {
+    // If a seasonEvent prop is provided, use it
+    if (seasonEvent) {
+      return seasonEvent;
+    }
+
+    if (!config) return undefined;
+
+    // Create a season event from the config
+    if (isTournamentConfig(config)) {
+      return {
+        season: config.tournamentName,
+        year: config.tournamentYear,
+        eventId:
+          config._id?.toString() || `tournament-${config.tournamentYear}`,
+        registrationOpens: config.isActive ? new Date() : undefined,
+      };
+    }
+
+    if (isTryoutConfig(config)) {
+      return {
+        season: config.tryoutName,
+        year: config.tryoutYear,
+        eventId: config._id?.toString() || `tryout-${config.tryoutYear}`,
+        registrationOpens: config.isActive ? new Date() : undefined,
+      };
+    }
+
+    const registrationConfig = config as RegistrationFormConfig;
+    return {
+      season: registrationConfig.season || 'Training',
+      year: registrationConfig.year || new Date().getFullYear(),
+      eventId:
+        registrationConfig.eventId ||
+        registrationConfig._id?.toString() ||
+        'training-default',
+      registrationOpens: registrationConfig.isActive ? new Date() : undefined,
+    };
+  };
+
+  // Type-safe helper to get isActive
+  const getIsActive = (
+    config:
+      | RegistrationFormConfig
+      | TournamentSpecificConfig
+      | TryoutSpecificConfig
+      | null
+      | undefined
+  ): boolean => {
+    if (!config) return false;
+    return (config as any).isActive || false;
+  };
+
   // Check if forms are active - only show if isActive is true
-  const playerActive = playerConfig?.isActive || false;
-  const tournamentActive = tournamentConfig?.isActive || false;
-  const trainingActive = trainingConfig?.isActive || false;
-  const tryoutActive = tryoutConfig?.isActive || false;
+  const playerActive = getIsActive(playerConfig);
+  const tournamentActive = getIsActive(tournamentConfig);
+  const trainingActive = getIsActive(trainingConfig);
+  const tryoutActive = getIsActive(tryoutConfig);
 
   console.log('RegistrationHub - Active forms:', {
     playerActive,
@@ -46,21 +155,31 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     tournamentConfig,
     trainingConfig,
     tryoutConfig,
+    seasonEvent,
   });
 
   // Set initial active tab based on what's available
   useEffect(() => {
     // Priority: tournament > tryout > training > player
-    if (tournamentActive) {
+    if (tournamentActive && tournamentConfig) {
       setActiveForm('tournament');
-    } else if (tryoutActive) {
+    } else if (tryoutActive && tryoutConfig) {
       setActiveForm('tryout');
-    } else if (trainingActive) {
+    } else if (trainingActive && trainingConfig) {
       setActiveForm('training');
-    } else if (playerActive) {
+    } else if (playerActive && playerConfig) {
       setActiveForm('player');
     }
-  }, [playerActive, tournamentActive, trainingActive, tryoutActive]);
+  }, [
+    playerActive,
+    tournamentActive,
+    trainingActive,
+    tryoutActive,
+    playerConfig,
+    tournamentConfig,
+    trainingConfig,
+    tryoutConfig,
+  ]);
 
   // If nothing is active, show a message
   if (!playerActive && !tournamentActive && !trainingActive && !tryoutActive) {
@@ -76,6 +195,17 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
       </div>
     );
   }
+
+  // Get season events for each form type
+  const tournamentSeasonEvent = tournamentConfig
+    ? getSeasonEventForConfig(tournamentConfig)
+    : undefined;
+  const tryoutSeasonEvent = tryoutConfig
+    ? getSeasonEventForConfig(tryoutConfig)
+    : undefined;
+  const trainingSeasonEvent = trainingConfig
+    ? getSeasonEventForConfig(trainingConfig)
+    : undefined;
 
   return (
     <div className='card'>
@@ -93,7 +223,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                 type='button'
               >
                 <i className='ti ti-trophy me-2'></i>
-                {tournamentConfig.tournamentName || 'Tournament Registration'}
+                {getDisplayName(tournamentConfig)}
               </button>
             </li>
           )}
@@ -109,8 +239,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                 type='button'
               >
                 <i className='ti ti-target-arrow me-2'></i>
-                {/* Access tryoutName property safely */}
-                {(tryoutConfig as any).tryoutName || 'Tryout Registration'}
+                {getDisplayName(tryoutConfig)}
               </button>
             </li>
           )}
@@ -125,7 +254,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                 type='button'
               >
                 <i className='ti ti-info-circle me-2'></i>
-                {trainingConfig.season || 'Training Registration'}
+                {getDisplayName(trainingConfig)}
               </button>
             </li>
           )}
@@ -156,15 +285,11 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
               <div className='tab-pane fade show active'>
                 <TournamentRegistrationForm
                   onSuccess={onRegistrationComplete}
-                  formConfig={tournamentConfig}
-                  tournamentConfig={tournamentConfig}
-                  seasonEvent={
-                    seasonEvent || {
-                      season: tournamentConfig.tournamentName || 'Tournament',
-                      year: tournamentConfig.tournamentYear || 2025,
-                      eventId: tournamentConfig._id || 'tournament-2025',
-                    }
+                  formConfig={tournamentConfig as RegistrationFormConfig}
+                  tournamentConfig={
+                    tournamentConfig as TournamentSpecificConfig
                   }
+                  seasonEvent={tournamentSeasonEvent}
                 />
               </div>
             </div>
@@ -177,13 +302,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                 onSuccess={onRegistrationComplete}
                 formConfig={tryoutConfig as RegistrationFormConfig}
                 tryoutConfig={tryoutConfig as TryoutSpecificConfig}
-                seasonEvent={
-                  seasonEvent || {
-                    season: (tryoutConfig as any).tryoutName || 'Tryout',
-                    year: (tryoutConfig as any).tryoutYear || 2025,
-                    eventId: (tryoutConfig as any)._id || 'tryout-2025',
-                  }
-                }
+                seasonEvent={tryoutSeasonEvent}
               />
             </div>
           </div>
@@ -195,13 +314,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
               <TrainingRegistrationForm
                 onSuccess={onRegistrationComplete}
                 formConfig={trainingConfig}
-                seasonEvent={
-                  seasonEvent || {
-                    season: trainingConfig.season || 'Training',
-                    year: trainingConfig.year || 2025,
-                    eventId: trainingConfig._id || 'training-2025',
-                  }
-                }
+                seasonEvent={trainingSeasonEvent}
               />
             </div>
           </div>
@@ -213,6 +326,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
               <PlayerRegistrationForm
                 onSuccess={onRegistrationComplete}
                 formConfig={playerConfig}
+                seasonEvent={seasonEvent}
               />
             </div>
           </div>

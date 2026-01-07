@@ -57,27 +57,27 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     players: userPlayers,
   } = useAuth();
 
-  // ✅ DYNAMIC: Extract season and year from formConfig or use defaults
+  // ✅ Extract season and year from formConfig or use defaults
   const dynamicSeasonEvent = useMemo(() => {
-    // For training, always use a training season name
-    const trainingSeasonName = 'Basketball Training';
-
-    // If seasonEvent prop is provided, use it but ensure it's a training season
+    // If seasonEvent is provided, use it
     if (seasonEvent) {
+      return seasonEvent;
+    }
+
+    // If formConfig has eventId, try to get the season event
+    if (formConfig?.eventId) {
       return {
-        ...seasonEvent,
-        season: seasonEvent.season.includes('Training')
-          ? seasonEvent.season
-          : trainingSeasonName,
+        season: formConfig.season || 'Basketball Training',
+        year: formConfig.year || new Date().getFullYear(),
+        eventId: formConfig.eventId,
       };
     }
 
-    // For training, always use training season name regardless of formConfig
-    const year = formConfig?.year || new Date().getFullYear();
+    // Fallback to training season name
     return {
-      season: trainingSeasonName,
-      year: year,
-      eventId: `training-${year}`,
+      season: 'Basketball Training',
+      year: formConfig?.year || new Date().getFullYear(),
+      eventId: `training-${formConfig?.year || new Date().getFullYear()}`,
     };
   }, [formConfig, seasonEvent]);
 

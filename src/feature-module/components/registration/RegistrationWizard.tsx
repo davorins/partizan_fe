@@ -11,6 +11,7 @@ import {
 } from '../../../types/registration-types';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
+import { useSeasonEvents } from '../../hooks/useSeasonEvents';
 
 interface RegistrationWizardProps {
   registrationType?: 'player' | 'tournament' | 'training' | 'tryout' | 'team';
@@ -117,6 +118,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   existingPlayers = [],
 }) => {
   const { isAuthenticated, user, isLoading: authLoading } = useAuth();
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
 
   // State to track if user has completed initial registration steps
   const [userRegistrationComplete, setUserRegistrationComplete] =
@@ -131,15 +133,52 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   }, [isExistingUser, isAuthenticated]);
 
   // Default season event
-  const defaultSeasonEvent = useMemo(
-    () =>
-      seasonEvent || {
-        season: 'Partizan Team',
-        year: new Date().getFullYear(),
-        eventId: 'partizan-2026',
-      },
-    [seasonEvent]
-  );
+  const defaultSeasonEvent = useMemo(() => {
+    // If seasonEvent prop is provided, use it
+    if (seasonEvent) {
+      return seasonEvent;
+    }
+
+    // Find a matching season event
+    if (seasonEvents && seasonEvents.length > 0) {
+      // For training, look for training-related events
+      if (registrationType === 'training') {
+        const trainingEvent = seasonEvents.find(
+          (event) =>
+            event.season.toLowerCase().includes('training') ||
+            event.season.toLowerCase().includes('camp')
+        );
+        if (trainingEvent) return trainingEvent;
+      }
+
+      // For tournaments
+      if (registrationType === 'tournament') {
+        const tournamentEvent = seasonEvents.find((event) =>
+          event.season.toLowerCase().includes('tournament')
+        );
+        if (tournamentEvent) return tournamentEvent;
+      }
+
+      // For tryouts
+      if (registrationType === 'tryout') {
+        const tryoutEvent = seasonEvents.find((event) =>
+          event.season.toLowerCase().includes('tryout')
+        );
+        if (tryoutEvent) return tryoutEvent;
+      }
+
+      // Default to the first active event
+      const activeEvent = seasonEvents.find((event) => event.registrationOpen);
+      if (activeEvent) return activeEvent;
+    }
+
+    // Fallback to old hardcoded values
+    return {
+      season: 'Partizan Team',
+      year: new Date().getFullYear(),
+      eventId: 'partizan-2026',
+    };
+  }, [seasonEvent, seasonEvents, registrationType]);
 
   // Default form config - Handle RegistrationFormConfig, TournamentSpecificConfig, and TryoutSpecificConfig
   const defaultFormConfig: RegistrationFormConfig = useMemo(() => {

@@ -317,6 +317,7 @@ export interface PricingPackage {
 
 export interface RegistrationFormConfig {
   _id?: any;
+  eventId?: string;
   season?: string;
   year?: number;
   isActive: boolean;

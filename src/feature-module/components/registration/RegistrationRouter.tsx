@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// RegistrationRouter.tsx
+import React, { useEffect, useMemo } from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 import RegistrationWizard from './RegistrationWizard';
 import { useTryoutEvent } from '../../../context/TryoutEventContext';
@@ -9,6 +10,7 @@ import {
 } from '../../../types/registration-types';
 import { useFormConfig } from '../../hooks/useFormConfig';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
+import { useSeasonEvents, SeasonEvent } from '../../hooks/useSeasonEvents';
 
 // Helper function to get default config
 const getDefaultFormConfig = (
@@ -26,40 +28,74 @@ const getDefaultFormConfig = (
   };
 };
 
+interface TryoutEvent {
+  season: string;
+  year: number;
+  tryoutId: string;
+  [key: string]: any;
+}
+
+interface TournamentEvent {
+  tournament: string;
+  year: number;
+  tournamentId: string;
+  [key: string]: any;
+}
+
 const TryoutRegistrationPage: React.FC = () => {
   const { tryoutEvent } = useTryoutEvent();
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
 
-  const eventData: RegistrationWizardProps['eventData'] = tryoutEvent
+  // Try to find a matching season event
+  const matchedSeasonEvent = useMemo(() => {
+    if (!tryoutEvent || !seasonEvents.length) return null;
+
+    return seasonEvents.find(
+      (event: SeasonEvent) =>
+        event.season.toLowerCase().includes('tryout') &&
+        event.year === tryoutEvent.year
+    );
+  }, [tryoutEvent, seasonEvents]);
+
+  const eventData = matchedSeasonEvent
     ? {
-        season: tryoutEvent.season,
-        year: tryoutEvent.year,
-        eventId: tryoutEvent.tryoutId,
-        tryoutId: tryoutEvent.tryoutId,
+        season: matchedSeasonEvent.season,
+        year: matchedSeasonEvent.year,
+        eventId: matchedSeasonEvent.eventId,
+        tryoutId: tryoutEvent?.tryoutId,
       }
     : {
-        season: 'Basketball',
-        year: new Date().getFullYear(),
-        eventId: 'default-tryout',
+        season: tryoutEvent?.season || 'Basketball',
+        year: tryoutEvent?.year || new Date().getFullYear(),
+        eventId: tryoutEvent?.tryoutId || 'default-tryout',
       };
 
-  const { formConfig, isLoading, error } = useFormConfig(
-    eventData.season!,
-    eventData.year,
-    'tryout'
-  );
+  const {
+    formConfig,
+    isLoading: formConfigLoading,
+    error,
+  } = useFormConfig(eventData.season!, eventData.year, 'tryout');
 
   // Debug logging
   useEffect(() => {
     console.log('🔄 TryoutRegistrationPage - formConfig state:', {
       formConfig,
-      isLoading,
+      isLoading: formConfigLoading,
       error,
       season: eventData.season,
       year: eventData.year,
+      matchedSeasonEvent,
     });
-  }, [formConfig, isLoading, error, eventData.season, eventData.year]);
+  }, [
+    formConfig,
+    formConfigLoading,
+    error,
+    eventData.season,
+    eventData.year,
+    matchedSeasonEvent,
+  ]);
 
-  if (isLoading) {
+  if (seasonEventsLoading || formConfigLoading) {
     return (
       <div className='card'>
         <div className='card-body text-center p-5'>
@@ -108,6 +144,7 @@ const TryoutRegistrationPage: React.FC = () => {
       registrationType='tryout'
       eventData={eventData}
       formConfig={effectiveConfig}
+      seasonEvent={matchedSeasonEvent || undefined}
       onSuccess={() => console.log('Tryout registration successful')}
     />
   );
@@ -115,9 +152,29 @@ const TryoutRegistrationPage: React.FC = () => {
 
 const TournamentRegistrationPage: React.FC = () => {
   const { tournamentEvent } = useTournamentEvent();
-  const eventData: RegistrationWizardProps['eventData'] = tournamentEvent
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
+
+  // Find a matching season event for tournament
+  const matchedSeasonEvent = useMemo(() => {
+    if (!tournamentEvent || !seasonEvents.length) return null;
+
+    return seasonEvents.find(
+      (event: SeasonEvent) =>
+        event.season.toLowerCase().includes('tournament') &&
+        event.year === tournamentEvent.year
+    );
+  }, [tournamentEvent, seasonEvents]);
+
+  const eventData = matchedSeasonEvent
     ? {
-        // For tournaments, use the tournament name as the "season" for form config lookup
+        season: matchedSeasonEvent.season,
+        year: matchedSeasonEvent.year,
+        eventId: matchedSeasonEvent.eventId,
+        tournamentId: tournamentEvent?.tournamentId,
+        tournament: matchedSeasonEvent.season,
+      }
+    : tournamentEvent
+    ? {
         season: tournamentEvent.tournament,
         year: tournamentEvent.year,
         tournamentId: tournamentEvent.tournamentId,
@@ -131,23 +188,23 @@ const TournamentRegistrationPage: React.FC = () => {
         tournament: 'Default Tournament',
       };
 
-  const { formConfig, isLoading, error } = useFormConfig(
-    eventData.season!,
-    eventData.year,
-    'tournament'
-  );
+  const {
+    formConfig,
+    isLoading: formConfigLoading,
+    error,
+  } = useFormConfig(eventData.season!, eventData.year, 'tournament');
 
   useEffect(() => {
     console.log('🔄 TournamentRegistrationPage - formConfig state:', {
       formConfig,
-      isLoading,
+      isLoading: formConfigLoading,
       error,
       season: eventData.season,
       year: eventData.year,
     });
-  }, [formConfig, isLoading, error, eventData.season, eventData.year]);
+  }, [formConfig, formConfigLoading, error, eventData.season, eventData.year]);
 
-  if (isLoading) {
+  if (seasonEventsLoading || formConfigLoading) {
     return (
       <div className='card'>
         <div className='card-body text-center p-5'>
@@ -189,6 +246,7 @@ const TournamentRegistrationPage: React.FC = () => {
       registrationType='tournament'
       eventData={eventData}
       formConfig={effectiveConfig}
+      seasonEvent={matchedSeasonEvent || undefined}
       onSuccess={() => console.log('Tournament registration successful')}
     />
   );
@@ -196,8 +254,28 @@ const TournamentRegistrationPage: React.FC = () => {
 
 const TeamRegistrationPage: React.FC = () => {
   const { tryoutEvent } = useTryoutEvent();
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
 
-  const eventData: RegistrationWizardProps['eventData'] = tryoutEvent
+  // Find a matching season event for team
+  const matchedSeasonEvent = useMemo(() => {
+    if (!tryoutEvent || !seasonEvents.length) return null;
+
+    return seasonEvents.find(
+      (event: SeasonEvent) =>
+        (event.season.toLowerCase().includes('team') ||
+          event.season.toLowerCase().includes('tryout')) &&
+        event.year === tryoutEvent.year
+    );
+  }, [tryoutEvent, seasonEvents]);
+
+  const eventData = matchedSeasonEvent
+    ? {
+        season: matchedSeasonEvent.season,
+        year: matchedSeasonEvent.year,
+        eventId: matchedSeasonEvent.eventId,
+        tryoutId: tryoutEvent?.tryoutId,
+      }
+    : tryoutEvent
     ? {
         season: tryoutEvent.season,
         year: tryoutEvent.year,
@@ -210,23 +288,23 @@ const TeamRegistrationPage: React.FC = () => {
         eventId: 'default-team',
       };
 
-  const { formConfig, isLoading, error } = useFormConfig(
-    eventData.season!,
-    eventData.year,
-    'team'
-  );
+  const {
+    formConfig,
+    isLoading: formConfigLoading,
+    error,
+  } = useFormConfig(eventData.season!, eventData.year, 'team');
 
   useEffect(() => {
     console.log('🔄 TeamRegistrationPage - formConfig state:', {
       formConfig,
-      isLoading,
+      isLoading: formConfigLoading,
       error,
       season: eventData.season,
       year: eventData.year,
     });
-  }, [formConfig, isLoading, error, eventData.season, eventData.year]);
+  }, [formConfig, formConfigLoading, error, eventData.season, eventData.year]);
 
-  if (isLoading) {
+  if (seasonEventsLoading || formConfigLoading) {
     return (
       <div className='card'>
         <div className='card-body text-center p-5'>
@@ -268,6 +346,7 @@ const TeamRegistrationPage: React.FC = () => {
       registrationType='team'
       eventData={eventData}
       formConfig={effectiveConfig}
+      seasonEvent={matchedSeasonEvent || undefined}
       onSuccess={() => console.log('Team registration successful')}
     />
   );
@@ -275,8 +354,27 @@ const TeamRegistrationPage: React.FC = () => {
 
 const TrainingRegistrationPage: React.FC = () => {
   const { tryoutEvent } = useTryoutEvent();
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
 
-  const eventData: RegistrationWizardProps['eventData'] = tryoutEvent
+  // Find a matching season event for training
+  const matchedSeasonEvent = useMemo(() => {
+    if (!tryoutEvent || !seasonEvents.length) return null;
+
+    return seasonEvents.find(
+      (event: SeasonEvent) =>
+        event.season.toLowerCase().includes('training') &&
+        event.year === tryoutEvent.year
+    );
+  }, [tryoutEvent, seasonEvents]);
+
+  const eventData = matchedSeasonEvent
+    ? {
+        season: matchedSeasonEvent.season,
+        year: matchedSeasonEvent.year,
+        eventId: matchedSeasonEvent.eventId,
+        tryoutId: tryoutEvent?.tryoutId,
+      }
+    : tryoutEvent
     ? {
         season: tryoutEvent.season,
         year: tryoutEvent.year,
@@ -289,23 +387,23 @@ const TrainingRegistrationPage: React.FC = () => {
         eventId: 'default-training',
       };
 
-  const { formConfig, isLoading, error } = useFormConfig(
-    eventData.season!,
-    eventData.year,
-    'training'
-  );
+  const {
+    formConfig,
+    isLoading: formConfigLoading,
+    error,
+  } = useFormConfig(eventData.season!, eventData.year, 'training');
 
   useEffect(() => {
     console.log('🔄 TrainingRegistrationPage - formConfig state:', {
       formConfig,
-      isLoading,
+      isLoading: formConfigLoading,
       error,
       season: eventData.season,
       year: eventData.year,
     });
-  }, [formConfig, isLoading, error, eventData.season, eventData.year]);
+  }, [formConfig, formConfigLoading, error, eventData.season, eventData.year]);
 
-  if (isLoading) {
+  if (seasonEventsLoading || formConfigLoading) {
     return (
       <div className='card'>
         <div className='card-body text-center p-5'>
@@ -347,6 +445,7 @@ const TrainingRegistrationPage: React.FC = () => {
       registrationType='training'
       eventData={eventData}
       formConfig={effectiveConfig}
+      seasonEvent={matchedSeasonEvent || undefined}
       onSuccess={() => console.log('Training registration successful')}
     />
   );
@@ -354,15 +453,15 @@ const TrainingRegistrationPage: React.FC = () => {
 
 const GenericRegistrationPage: React.FC = () => {
   const { registrationType } = useParams();
+  const { seasonEvents, isLoading: seasonEventsLoading } = useSeasonEvents();
 
-  // Map unsupported types to supported ones
   const mapRegistrationType = (
     type: string
   ): 'player' | 'tournament' | 'training' => {
     switch (type) {
       case 'tryout':
       case 'team':
-        return 'tournament'; // Map tryout and team to tournament form
+        return 'tournament';
       case 'player':
       case 'tournament':
       case 'training':
@@ -374,41 +473,66 @@ const GenericRegistrationPage: React.FC = () => {
 
   const effectiveType = mapRegistrationType(registrationType || 'player');
 
-  const eventData = {
-    season: `Basketball ${
-      effectiveType.charAt(0).toUpperCase() + effectiveType.slice(1)
-    }`,
-    year: new Date().getFullYear(),
-    eventId: `default-${effectiveType}`,
-  };
+  // Find a matching season event
+  const matchedSeasonEvent = useMemo(() => {
+    if (!seasonEvents.length) return null;
 
-  const { formConfig, isLoading, error } = useFormConfig(
-    eventData.season,
-    eventData.year,
-    effectiveType
-  );
+    return seasonEvents.find((event: SeasonEvent) => {
+      const eventName = event.season.toLowerCase();
+      const searchTerm = effectiveType.toLowerCase();
+
+      return (
+        eventName.includes(searchTerm) ||
+        (searchTerm === 'training' && eventName.includes('camp')) ||
+        (searchTerm === 'tournament' &&
+          (eventName.includes('tournament') || eventName.includes('tryout')))
+      );
+    });
+  }, [seasonEvents, effectiveType]);
+
+  const eventData = matchedSeasonEvent
+    ? {
+        season: matchedSeasonEvent.season,
+        year: matchedSeasonEvent.year,
+        eventId: matchedSeasonEvent.eventId,
+      }
+    : {
+        season: `Basketball ${
+          effectiveType.charAt(0).toUpperCase() + effectiveType.slice(1)
+        }`,
+        year: new Date().getFullYear(),
+        eventId: `default-${effectiveType}`,
+      };
+
+  const {
+    formConfig,
+    isLoading: formConfigLoading,
+    error,
+  } = useFormConfig(eventData.season, eventData.year, effectiveType);
 
   useEffect(() => {
     console.log('🔄 GenericRegistrationPage - formConfig state:', {
       formConfig,
-      isLoading,
+      isLoading: formConfigLoading,
       error,
       season: eventData.season,
       year: eventData.year,
       originalType: registrationType,
       mappedType: effectiveType,
+      matchedSeasonEvent,
     });
   }, [
     formConfig,
-    isLoading,
+    formConfigLoading,
     error,
     eventData.season,
     eventData.year,
     registrationType,
     effectiveType,
+    matchedSeasonEvent,
   ]);
 
-  if (isLoading) {
+  if (seasonEventsLoading || formConfigLoading) {
     return (
       <div className='card'>
         <div className='card-body text-center p-5'>
@@ -453,6 +577,7 @@ const GenericRegistrationPage: React.FC = () => {
       registrationType={effectiveType}
       eventData={eventData}
       formConfig={effectiveConfig}
+      seasonEvent={matchedSeasonEvent || undefined}
       onSuccess={() => console.log(`${effectiveType} registration successful`)}
     />
   );

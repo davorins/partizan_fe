@@ -76,11 +76,11 @@ const PlayerRegistrationForm: React.FC<PlayerRegistrationFormProps> = ({
   const defaultSeasonEvent = useMemo(
     () =>
       seasonEvent || {
-        season: 'Partizan Team',
-        year: new Date().getFullYear(),
-        eventId: 'partizan-2026',
+        season: formConfig?.season || 'Partizan Team',
+        year: formConfig?.year || new Date().getFullYear(),
+        eventId: formConfig?.eventId || 'partizan-2026',
       },
-    [seasonEvent]
+    [seasonEvent, formConfig]
   );
 
   type RegistrationStep =

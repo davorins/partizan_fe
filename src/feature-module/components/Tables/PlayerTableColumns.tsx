@@ -159,7 +159,7 @@ const getFilteredPaymentStatus = (
   return matchingSeason?.paymentStatus || player.paymentStatus || 'N/A';
 };
 
-// UPDATED: Get compact seasons display with year grouping
+// Get compact seasons display with year grouping
 const getCompactSeasonsDisplay = (player: PlayerTableData): string => {
   if (!player.seasons || player.seasons.length === 0) {
     return player.season
@@ -176,43 +176,44 @@ const getCompactSeasonsDisplay = (player: PlayerTableData): string => {
       seasonsByYear[year] = [];
     }
 
-    // Use full season names but abbreviated for common terms
-    let seasonName = season.season;
-    if (seasonName.includes('Partizan Tryout')) {
-      seasonName = 'Select Tryout';
-    } else if (seasonName.includes('Partizan Team')) {
-      seasonName = 'Select Team';
-    } else if (seasonName.includes('Partizan')) {
-      seasonName = 'Select';
-    } else if (seasonName.includes('Tryout')) {
-      seasonName = seasonName.replace('Tryout', 'Try');
-    }
+    // Use the actual season name - no truncation
+    const seasonName = season.season;
 
-    seasonsByYear[year].push(seasonName);
+    // Only add if not already in the array for this year
+    if (!seasonsByYear[year].includes(seasonName)) {
+      seasonsByYear[year].push(seasonName);
+    }
   });
 
-  // Create compact display with year only shown once per group
-  const display = Object.keys(seasonsByYear)
-    .map((year) => {
-      const yearNum = parseInt(year);
-      const seasons = seasonsByYear[yearNum];
+  // Sort years in descending order (most recent first)
+  const sortedYears = Object.keys(seasonsByYear)
+    .map((year) => parseInt(year))
+    .sort((a, b) => b - a);
 
-      // Remove duplicates using Array.filter instead of Set
-      const uniqueSeasons: string[] = [];
-      seasons.forEach((season) => {
-        if (uniqueSeasons.indexOf(season) === -1) {
-          uniqueSeasons.push(season);
-        }
-      });
+  // Create compact display
+  const displayParts: string[] = [];
 
-      return `${uniqueSeasons.join('/')} ${yearNum}`;
-    })
-    .join(', ');
+  sortedYears.forEach((year) => {
+    const seasons = seasonsByYear[year];
 
-  return display || 'No Seasons';
+    if (seasons.length === 1) {
+      // Single season for this year - show full name
+      displayParts.push(`${seasons[0]} ${year}`);
+    } else if (seasons.length <= 3) {
+      // 2-3 seasons - show all with slashes
+      displayParts.push(`${seasons.join('/')} ${year}`);
+    } else {
+      // More than 3 seasons - show first 2 and count of others
+      displayParts.push(
+        `${seasons.slice(0, 2).join('/')}+${seasons.length - 2} ${year}`
+      );
+    }
+  });
+
+  return displayParts.join(', ') || 'No Seasons';
 };
 
-// UPDATED: Get payment status badge for seasons
+// Get payment status badge for seasons
 const getSeasonsPaymentStatus = (player: PlayerTableData): React.ReactNode => {
   if (!player.seasons || player.seasons.length === 0) {
     const status = getPlayerStatus(player);
@@ -270,7 +271,7 @@ const getSeasonsPaymentStatus = (player: PlayerTableData): React.ReactNode => {
   }
 };
 
-// UPDATED: Get seasons tooltip content for hover
+// Get seasons tooltip content for hover
 const getSeasonsTooltip = (player: PlayerTableData): string => {
   if (!player.seasons || player.seasons.length === 0) {
     return player.season
@@ -278,19 +279,41 @@ const getSeasonsTooltip = (player: PlayerTableData): string => {
       : 'No season data';
   }
 
-  return player.seasons
-    .map((season) => {
-      const paymentStatus =
-        season.paymentStatus || (season.paymentComplete ? 'paid' : 'pending');
-      const amount = season.amountPaid ? `$${season.amountPaid}` : '';
-      const date = season.registrationDate
-        ? `Registered: ${formatDate(season.registrationDate)}`
-        : '';
-      return `${season.season} ${season.year} (${paymentStatus}${
-        amount ? ` - ${amount}` : ''
-      })${date ? ` - ${date}` : ''}`;
+  // Group by year for better organization
+  const seasonsByYear: { [year: number]: typeof player.seasons } = {};
+
+  player.seasons.forEach((season) => {
+    const year = season.year;
+    if (!seasonsByYear[year]) {
+      seasonsByYear[year] = [];
+    }
+    seasonsByYear[year].push(season);
+  });
+
+  const sortedYears = Object.keys(seasonsByYear)
+    .map((year) => parseInt(year))
+    .sort((a, b) => b - a);
+
+  return sortedYears
+    .map((year) => {
+      const yearSeasons = seasonsByYear[year];
+      const yearHeader = `--- ${year} ---`;
+      const seasonDetails = yearSeasons
+        .map((season) => {
+          const paymentStatus =
+            season.paymentStatus ||
+            (season.paymentComplete ? 'paid' : 'pending');
+          const amount = season.amountPaid ? `$${season.amountPaid}` : '';
+          const date = season.registrationDate
+            ? ` (${formatDate(season.registrationDate)})`
+            : '';
+          return `  ${season.season}: ${paymentStatus}${amount}${date}`;
+        })
+        .join('\n');
+
+      return `${yearHeader}\n${seasonDetails}`;
     })
-    .join('\n');
+    .join('\n\n');
 };
 
 export const exportPlayersToPDF = <T extends PlayerTableData>(data: T[]) => {

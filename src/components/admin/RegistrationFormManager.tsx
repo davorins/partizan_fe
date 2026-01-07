@@ -932,6 +932,14 @@ const RegistrationFormManager: React.FC = () => {
                         <button
                           className='btn btn-sm btn-primary'
                           onClick={() => {
+                            // Check if there are seasons available
+                            if (seasonEvents.length === 0) {
+                              alert(
+                                'Please create a season first before creating a tryout'
+                              );
+                              return;
+                            }
+
                             const newTryoutKey = `new-tryout-${Date.now()}`;
                             const newTryoutConfig: TryoutSpecificConfig = {
                               tryoutName: '',
@@ -950,6 +958,8 @@ const RegistrationFormManager: React.FC = () => {
                                 'No refunds after tryout registration deadline',
                               tryoutFee: 50,
                               isActive: false,
+                              eventId: '',
+                              season: '',
                             };
 
                             setTryoutConfigs((prev) => ({
@@ -958,11 +968,18 @@ const RegistrationFormManager: React.FC = () => {
                             }));
                             setSelectedTryoutKey(newTryoutKey);
                           }}
+                          disabled={seasonEvents.length === 0}
                         >
                           <i className='ti ti-plus me-1'></i>
                           New
                         </button>
                       </div>
+                      {seasonEvents.length === 0 && (
+                        <small className='text-danger'>
+                          <i className='ti ti-alert-triangle me-1'></i>
+                          Create a season first
+                        </small>
+                      )}
                     </Card.Header>
                     <Card.Body>
                       {Object.keys(tryoutConfigs).length === 0 ? (
@@ -1021,6 +1038,25 @@ const RegistrationFormManager: React.FC = () => {
                     <TryoutFormConfig
                       onTryoutConfigUpdate={handleTryoutConfigUpdate}
                       initialConfig={tryoutConfigs[selectedTryoutKey]}
+                      isEditing={!!tryoutConfigs[selectedTryoutKey]?.tryoutName}
+                      seasonEvents={seasonEvents}
+                      selectedSeason={seasonEvents.find(
+                        (season) =>
+                          season.eventId ===
+                          tryoutConfigs[selectedTryoutKey]?.eventId
+                      )}
+                      onSeasonSelect={(season) => {
+                        // Update the selected tryout config with season info
+                        setTryoutConfigs((prev) => ({
+                          ...prev,
+                          [selectedTryoutKey]: {
+                            ...prev[selectedTryoutKey],
+                            eventId: season.eventId,
+                            season: season.season,
+                            tryoutYear: season.year,
+                          },
+                        }));
+                      }}
                     />
                   ) : (
                     <Card>
@@ -1032,7 +1068,21 @@ const RegistrationFormManager: React.FC = () => {
                             ? 'Create a new tryout to get started'
                             : 'Select a tryout from the list to configure'}
                         </p>
-                        {Object.keys(tryoutConfigs).length === 0 && (
+                        {seasonEvents.length === 0 ? (
+                          <div className='alert alert-warning'>
+                            <i className='ti ti-alert-triangle me-2'></i>
+                            You need to create a season first
+                            <div className='mt-2'>
+                              <button
+                                className='btn btn-warning'
+                                onClick={() => setActiveTab('seasons')}
+                              >
+                                <i className='ti ti-calendar-plus me-2'></i>
+                                Go to Seasons
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
                           <button
                             className='btn btn-primary mt-3'
                             onClick={() => {
@@ -1054,6 +1104,8 @@ const RegistrationFormManager: React.FC = () => {
                                   'No refunds after tryout registration deadline',
                                 tryoutFee: 50,
                                 isActive: false,
+                                eventId: '',
+                                season: '',
                               };
 
                               setTryoutConfigs((prev) => ({

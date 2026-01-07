@@ -442,6 +442,8 @@ export interface TryoutSpecificConfig {
   tryoutName: string;
   tryoutYear: number;
   displayName?: string;
+  eventId?: string;
+  season?: string;
   registrationDeadline: string;
   tryoutDates: string[];
   locations: string[];

@@ -1,7 +1,9 @@
+// src/components/admin/TryoutFormConfig.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import {
   RegistrationFormConfig,
   TryoutSpecificConfig,
+  SeasonEvent,
 } from '../../types/registration-types';
 
 interface TryoutFormConfigProps {
@@ -11,12 +13,19 @@ interface TryoutFormConfigProps {
   ) => void;
   initialConfig?: TryoutSpecificConfig;
   isEditing?: boolean;
+  // Add season events for selection
+  seasonEvents: SeasonEvent[];
+  selectedSeason?: SeasonEvent | null;
+  onSeasonSelect?: (season: SeasonEvent) => void;
 }
 
 const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
   onTryoutConfigUpdate,
   initialConfig,
   isEditing = false,
+  seasonEvents = [],
+  selectedSeason = null,
+  onSeasonSelect,
 }) => {
   const [tryoutConfig, setTryoutConfig] = useState<TryoutSpecificConfig>(
     () =>
@@ -36,6 +45,8 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
         refundPolicy: 'No refunds after tryout registration deadline',
         tryoutFee: 50,
         isActive: false,
+        eventId: '',
+        season: '',
       }
   );
 
@@ -43,6 +54,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
   const [newLocation, setNewLocation] = useState('');
   const [originalTryoutName, setOriginalTryoutName] = useState<string>('');
   const [nameError, setNameError] = useState<string>('');
+  const [seasonError, setSeasonError] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<
     'idle' | 'saving' | 'success' | 'error'
@@ -57,6 +69,20 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
       initialConfigRef.current = JSON.parse(JSON.stringify(initialConfig));
     }
   }, [initialConfig]);
+
+  // Auto-fill tryout name based on season
+  useEffect(() => {
+    if (selectedSeason && !isEditing) {
+      const suggestedName = `${selectedSeason.season} Tryout ${selectedSeason.year}`;
+      updateTryoutConfig({
+        tryoutName: suggestedName,
+        tryoutYear: selectedSeason.year,
+        displayName: `${selectedSeason.season} Tryout ${selectedSeason.year}`,
+        eventId: selectedSeason.eventId,
+        season: selectedSeason.season,
+      });
+    }
+  }, [selectedSeason, isEditing]);
 
   // Track changes
   useEffect(() => {
@@ -74,6 +100,9 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
     if (updates.tryoutName !== undefined) {
       setNameError('');
     }
+    if (updates.eventId !== undefined) {
+      setSeasonError('');
+    }
   };
 
   const validateTryoutName = (name: string): boolean => {
@@ -89,10 +118,40 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
     return true;
   };
 
+  const validateSeason = (): boolean => {
+    if (!tryoutConfig.eventId || !tryoutConfig.season) {
+      setSeasonError('Please select a season first');
+      return false;
+    }
+    setSeasonError('');
+    return true;
+  };
+
   const handleTryoutNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     validateTryoutName(newName);
     updateTryoutConfig({ tryoutName: newName });
+  };
+
+  const handleSeasonSelect = (season: SeasonEvent) => {
+    if (onSeasonSelect) {
+      onSeasonSelect(season);
+    }
+
+    updateTryoutConfig({
+      eventId: season.eventId,
+      season: season.season,
+      tryoutYear: season.year,
+    });
+
+    // Auto-generate tryout name if not editing
+    if (!isEditing && !tryoutConfig.tryoutName) {
+      const suggestedName = `${season.season} Tryout ${season.year}`;
+      updateTryoutConfig({
+        tryoutName: suggestedName,
+        displayName: `${season.season} Tryout ${season.year}`,
+      });
+    }
   };
 
   const addDate = () => {
@@ -126,6 +185,11 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
   };
 
   const handleSave = async () => {
+    // Validate season first
+    if (!validateSeason()) {
+      return;
+    }
+
     // Validate required fields
     if (!validateTryoutName(tryoutConfig.tryoutName)) {
       return;
@@ -168,6 +232,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
     }
     setHasChanges(false);
     setNameError('');
+    setSeasonError('');
   };
 
   return (
@@ -221,6 +286,12 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   You have unsaved changes
                 </span>
               )}
+              {seasonError && (
+                <span className='text-danger ms-3'>
+                  <i className='ti ti-alert-triangle me-1'></i>
+                  {seasonError}
+                </span>
+              )}
             </div>
             <div className='d-flex gap-2'>
               {hasChanges && (
@@ -259,6 +330,104 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
         </div>
       </div>
 
+      {/* Season Selection Card - Only show when not editing */}
+      {!isEditing && (
+        <div className='card mb-4'>
+          <div className='card-header'>
+            <h5>Link to Season</h5>
+            <small className='text-muted'>
+              Tryouts must be linked to an existing season
+            </small>
+          </div>
+          <div className='card-body'>
+            <div className='mb-3'>
+              <label className='form-label'>Select Season *</label>
+              {seasonEvents.length === 0 ? (
+                <div className='alert alert-warning'>
+                  <i className='ti ti-alert-triangle me-2'></i>
+                  No seasons found. Please create a season first.
+                  <div className='mt-2'>
+                    <a
+                      href='/admin/seasons'
+                      className='btn btn-sm btn-primary'
+                      target='_blank'
+                    >
+                      <i className='ti ti-calendar-plus me-1'></i>
+                      Create Season
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className='list-group'>
+                  {seasonEvents.map((season) => (
+                    <button
+                      key={season.eventId}
+                      type='button'
+                      className={`list-group-item list-group-item-action ${
+                        selectedSeason?.eventId === season.eventId
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={() => handleSeasonSelect(season)}
+                    >
+                      <div className='d-flex w-100 justify-content-between'>
+                        <h6 className='text-black mb-1'>{season.season}</h6>
+                        <small className='text-black'>{season.year}</small>
+                      </div>
+                      <small className='text-muted'>
+                        Event ID: {season.eventId}
+                      </small>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {seasonError && (
+                <div className='invalid-feedback d-block'>{seasonError}</div>
+              )}
+            </div>
+
+            {selectedSeason && (
+              <div className='alert alert-info'>
+                <i className='ti ti-link me-2'></i>
+                Linked to:{' '}
+                <strong>
+                  {selectedSeason.season} {selectedSeason.year}
+                </strong>
+                <div className='mt-1'>
+                  <small>Event ID: {selectedSeason.eventId}</small>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Show season info when editing */}
+      {isEditing && tryoutConfig.eventId && tryoutConfig.season && (
+        <div className='card mb-4'>
+          <div className='card-header'>
+            <h5>Linked Season</h5>
+          </div>
+          <div className='card-body'>
+            <div className='alert alert-info'>
+              <i className='ti ti-link me-2'></i>
+              This tryout is linked to:{' '}
+              <strong>
+                {tryoutConfig.season} {tryoutConfig.tryoutYear}
+              </strong>
+              <div className='mt-1'>
+                <small>Event ID: {tryoutConfig.eventId}</small>
+              </div>
+              <div className='mt-1'>
+                <small className='text-muted'>
+                  Season cannot be changed after creation
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Tryout Information Card */}
       <div className='card mb-4'>
         <div className='card-header'>
@@ -275,7 +444,8 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   value={tryoutConfig.tryoutName}
                   onChange={handleTryoutNameChange}
                   onBlur={(e) => validateTryoutName(e.target.value)}
-                  placeholder='e.g., Spring Tryouts 2025, Fall Season Tryouts'
+                  placeholder='e.g., Spring Tryouts 2025'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 {nameError ? (
                   <div className='invalid-feedback'>{nameError}</div>
@@ -302,9 +472,10 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   }
                   min='2024'
                   max='2030'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <small className='form-text text-muted'>
-                  Year the tryout will take place
+                  Year the tryout will take place (auto-filled from season)
                 </small>
               </div>
             </div>
@@ -324,6 +495,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                     })
                   }
                   placeholder='e.g., Partizan Spring Tryouts'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <small className='form-text text-muted'>
                   User-friendly name shown to registrants
@@ -346,6 +518,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                     }
                     min='0'
                     step='1'
+                    disabled={!tryoutConfig.eventId && !isEditing}
                   />
                 </div>
                 <small className='form-text text-muted'>Price per player</small>
@@ -374,6 +547,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       registrationDeadline: e.target.value,
                     })
                   }
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <small className='form-text text-muted'>
                   Last day to register for tryouts
@@ -391,6 +565,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       paymentDeadline: e.target.value,
                     })
                   }
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <small className='form-text text-muted'>
                   Last day to complete payment
@@ -416,6 +591,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       requiresRoster: e.target.checked,
                     })
                   }
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <label className='form-check-label'>Requires Roster Info</label>
                 <small className='form-text text-muted d-block'>
@@ -433,6 +609,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       requiresInsurance: e.target.checked,
                     })
                   }
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <label className='form-check-label'>Requires Insurance</label>
                 <small className='form-text text-muted d-block'>
@@ -452,6 +629,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                     })
                   }
                   placeholder='Enter refund policy details...'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
               </div>
             </div>
@@ -474,11 +652,13 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   value={newDate}
                   onChange={(e) => setNewDate(e.target.value)}
                   placeholder='Add tryout date'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <button
                   className='btn btn-outline-primary'
                   type='button'
                   onClick={addDate}
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 >
                   Add
                 </button>
@@ -495,6 +675,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       <button
                         className='btn btn-sm btn-outline-danger'
                         onClick={() => removeDate(index)}
+                        disabled={!tryoutConfig.eventId && !isEditing}
                       >
                         <i className='ti ti-trash'></i>
                       </button>
@@ -521,11 +702,13 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   value={newLocation}
                   onChange={(e) => setNewLocation(e.target.value)}
                   placeholder='Add location (e.g., Bothell High School Gym)'
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 />
                 <button
                   className='btn btn-outline-primary'
                   type='button'
                   onClick={addLocation}
+                  disabled={!tryoutConfig.eventId && !isEditing}
                 >
                   Add
                 </button>
@@ -542,6 +725,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       <button
                         className='btn btn-sm btn-outline-danger'
                         onClick={() => removeLocation(index)}
+                        disabled={!tryoutConfig.eventId && !isEditing}
                       >
                         <i className='ti ti-trash'></i>
                       </button>
@@ -579,6 +763,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                     }
                     min='0'
                     step='1'
+                    disabled={!tryoutConfig.eventId && !isEditing}
                   />
                 </div>
                 <small className='form-text text-muted'>
@@ -601,6 +786,7 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                       })
                     }
                     style={{ transform: 'scale(1.2)' }}
+                    disabled={!tryoutConfig.eventId && !isEditing}
                   />
                   <label className='form-check-label fw-bold'>
                     {tryoutConfig.requiresPayment

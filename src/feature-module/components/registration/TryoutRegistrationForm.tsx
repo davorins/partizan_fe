@@ -1164,7 +1164,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
         <p>
           {(currentStep as string) === 'success'
             ? 'Your players have been successfully registered for tryouts!'
-            : `Register players for the ${effectiveTryoutConfig.tryoutName} ${effectiveTryoutConfig.tryoutYear} tryout.`}
+            : `Register players for the ${effectiveTryoutConfig.tryoutName} tryout.`}
         </p>
       </div>
 

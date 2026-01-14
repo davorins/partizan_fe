@@ -4,6 +4,7 @@ import {
   RegistrationFormConfig,
   TournamentSpecificConfig,
 } from '../../types/registration-types';
+import RichTextEditor from '../common/RichTextEditor';
 
 interface TournamentFormConfigProps {
   onConfigUpdate?: (config: RegistrationFormConfig) => void;
@@ -71,6 +72,10 @@ const TournamentFormConfig: React.FC<TournamentFormConfigProps> = ({
   >('idle');
   const [hasChanges, setHasChanges] = useState(false);
   const initialConfigRef = useRef<TournamentSpecificConfig | null>(null);
+
+  const handleDescriptionChange = (html: string) => {
+    updateTournamentConfig({ description: html });
+  };
 
   // Track original tournament name and setup initial config ref
   useEffect(() => {
@@ -352,6 +357,57 @@ const TournamentFormConfig: React.FC<TournamentFormConfigProps> = ({
                   </>
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='card mb-4'>
+        <div className='card-header'>
+          <h5>Tournament Description</h5>
+          <small className='text-muted'>
+            This description will appear above the tournament registration form
+          </small>
+        </div>
+        <div className='card-body'>
+          <div className='mb-3'>
+            <label className='form-label'>Tournament Description *</label>
+            <RichTextEditor
+              value={tournamentConfig.description || ''}
+              onChange={handleDescriptionChange}
+              placeholder='Enter a detailed description of this tournament...'
+              showPreview={true}
+            />
+            <small className='form-text text-muted'>
+              Include details like schedule, location, format, rules, etc.
+            </small>
+          </div>
+
+          {/* Enhanced Preview Section */}
+          <div className='alert alert-info mt-4'>
+            <i className='ti ti-info-circle me-2'></i>
+            <strong>How it will appear to parents:</strong>
+            <div className='mt-3 description-preview p-4 bg-white rounded border'>
+              <div className='d-flex align-items-center mb-3'>
+                <i className='ti ti-trophy text-primary me-2'></i>
+                <h5 className='mb-0 text-primary'>
+                  {tournamentConfig.tournamentName || 'Tournament'}{' '}
+                  {tournamentConfig.tournamentYear}
+                </h5>
+              </div>
+              <div
+                className='description-content'
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  color: '#333',
+                }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    tournamentConfig.description ||
+                    '<p class="text-muted">No description set yet</p>',
+                }}
+              />
             </div>
           </div>
         </div>

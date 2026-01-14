@@ -32,6 +32,89 @@ const FormPreview: React.FC<FormPreviewProps> = ({
   const isTryout = isTryoutView || previewType === 'tryout';
   const isTraining = !isTournament && !isTryout;
 
+  // Helper function to get description based on type
+  const getDescription = () => {
+    if (isTournament && tournamentConfig) {
+      return tournamentConfig.description || '';
+    }
+    if (isTryout && tryoutConfig) {
+      return tryoutConfig.description || '';
+    }
+    if (isTraining && formConfig) {
+      return formConfig.description || '';
+    }
+    return '';
+  };
+
+  // Helper function to get title based on type
+  const getTitle = () => {
+    if (isTournament && tournamentConfig) {
+      return `${tournamentConfig.tournamentName || 'Tournament'} ${
+        tournamentConfig.tournamentYear || ''
+      }`;
+    }
+    if (isTryout && tryoutConfig) {
+      return `${tryoutConfig.tryoutName || 'Tryout'} ${
+        tryoutConfig.tryoutYear || ''
+      }`;
+    }
+    if (isTraining && seasonEvent) {
+      return `${seasonEvent.season || ''} ${seasonEvent.year || ''}`;
+    }
+    return '';
+  };
+
+  // Helper function to get icon based on type
+  const getIcon = () => {
+    if (isTournament) return 'ti ti-trophy';
+    if (isTryout) return 'ti ti-target-arrow';
+    return 'ti ti-info-circle';
+  };
+
+  // Render description section
+  const renderDescription = () => {
+    const description = getDescription();
+    const title = getTitle();
+    const icon = getIcon();
+
+    if (!description) {
+      return (
+        <div className='card mb-4'>
+          <div className='card-body text-center p-5'>
+            <i className='ti ti-text-wrap-off fs-1 text-muted mb-3'></i>
+            <h5>No Description Set</h5>
+            <p className='text-muted'>
+              {isTournament
+                ? 'Add a tournament description in the configuration to see it here.'
+                : isTryout
+                ? 'Add a tryout description in the configuration to see it here.'
+                : 'Add a training description in the configuration to see it here.'}
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className='card mb-4'>
+        <div className='card-header bg-light'>
+          <div className='d-flex align-items-center'>
+            <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
+              <i className={`${icon} fs-16`} />
+            </span>
+            <h4 className='text-dark mb-0'>{title}</h4>
+          </div>
+        </div>
+        <div className='card-body'>
+          <div
+            className='rich-text-content'
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        </div>
+      </div>
+    );
+  };
+
   if (!formConfig && !tournamentConfig && !tryoutConfig) {
     return (
       <Card>
@@ -85,6 +168,9 @@ const FormPreview: React.FC<FormPreviewProps> = ({
           </h4>
         </Card.Header>
         <Card.Body>
+          {/* Show Description First */}
+          {renderDescription()}
+
           {/* Form Status */}
           <div className='mb-4'>
             <div className='d-flex justify-content-between align-items-center mb-3'>

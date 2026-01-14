@@ -5,6 +5,7 @@ import {
   TryoutSpecificConfig,
   SeasonEvent,
 } from '../../types/registration-types';
+import RichTextEditor from '../common/RichTextEditor';
 
 interface TryoutFormConfigProps {
   onTryoutConfigUpdate: (
@@ -61,6 +62,10 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
   >('idle');
   const [hasChanges, setHasChanges] = useState(false);
   const initialConfigRef = useRef<TryoutSpecificConfig | null>(null);
+
+  const handleDescriptionChange = (html: string) => {
+    updateTryoutConfig({ description: html });
+  };
 
   useEffect(() => {
     if (initialConfig) {
@@ -325,6 +330,57 @@ const TryoutFormConfig: React.FC<TryoutFormConfigProps> = ({
                   </>
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='card mb-4'>
+        <div className='card-header'>
+          <h5>Tryout Description</h5>
+          <small className='text-muted'>
+            This description will appear above the tryout registration form
+          </small>
+        </div>
+        <div className='card-body'>
+          <div className='mb-3'>
+            <label className='form-label'>Tryout Description *</label>
+            <RichTextEditor
+              value={tryoutConfig.description || ''}
+              onChange={handleDescriptionChange}
+              placeholder='Enter a detailed description of this tryout...'
+              showPreview={true}
+            />
+            <small className='form-text text-muted'>
+              Include details like dates, times, location, what to bring, etc.
+            </small>
+          </div>
+
+          {/* Enhanced Preview Section */}
+          <div className='alert alert-info mt-4'>
+            <i className='ti ti-info-circle me-2'></i>
+            <strong>How it will appear to parents:</strong>
+            <div className='mt-3 description-preview p-4 bg-white rounded border'>
+              <div className='d-flex align-items-center mb-3'>
+                <i className='ti ti-target-arrow text-primary me-2'></i>
+                <h5 className='mb-0 text-primary'>
+                  {tryoutConfig.tryoutName || 'Tryout'}{' '}
+                  {tryoutConfig.tryoutYear}
+                </h5>
+              </div>
+              <div
+                className='description-content'
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  color: '#333',
+                }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    tryoutConfig.description ||
+                    '<p class="text-muted">No description set yet</p>',
+                }}
+              />
             </div>
           </div>
         </div>

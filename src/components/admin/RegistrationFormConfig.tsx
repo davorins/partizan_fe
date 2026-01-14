@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Badge } from 'react-bootstrap';
 import {
   RegistrationFormConfig as RegistrationFormConfigType,
   SeasonEvent,
   PricingPackage,
 } from '../../types/registration-types';
+import RichTextEditor from '../common/RichTextEditor';
 
 interface RegistrationFormConfigProps {
   seasonEvent: SeasonEvent;
@@ -16,87 +18,78 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
   onConfigUpdate,
   initialConfig,
 }) => {
-  const [config, setConfig] = useState<RegistrationFormConfigType>(
-    initialConfig || {
-      isActive: false,
-      requiresPayment: true,
-      requiresQualification: false,
-      pricing: {
-        basePrice: 0,
-        packages: [],
-      },
-    }
-  );
+  const defaultConfig: RegistrationFormConfigType = {
+    isActive: false,
+    requiresPayment: true,
+    requiresQualification: false,
+    pricing: {
+      basePrice: 0,
+      packages: [],
+    },
+    description: '',
+  };
 
+  const [config, setConfig] =
+    useState<RegistrationFormConfigType>(defaultConfig);
   const [newPackage, setNewPackage] = useState<Omit<PricingPackage, 'id'>>({
     name: '',
     price: 0,
     description: '',
   });
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Debug: Log initial config
+  const handleDescriptionChange = (html: string) => {
+    updateConfig({ description: html });
+  };
+
   useEffect(() => {
-    console.log('🎯 RegistrationFormConfig mounted with:', {
-      seasonEvent,
+    console.log('📥 Received initialConfig:', {
       initialConfig,
-      currentConfig: config,
-      packages: config.pricing.packages,
+      seasonEvent,
+      hasPricing: !!initialConfig?.pricing,
+      basePrice: initialConfig?.pricing?.basePrice,
+      isActive: initialConfig?.isActive,
     });
-  }, []);
 
-  // Debug: Log when initialConfig changes
-  useEffect(() => {
     if (initialConfig) {
-      console.log('🔄 initialConfig changed:', {
-        fromParent: initialConfig,
-        currentState: config,
-        packages: initialConfig.pricing?.packages,
-        packagesCount: initialConfig.pricing?.packages?.length,
-      });
+      const loadedConfig: RegistrationFormConfigType = {
+        isActive: initialConfig.isActive ?? defaultConfig.isActive,
+        requiresPayment:
+          initialConfig.requiresPayment ?? defaultConfig.requiresPayment,
+        requiresQualification:
+          initialConfig.requiresQualification ??
+          defaultConfig.requiresQualification,
+        description: initialConfig.description || '',
+        pricing: {
+          basePrice:
+            initialConfig.pricing?.basePrice ?? defaultConfig.pricing.basePrice,
+          packages:
+            initialConfig.pricing?.packages?.map((pkg) => ({
+              id: pkg.id || Date.now().toString(),
+              name: pkg.name || '',
+              price: pkg.price || 0,
+              description: pkg.description || '',
+            })) || [],
+        },
+      };
+
+      console.log('✅ Loaded config:', loadedConfig);
+      setConfig(loadedConfig);
+      setHasUnsavedChanges(false);
+    } else {
+      console.log('🆕 No initial config, using default');
+      setConfig(defaultConfig);
     }
-  }, [initialConfig]);
+  }, [initialConfig, seasonEvent]);
 
-  const previousConfigRef = useRef<string>('');
-  const isInitialMount = useRef(true);
-
-  useEffect(() => {
-    const currentConfigString = JSON.stringify(config);
-    console.log('🔄 Config state changed:', {
-      config,
-      packages: config.pricing.packages,
-      stringified: currentConfigString,
-      previous: previousConfigRef.current,
-      isInitial: isInitialMount.current,
+  const updateConfig = (updates: Partial<RegistrationFormConfigType>) => {
+    setConfig((prev) => {
+      const newConfig = { ...prev, ...updates };
+      setHasUnsavedChanges(true);
+      return newConfig;
     });
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      previousConfigRef.current = currentConfigString;
-      return;
-    }
-
-    if (previousConfigRef.current !== currentConfigString) {
-      console.log('📤 Calling onConfigUpdate with:', {
-        ...config,
-        packages: config.pricing.packages,
-      });
-      previousConfigRef.current = currentConfigString;
-      onConfigUpdate(config);
-    }
-  }, [config, onConfigUpdate]);
-
-  useEffect(() => {
-    if (
-      initialConfig &&
-      JSON.stringify(initialConfig) !== JSON.stringify(config)
-    ) {
-      console.log('📥 Updating from initialConfig:', {
-        initialConfig,
-        packages: initialConfig.pricing?.packages,
-      });
-      setConfig(initialConfig);
-    }
-  }, [initialConfig]);
+  };
 
   const handleAddPackage = () => {
     if (newPackage.name && newPackage.price > 0) {
@@ -104,8 +97,6 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
         ...newPackage,
         id: Date.now().toString(),
       };
-
-      console.log('➕ Adding package:', packageWithId);
 
       setConfig((prev) => {
         const newConfig = {
@@ -115,10 +106,7 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
             packages: [...prev.pricing.packages, packageWithId],
           },
         };
-        console.log('🆕 New config after adding package:', {
-          ...newConfig,
-          packages: newConfig.pricing.packages,
-        });
+        setHasUnsavedChanges(true);
         return newConfig;
       });
       setNewPackage({ name: '', price: 0, description: '' });
@@ -126,7 +114,6 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
   };
 
   const handleRemovePackage = (packageId: string) => {
-    console.log('🗑️ Removing package:', packageId);
     setConfig((prev) => {
       const newConfig = {
         ...prev,
@@ -135,10 +122,7 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
           packages: prev.pricing.packages.filter((pkg) => pkg.id !== packageId),
         },
       };
-      console.log('🆕 New config after removing package:', {
-        ...newConfig,
-        packages: newConfig.pricing.packages,
-      });
+      setHasUnsavedChanges(true);
       return newConfig;
     });
   };
@@ -160,125 +144,145 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
             packages,
           },
         };
-        console.log('🔄 Packages reordered:', newConfig.pricing.packages);
+        setHasUnsavedChanges(true);
         return newConfig;
       });
     }
   };
 
-  const updateConfig = (updates: Partial<RegistrationFormConfigType>) => {
-    console.log('⚙️ Updating config:', updates);
-    setConfig((prev) => {
-      const newConfig = { ...prev, ...updates };
-      console.log('🆕 Config after update:', {
-        ...newConfig,
-        packages: newConfig.pricing.packages,
+  const handleSave = async () => {
+    if (!hasUnsavedChanges) return;
+
+    try {
+      setIsSaving(true);
+      console.log('💾 Saving configuration with description:', {
+        config,
+        description: config.description,
+        descriptionLength: config.description?.length,
       });
-      return newConfig;
-    });
+
+      const configToSave: RegistrationFormConfigType = {
+        ...config,
+        description: config.description || '',
+        pricing: {
+          basePrice: config.pricing.basePrice || 0,
+          packages: config.pricing.packages.map((pkg) => ({
+            id: pkg.id || Date.now().toString(),
+            name: pkg.name,
+            price: pkg.price,
+            description: pkg.description || '',
+          })),
+        },
+      };
+
+      await onConfigUpdate(configToSave);
+      setHasUnsavedChanges(false);
+      console.log('✅ Save successful');
+    } catch (error) {
+      console.error('❌ Failed to save config:', error);
+      alert('Failed to save configuration. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className='card'>
-      <div className='card-header'>
-        <h4>
-          Registration Form Configuration - {seasonEvent.season}{' '}
-          {seasonEvent.year}
-        </h4>
-      </div>
       <div className='card-body'>
-        {/* Enhanced Debug Info */}
-        <div className='alert alert-info mb-3'>
-          <div className='d-flex justify-content-between align-items-center'>
-            <div>
-              <strong>Debug Info:</strong>
-              <span className='ms-2'>
-                {config.pricing.packages.length} packages configured
-              </span>
-            </div>
+        <div className='d-flex justify-content-between align-items-center mb-4'>
+          <div>
+            <h4 className='mb-1'>
+              Training Configuration - {seasonEvent.season} {seasonEvent.year}
+            </h4>
+            <p className='text-muted mb-0'>
+              {initialConfig
+                ? 'Edit existing configuration'
+                : 'Create new configuration'}
+            </p>
+          </div>
+          <div className='d-flex align-items-center'>
+            {hasUnsavedChanges && (
+              <Badge bg='warning' className='me-3'>
+                <i className='ti ti-alert-circle me-1'></i>
+                Unsaved Changes
+              </Badge>
+            )}
             <button
-              className='btn btn-sm btn-outline-info'
-              onClick={() => {
-                console.log('🐛 Current config state:', {
-                  config,
-                  packages: config.pricing.packages,
-                  seasonEvent,
-                  initialConfig,
-                });
-              }}
+              className='btn btn-primary'
+              onClick={handleSave}
+              disabled={!hasUnsavedChanges || isSaving}
             >
-              Log State
+              {isSaving ? (
+                <>
+                  <span
+                    className='spinner-border spinner-border-sm me-2'
+                    role='status'
+                    aria-hidden='true'
+                  ></span>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <i className='ti ti-device-floppy me-2'></i>
+                  Save Configuration
+                </>
+              )}
             </button>
           </div>
-          {config.pricing.packages.length > 0 && (
-            <div className='mt-2'>
-              <small>
-                Packages:{' '}
-                {config.pricing.packages
-                  .map((p) => `${p.name} ($${p.price})`)
-                  .join(', ')}
+        </div>
+
+        <div className='card mb-4'>
+          <div className='card-header'>
+            <h5 className='mb-0'>Form Description</h5>
+            <small className='text-muted'>
+              This description will appear above the registration form for
+              parents
+            </small>
+          </div>
+          <div className='card-body'>
+            <div className='mb-3'>
+              <label className='form-label'>Form Description *</label>
+              <RichTextEditor
+                value={config.description || ''}
+                onChange={handleDescriptionChange}
+                placeholder='Enter a detailed description of this training program...'
+                showPreview={true}
+              />
+              <small className='form-text text-muted'>
+                Use markdown formatting or toolbar buttons to style your content
               </small>
             </div>
-          )}
+
+            {/* Enhanced Preview Section */}
+            <div className='alert alert-info mt-4'>
+              <i className='ti ti-info-circle me-2'></i>
+              <strong>How it will appear to parents:</strong>
+              <div className='mt-3 description-preview p-4 bg-white rounded border'>
+                <div className='d-flex align-items-center mb-3'>
+                  <i className='ti ti-info-circle text-primary me-2'></i>
+                  <h5 className='mb-0 text-primary'>
+                    {seasonEvent.season} {seasonEvent.year}
+                  </h5>
+                </div>
+                <div
+                  className='description-content'
+                  style={{
+                    fontSize: '16px',
+                    lineHeight: '1.6',
+                    color: '#333',
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      config.description ||
+                      '<p class="text-muted">No description set yet</p>',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Status Indicators */}
         <div className='row mb-4'>
-          <div className='col-md-4'>
-            <div className='card border-0 bg-light'>
-              <div className='card-body text-center'>
-                <div
-                  className={`fs-2 ${
-                    config.isActive ? 'text-success' : 'text-secondary'
-                  }`}
-                >
-                  <i className={`ti ti-${config.isActive ? 'check' : 'x'}`}></i>
-                </div>
-                <div>Form {config.isActive ? 'Active' : 'Inactive'}</div>
-              </div>
-            </div>
-          </div>
-          <div className='col-md-4'>
-            <div className='card border-0 bg-light'>
-              <div className='card-body text-center'>
-                <div
-                  className={`fs-2 ${
-                    config.requiresPayment ? 'text-warning' : 'text-success'
-                  }`}
-                >
-                  <i className='ti ti-currency-dollar'></i>
-                </div>
-                <div>
-                  {config.requiresPayment ? 'Payment Required' : 'Free'}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='col-md-4'>
-            <div className='card border-0 bg-light'>
-              <div className='card-body text-center'>
-                <div
-                  className={`fs-2 ${
-                    config.requiresQualification ? 'text-info' : 'text-success'
-                  }`}
-                >
-                  <i
-                    className={`ti ti-${
-                      config.requiresQualification ? 'lock' : 'world'
-                    }`}
-                  ></i>
-                </div>
-                <div>
-                  {config.requiresQualification
-                    ? 'Qualified Only'
-                    : 'Open to All'}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className='row'>
           <div className='col-md-6'>
             <div className='form-check form-switch mb-3'>
               <input
@@ -315,7 +319,7 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
           </div>
         </div>
 
-        <div className='row'>
+        <div className='row mb-4'>
           <div className='col-md-6'>
             <div className='form-check form-switch mb-3'>
               <input
@@ -363,30 +367,28 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
           </div>
         </div>
 
-        {/* Pricing Packages */}
-        <div className='card mt-4'>
+        <div className='card'>
           <div className='card-header'>
             <h5 className='mb-0'>Pricing Packages</h5>
             <small className='text-muted'>
-              Create different pricing options for users to choose from
+              Add optional pricing packages for users to choose from
             </small>
           </div>
           <div className='card-body'>
-            {/* Add New Package */}
             <div className='row g-3 mb-4 p-3 bg-light rounded'>
-              <div className='col-md-3'>
+              <div className='col-md-4'>
                 <label className='form-label'>Package Name *</label>
                 <input
                   type='text'
                   className='form-control'
-                  placeholder='e.g., 2x/Week, Basic, Premium'
+                  placeholder='e.g., Premium Package, Basic Plan'
                   value={newPackage.name}
                   onChange={(e) =>
                     setNewPackage((prev) => ({ ...prev, name: e.target.value }))
                   }
                 />
               </div>
-              <div className='col-md-2'>
+              <div className='col-md-3'>
                 <label className='form-label'>Price *</label>
                 <div className='input-group'>
                   <span className='input-group-text'>$</span>
@@ -406,12 +408,12 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
                   />
                 </div>
               </div>
-              <div className='col-md-5'>
+              <div className='col-md-3'>
                 <label className='form-label'>Description</label>
                 <input
                   type='text'
                   className='form-control'
-                  placeholder='e.g., Two training sessions per week'
+                  placeholder='e.g., Includes extra training sessions'
                   value={newPackage.description}
                   onChange={(e) =>
                     setNewPackage((prev) => ({
@@ -429,12 +431,11 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
                   disabled={!newPackage.name || newPackage.price <= 0}
                 >
                   <i className='ti ti-plus me-1'></i>
-                  Add Package
+                  Add
                 </button>
               </div>
             </div>
 
-            {/* Packages List */}
             {config.pricing.packages.length > 0 ? (
               <div className='packages-list'>
                 <h6>Current Packages ({config.pricing.packages.length}):</h6>
@@ -474,7 +475,7 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
                         </div>
                         <div className='col-md-4'>
                           <small className='text-muted'>
-                            {pkg.description}
+                            {pkg.description || 'No description'}
                           </small>
                         </div>
                         <div className='col-md-2 text-end'>
@@ -494,10 +495,8 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
             ) : (
               <div className='text-center p-4 text-muted'>
                 <i className='ti ti-package-off fs-1 mb-2'></i>
-                <p>No pricing packages created yet</p>
-                <small>
-                  Add packages to give users different pricing options
-                </small>
+                <p>No pricing packages added yet</p>
+                <small>Add packages to provide different pricing options</small>
               </div>
             )}
           </div>

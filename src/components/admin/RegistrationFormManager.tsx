@@ -12,7 +12,6 @@ import {
 import {
   SeasonEvent,
   RegistrationFormConfig as RegistrationFormConfigType,
-  PricingPackage,
   TournamentSpecificConfig,
   TryoutSpecificConfig,
 } from '../../types/registration-types';
@@ -22,7 +21,6 @@ import SeasonEventManager from './SeasonEventManager';
 import TournamentFormConfig from './TournamentFormConfig';
 import FormPreview from './FormPreview';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { debounce } from '../../utils/debounce';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -43,7 +41,6 @@ const RegistrationFormManager: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [loadedCount, setLoadedCount] = useState(0);
   const [selectedTournamentKey, setSelectedTournamentKey] = useState<
     string | null
   >(null);
@@ -58,19 +55,29 @@ const RegistrationFormManager: React.FC = () => {
   >('training');
 
   useEffect(() => {
-    loadSeasonEvents();
-    loadFormConfigs();
-    loadTournamentConfigs();
-    loadTryoutConfigs();
+    loadData();
   }, []);
 
-  // Track when all three loads are complete
-  useEffect(() => {
-    if (loadedCount >= 4) {
+  const loadData = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      console.log('🔄 Loading all data...');
+      await Promise.all([
+        loadSeasonEvents(),
+        loadFormConfigs(),
+        loadTournamentConfigs(),
+        loadTryoutConfigs(),
+      ]);
+      console.log('✅ All data loaded successfully');
+    } catch (error) {
+      console.error('❌ Error loading data:', error);
+      setError('Failed to load data. Please try refreshing the page.');
+    } finally {
       setIsLoading(false);
-      console.log('✅ All data loaded, loading complete');
     }
-  }, [loadedCount]);
+  };
 
   const loadSeasonEvents = async () => {
     try {
@@ -84,13 +91,11 @@ const RegistrationFormManager: React.FC = () => {
           setSelectedSeason(events[0]);
         }
       } else {
-        throw new Error('Failed to load season events');
+        console.error('❌ Failed to load season events:', response.status);
       }
     } catch (error) {
       console.error('❌ Error loading season events:', error);
-      setError('Error loading season events');
-    } finally {
-      setLoadedCount((prev) => prev + 1);
+      throw error;
     }
   };
 
@@ -100,22 +105,17 @@ const RegistrationFormManager: React.FC = () => {
       const response = await fetch(`${API_BASE_URL}/admin/form-configs`);
       if (response.ok) {
         const configs = await response.json();
-        console.log('✅ Form configs loaded - FULL ANALYSIS:', {
-          rawResponse: configs,
+        console.log('✅ Form configs loaded:', {
           keys: Object.keys(configs),
-          firstKey: Object.keys(configs)[0],
-          firstConfig: configs[Object.keys(configs)[0]],
+          count: Object.keys(configs).length,
         });
-
         setFormConfigs(configs);
       } else {
-        throw new Error('Failed to load form configs');
+        console.error('❌ Failed to load form configs:', response.status);
       }
     } catch (error) {
       console.error('❌ Error loading form configs:', error);
-      setError('Error loading form configs');
-    } finally {
-      setLoadedCount((prev) => prev + 1);
+      throw error;
     }
   };
 
@@ -127,246 +127,37 @@ const RegistrationFormManager: React.FC = () => {
         const configs = await response.json();
         console.log('✅ Tournament configs loaded:', configs);
 
-        // Ensure all configs have ageGroups
-        const validatedConfigs = configs.map(
-          (config: TournamentSpecificConfig) => ({
+        const configMap: Record<string, TournamentSpecificConfig> = {};
+        configs.forEach((config: TournamentSpecificConfig) => {
+          configMap[config.tournamentName] = {
             ...config,
             ageGroups: config.ageGroups || [],
-          })
-        );
-
-        // Convert array to object with tournamentName as key
-        const configMap: Record<string, TournamentSpecificConfig> = {};
-        validatedConfigs.forEach((config: TournamentSpecificConfig) => {
-          configMap[config.tournamentName] = config;
+          };
         });
 
         setTournamentConfigs(configMap);
 
-        // Select the first tournament if available
         const firstKey = Object.keys(configMap)[0];
         if (firstKey) {
           setSelectedTournamentKey(firstKey);
         }
       } else {
-        console.log('⚠️ No tournament configs found');
+        console.log('⚠️ No tournament configs found or API error');
       }
     } catch (error) {
       console.error('❌ Error loading tournament configs:', error);
-    } finally {
-      setLoadedCount((prev) => prev + 1);
+      // Don't throw error - this is optional data
     }
   };
 
-  const getFormKey = (season: string, year: number) => `${season}-${year}`;
-
-  const handleConfigUpdate = useCallback(
-    (updatedConfig: RegistrationFormConfigType) => {
-      if (!selectedSeason) return;
-
-      const key = getFormKey(selectedSeason.season, selectedSeason.year);
-
-      console.log('🔄 Config update received in manager:', {
-        key,
-        selectedSeason,
-        updatedConfig,
-        packages: updatedConfig.pricing.packages,
-        packagesCount: updatedConfig.pricing.packages.length,
-        currentConfig: formConfigs[key],
-      });
-
-      // Update local state immediately
-      setFormConfigs((prev) => ({
-        ...prev,
-        [key]: updatedConfig,
-      }));
-
-      // Save to backend
-      saveFormConfig(selectedSeason, updatedConfig);
-    },
-    [selectedSeason, formConfigs]
-  );
-
-  const handleTournamentConfigUpdate = useCallback(
-    async (updatedConfig: TournamentSpecificConfig, originalName?: string) => {
-      const key = updatedConfig.tournamentName;
-
-      console.log('🏀 Tournament config update received:', {
-        key,
-        updatedConfig,
-        originalName,
-      });
-
-      try {
-        // Save to backend immediately
-        const cleanConfig = {
-          ...updatedConfig,
-          originalTournamentName: originalName,
-        };
-
-        const response = await fetch(
-          `${API_BASE_URL}/admin/tournament-configs`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(cleanConfig),
-          }
-        );
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Failed to save tournament configuration: ${errorText}`
-          );
-        }
-
-        const savedConfig = await response.json();
-        console.log('✅ Tournament config saved successfully:', savedConfig);
-
-        // Update local state
-        setTournamentConfigs((prev) => ({
-          ...prev,
-          [key]: savedConfig,
-        }));
-
-        setSuccessMessage('Tournament configuration saved successfully!');
-        setTimeout(() => setSuccessMessage(null), 3000);
-      } catch (error) {
-        console.error('❌ Error saving tournament config:', error);
-        setError('Error saving tournament config: ' + (error as Error).message);
-        throw error; // Re-throw so the component knows save failed
-      }
-    },
-    []
-  );
-
-  const saveFormConfig = useCallback(
-    debounce(
-      async (seasonEvent: SeasonEvent, config: RegistrationFormConfigType) => {
-        try {
-          console.log('💾 Saving form config:', {
-            seasonEvent,
-            config,
-            packages: config.pricing.packages,
-          });
-
-          const payload = {
-            season: seasonEvent.season,
-            year: seasonEvent.year,
-            config: {
-              ...config,
-              pricing: {
-                basePrice: config.pricing.basePrice,
-                packages: config.pricing.packages.map((pkg) => ({
-                  id: pkg.id,
-                  name: pkg.name,
-                  price: pkg.price,
-                  description: pkg.description,
-                })),
-              },
-            },
-          };
-
-          const response = await fetch(`${API_BASE_URL}/admin/form-configs`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(payload),
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Failed to save form configuration: ${errorText}`);
-          }
-
-          const savedConfig = await response.json();
-          console.log('✅ Form config saved successfully:', {
-            savedConfig,
-            packages: savedConfig.pricing?.packages,
-          });
-
-          setSuccessMessage('Form configuration saved successfully!');
-          setTimeout(() => setSuccessMessage(null), 3000);
-        } catch (error) {
-          console.error('❌ Error saving form config:', error);
-          setError('Error saving form config: ' + (error as Error).message);
-        }
-      },
-      1000
-    ),
-    []
-  );
-
-  const saveTournamentConfig = useCallback(
-    debounce(async (config: TournamentSpecificConfig) => {
-      try {
-        console.log('🏀 Saving tournament config:', config);
-
-        const cleanConfig = {
-          tournamentName: config.tournamentName,
-          tournamentYear: config.tournamentYear,
-          displayName: config.displayName,
-          registrationDeadline: config.registrationDeadline,
-          tournamentDates: config.tournamentDates,
-          locations: config.locations,
-          divisions: config.divisions,
-          requiresRoster: config.requiresRoster,
-          requiresInsurance: config.requiresInsurance,
-          paymentDeadline: config.paymentDeadline,
-          refundPolicy: config.refundPolicy,
-          rulesDocumentUrl: config.rulesDocumentUrl,
-          scheduleDocumentUrl: config.scheduleDocumentUrl,
-          tournamentFee: config.tournamentFee,
-          isActive: config.isActive,
-        };
-
-        const response = await fetch(
-          `${API_BASE_URL}/admin/tournament-configs`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(cleanConfig),
-          }
-        );
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Failed to save tournament configuration: ${errorText}`
-          );
-        }
-
-        const savedConfig = await response.json();
-        console.log('✅ Tournament config saved successfully:', savedConfig);
-
-        setSuccessMessage('Tournament configuration saved successfully!');
-        setTimeout(() => setSuccessMessage(null), 3000);
-      } catch (error) {
-        console.error('❌ Error saving tournament config:', error);
-        setError('Error saving tournament config: ' + (error as Error).message);
-      }
-    }, 1000),
-    []
-  );
-
-  // Tryout loading function
   const loadTryoutConfigs = async () => {
     try {
-      console.log('🏀 Loading tryout configs...');
+      console.log('🎯 Loading tryout configs...');
       const response = await fetch(`${API_BASE_URL}/admin/tryout-configs`);
       if (response.ok) {
         const configs = await response.json();
         console.log('✅ Tryout configs loaded:', configs);
 
-        // Convert array to object with tryoutName as key
         const configMap: Record<string, TryoutSpecificConfig> = {};
         configs.forEach((config: TryoutSpecificConfig) => {
           configMap[config.tryoutName] = config;
@@ -374,120 +165,243 @@ const RegistrationFormManager: React.FC = () => {
 
         setTryoutConfigs(configMap);
 
-        // Select the first tryout if available
         const firstKey = Object.keys(configMap)[0];
         if (firstKey) {
           setSelectedTryoutKey(firstKey);
         }
       } else {
-        console.log('⚠️ No tryout configs found');
+        console.log('⚠️ No tryout configs found or API error');
       }
     } catch (error) {
       console.error('❌ Error loading tryout configs:', error);
-    } finally {
-      setLoadedCount((prev) => prev + 1);
+      // Don't throw error - this is optional data
     }
   };
 
-  // Tryout config update handler
-  const handleTryoutConfigUpdate = useCallback(
-    async (updatedConfig: TryoutSpecificConfig, originalName?: string) => {
-      const key = updatedConfig.tryoutName;
+  const getFormKey = (seasonEvent: SeasonEvent) => {
+    return seasonEvent.eventId;
+  };
 
-      console.log('🎯 Tryout config update received:', {
-        key,
-        updatedConfig,
-        originalName,
+  const saveFormConfig = async (config: RegistrationFormConfigType) => {
+    if (!selectedSeason) return;
+
+    try {
+      console.log('💾 Saving form config:', {
+        selectedSeason,
+        config,
+        packages: config.pricing.packages,
       });
 
-      try {
-        const cleanConfig = {
-          ...updatedConfig,
-          originalTryoutName: originalName,
-        };
-
-        const response = await fetch(`${API_BASE_URL}/admin/tryout-configs`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const payload = {
+        eventId: selectedSeason.eventId,
+        season: selectedSeason.season,
+        year: selectedSeason.year,
+        config: {
+          ...config,
+          pricing: {
+            basePrice: config.pricing.basePrice,
+            packages: config.pricing.packages.map((pkg) => ({
+              id: pkg.id,
+              name: pkg.name,
+              price: pkg.price,
+              description: pkg.description,
+            })),
           },
-          body: JSON.stringify(cleanConfig),
-        });
+        },
+      };
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to save tryout configuration: ${errorText}`);
-        }
+      const response = await fetch(`${API_BASE_URL}/admin/form-configs`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-        const savedConfig = await response.json();
-        console.log('✅ Tryout config saved successfully:', savedConfig);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save form configuration: ${errorText}`);
+      }
 
-        // Update local state
-        setTryoutConfigs((prev) => ({
-          ...prev,
-          [key]: savedConfig,
-        }));
+      const savedConfig = await response.json();
+      console.log('✅ Form config saved successfully:', {
+        savedConfig,
+        packages: savedConfig.pricing?.packages,
+      });
 
-        setSuccessMessage('Tryout configuration saved successfully!');
-        setTimeout(() => setSuccessMessage(null), 3000);
+      // Update local state
+      const key = getFormKey(selectedSeason);
+      setFormConfigs((prev) => ({
+        ...prev,
+        [key]: savedConfig,
+      }));
+
+      setSuccessMessage('Form configuration saved successfully!');
+      setTimeout(() => setSuccessMessage(null), 3000);
+      return savedConfig;
+    } catch (error) {
+      console.error('❌ Error saving form config:', error);
+      setError('Error saving form config: ' + (error as Error).message);
+      throw error;
+    }
+  };
+
+  const saveTournamentConfig = async (config: TournamentSpecificConfig) => {
+    try {
+      console.log('🏀 Saving tournament config:', config);
+
+      const cleanConfig = {
+        tournamentName: config.tournamentName,
+        tournamentYear: config.tournamentYear,
+        displayName: config.displayName,
+        registrationDeadline: config.registrationDeadline,
+        tournamentDates: config.tournamentDates,
+        locations: config.locations,
+        divisions: config.divisions,
+        ageGroups: config.ageGroups || [],
+        requiresRoster: config.requiresRoster,
+        requiresInsurance: config.requiresInsurance,
+        paymentDeadline: config.paymentDeadline,
+        refundPolicy: config.refundPolicy,
+        rulesDocumentUrl: config.rulesDocumentUrl,
+        scheduleDocumentUrl: config.scheduleDocumentUrl,
+        tournamentFee: config.tournamentFee,
+        isActive: config.isActive,
+      };
+
+      const response = await fetch(`${API_BASE_URL}/admin/tournament-configs`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(cleanConfig),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to save tournament configuration: ${errorText}`
+        );
+      }
+
+      const savedConfig = await response.json();
+      console.log('✅ Tournament config saved successfully:', savedConfig);
+
+      // Update local state
+      setTournamentConfigs((prev) => ({
+        ...prev,
+        [config.tournamentName]: savedConfig,
+      }));
+
+      setSuccessMessage('Tournament configuration saved successfully!');
+      setTimeout(() => setSuccessMessage(null), 3000);
+      return savedConfig;
+    } catch (error) {
+      console.error('❌ Error saving tournament config:', error);
+      setError('Error saving tournament config: ' + (error as Error).message);
+      throw error;
+    }
+  };
+
+  const saveTryoutConfig = async (config: TryoutSpecificConfig) => {
+    try {
+      console.log('🎯 Saving tryout config:', config);
+
+      const cleanConfig = {
+        tryoutName: config.tryoutName,
+        tryoutYear: config.tryoutYear,
+        displayName: config.displayName,
+        registrationDeadline: config.registrationDeadline,
+        tryoutDates: config.tryoutDates,
+        locations: config.locations,
+        divisions: config.divisions,
+        ageGroups: config.ageGroups,
+        requiresPayment: config.requiresPayment,
+        requiresRoster: config.requiresRoster,
+        requiresInsurance: config.requiresInsurance,
+        paymentDeadline: config.paymentDeadline,
+        refundPolicy: config.refundPolicy,
+        tryoutFee: config.tryoutFee,
+        isActive: config.isActive,
+        eventId: config.eventId,
+        season: config.season,
+      };
+
+      const response = await fetch(`${API_BASE_URL}/admin/tryout-configs`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(cleanConfig),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save tryout configuration: ${errorText}`);
+      }
+
+      const savedConfig = await response.json();
+      console.log('✅ Tryout config saved successfully:', savedConfig);
+
+      // Update local state
+      setTryoutConfigs((prev) => ({
+        ...prev,
+        [config.tryoutName]: savedConfig,
+      }));
+
+      setSuccessMessage('Tryout configuration saved successfully!');
+      setTimeout(() => setSuccessMessage(null), 3000);
+      return savedConfig;
+    } catch (error) {
+      console.error('❌ Error saving tryout config:', error);
+      setError('Error saving tryout config: ' + (error as Error).message);
+      throw error;
+    }
+  };
+
+  const handleConfigUpdate = useCallback(
+    async (updatedConfig: RegistrationFormConfigType) => {
+      try {
+        await saveFormConfig(updatedConfig);
       } catch (error) {
-        console.error('❌ Error saving tryout config:', error);
-        setError('Error saving tryout config: ' + (error as Error).message);
+        console.error('Failed to save config:', error);
+      }
+    },
+    [selectedSeason]
+  );
+
+  const handleTournamentConfigUpdate = useCallback(
+    async (updatedConfig: TournamentSpecificConfig, originalName?: string) => {
+      try {
+        const configToSave = {
+          ...updatedConfig,
+          originalTournamentName: originalName,
+        };
+        await saveTournamentConfig(configToSave);
+      } catch (error) {
+        console.error('Failed to save tournament config:', error);
         throw error;
       }
     },
     []
   );
 
-  // Tryout save function
-  const saveTryoutConfig = useCallback(
-    debounce(async (config: TryoutSpecificConfig) => {
+  const handleTryoutConfigUpdate = useCallback(
+    async (updatedConfig: TryoutSpecificConfig, originalName?: string) => {
       try {
-        console.log('🎯 Saving tryout config:', config);
-
-        const cleanConfig = {
-          tryoutName: config.tryoutName,
-          tryoutYear: config.tryoutYear,
-          displayName: config.displayName,
-          registrationDeadline: config.registrationDeadline,
-          tryoutDates: config.tryoutDates,
-          locations: config.locations,
-          divisions: config.divisions,
-          ageGroups: config.ageGroups,
-          requiresPayment: config.requiresPayment,
-          requiresRoster: config.requiresRoster,
-          requiresInsurance: config.requiresInsurance,
-          paymentDeadline: config.paymentDeadline,
-          refundPolicy: config.refundPolicy,
-          tryoutFee: config.tryoutFee,
-          isActive: config.isActive,
+        const configToSave = {
+          ...updatedConfig,
+          originalTryoutName: originalName,
         };
-
-        const response = await fetch(`${API_BASE_URL}/admin/tryout-configs`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify(cleanConfig),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to save tryout configuration: ${errorText}`);
-        }
-
-        const savedConfig = await response.json();
-        console.log('✅ Tryout config saved successfully:', savedConfig);
-
-        setSuccessMessage('Tryout configuration saved successfully!');
-        setTimeout(() => setSuccessMessage(null), 3000);
+        await saveTryoutConfig(configToSave);
       } catch (error) {
-        console.error('❌ Error saving tryout config:', error);
-        setError('Error saving tryout config: ' + (error as Error).message);
+        console.error('Failed to save tryout config:', error);
+        throw error;
       }
-    }, 1000),
+    },
     []
   );
 
@@ -517,27 +431,46 @@ const RegistrationFormManager: React.FC = () => {
   };
 
   const handleSeasonSelect = (season: SeasonEvent) => {
-    const key = getFormKey(season.season, season.year);
+    const key = getFormKey(season);
     console.log('🎯 Selecting season:', {
-      season,
+      season: season.season,
       key,
-      availableConfigs: Object.keys(formConfigs),
-      configForThisSeason: formConfigs[key],
-      tournamentConfigForThisSeason: tournamentConfigs[key],
+      hasConfig: !!formConfigs[key],
+      config: formConfigs[key],
     });
-
     setSelectedSeason(season);
   };
 
   const refreshAllData = () => {
     console.log('🔄 Refreshing all data...');
-    loadSeasonEvents();
-    loadFormConfigs();
-    loadTournamentConfigs();
+    loadData();
   };
 
+  // Add timeout to prevent infinite loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        console.log('⏰ Loading timeout - forcing display');
+        setIsLoading(false);
+      }
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div
+        className='d-flex justify-content-center align-items-center'
+        style={{ height: '60vh' }}
+      >
+        <LoadingSpinner />
+        <div className='ms-3'>
+          <p className='mb-1'>Loading Registration Manager...</p>
+          <small className='text-muted'>This may take a moment</small>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -561,49 +494,6 @@ const RegistrationFormManager: React.FC = () => {
       )}
 
       <Card>
-        <Card.Header>
-          <div className='d-flex justify-content-between align-items-center'>
-            <h3 className='mb-0'>Registration Form Manager</h3>
-            <div className='d-flex align-items-center'>
-              <OverlayTrigger
-                overlay={<Tooltip id='tooltip-top'>Refresh Data</Tooltip>}
-              >
-                <Button
-                  variant='outline-light'
-                  className='bg-white btn-icon me-2'
-                  onClick={refreshAllData}
-                >
-                  <i className='ti ti-refresh' />
-                </Button>
-              </OverlayTrigger>
-              <Button
-                variant='outline-info'
-                className='bg-white btn-icon'
-                onClick={() => {
-                  console.log('🔍 Current state:', {
-                    seasonEvents,
-                    selectedSeason,
-                    formConfigs,
-                    tournamentConfigs,
-                    selectedConfig: selectedSeason
-                      ? formConfigs[
-                          getFormKey(selectedSeason.season, selectedSeason.year)
-                        ]
-                      : null,
-                    selectedTournamentConfig: selectedSeason
-                      ? tournamentConfigs[
-                          getFormKey(selectedSeason.season, selectedSeason.year)
-                        ]
-                      : null,
-                  });
-                }}
-              >
-                <i className='ti ti-info-circle' />
-              </Button>
-            </div>
-          </div>
-        </Card.Header>
-
         {/* Navigation Tabs */}
         <Card.Header className='bg-light'>
           <Nav
@@ -653,20 +543,21 @@ const RegistrationFormManager: React.FC = () => {
                   <Card>
                     <Card.Header>
                       <h5 className='card-title mb-0'>Select Season</h5>
+                      <small className='text-muted'>
+                        {seasonEvents.length} season(s) available
+                      </small>
                     </Card.Header>
                     <Card.Body>
                       <div className='list-group'>
                         {seasonEvents.map((season) => {
-                          const key = getFormKey(season.season, season.year);
+                          const key = getFormKey(season);
                           const config = formConfigs[key];
-                          const tournamentConfig = tournamentConfigs[key];
 
                           return (
                             <button
                               key={key}
                               className={`list-group-item list-group-item-action ${
-                                selectedSeason?.season === season.season &&
-                                selectedSeason?.year === season.year
+                                selectedSeason?.eventId === season.eventId
                                   ? 'active'
                                   : ''
                               }`}
@@ -683,24 +574,18 @@ const RegistrationFormManager: React.FC = () => {
                               <div className='d-flex flex-column gap-1 mt-1'>
                                 <div className='d-flex justify-content-between align-items-center'>
                                   {config?.isActive ? (
-                                    <Badge bg='success'>Training Active</Badge>
+                                    <Badge bg='success'>Active</Badge>
                                   ) : (
-                                    <Badge bg='secondary'>
-                                      Training Inactive
-                                    </Badge>
+                                    <Badge bg='secondary'>Inactive</Badge>
                                   )}
-                                  {config?.pricing?.packages?.length > 0 && (
-                                    <small className='text-muted'>
-                                      {config.pricing.packages.length} packages
-                                    </small>
-                                  )}
+                                  <small className='text-muted'>
+                                    ${config?.pricing?.basePrice || 0}
+                                  </small>
                                 </div>
-                                {tournamentConfig && (
-                                  <div className='d-flex justify-content-between align-items-center'>
-                                    <Badge bg='info'>
-                                      Has Tournament Config
-                                    </Badge>
-                                  </div>
+                                {config?.pricing?.packages?.length > 0 && (
+                                  <small className='text-muted'>
+                                    {config.pricing.packages.length} package(s)
+                                  </small>
                                 )}
                               </div>
                             </button>
@@ -716,19 +601,7 @@ const RegistrationFormManager: React.FC = () => {
                     <RegistrationFormConfig
                       seasonEvent={selectedSeason}
                       onConfigUpdate={handleConfigUpdate}
-                      initialConfig={
-                        formConfigs[
-                          getFormKey(selectedSeason.season, selectedSeason.year)
-                        ] || {
-                          isActive: false,
-                          requiresPayment: true,
-                          requiresQualification: false,
-                          pricing: {
-                            basePrice: 0,
-                            packages: [],
-                          },
-                        }
-                      }
+                      initialConfig={formConfigs[getFormKey(selectedSeason)]}
                     />
                   ) : (
                     <Card>
@@ -766,7 +639,7 @@ const RegistrationFormManager: React.FC = () => {
                                 tournamentDates: [],
                                 locations: [],
                                 divisions: ['Gold', 'Silver'],
-                                ageGroups: [], // Add this
+                                ageGroups: [],
                                 requiresRoster: true,
                                 requiresInsurance: true,
                                 paymentDeadline: '',
@@ -892,7 +765,7 @@ const RegistrationFormManager: React.FC = () => {
                                   tournamentDates: [],
                                   locations: [],
                                   divisions: ['Gold', 'Silver'],
-                                  ageGroups: [], // Add this
+                                  ageGroups: [],
                                   requiresRoster: true,
                                   requiresInsurance: true,
                                   paymentDeadline: '',
@@ -922,6 +795,7 @@ const RegistrationFormManager: React.FC = () => {
               </div>
             </Tab.Pane>
 
+            {/* Tryout Configuration Tab */}
             <Tab.Pane active={activeTab === 'tryouts'}>
               <div className='row'>
                 <div className='col-md-3'>
@@ -932,7 +806,6 @@ const RegistrationFormManager: React.FC = () => {
                         <button
                           className='btn btn-sm btn-primary'
                           onClick={() => {
-                            // Check if there are seasons available
                             if (seasonEvents.length === 0) {
                               alert(
                                 'Please create a season first before creating a tryout'
@@ -1046,7 +919,6 @@ const RegistrationFormManager: React.FC = () => {
                           tryoutConfigs[selectedTryoutKey]?.eventId
                       )}
                       onSeasonSelect={(season) => {
-                        // Update the selected tryout config with season info
                         setTryoutConfigs((prev) => ({
                           ...prev,
                           [selectedTryoutKey]: {
@@ -1164,7 +1036,6 @@ const RegistrationFormManager: React.FC = () => {
                           } text-black`}
                           onClick={() => {
                             setPreviewType('tournament');
-                            // Select the first tournament if none selected
                             if (
                               !selectedTournamentKey &&
                               Object.keys(tournamentConfigs).length > 0
@@ -1184,7 +1055,6 @@ const RegistrationFormManager: React.FC = () => {
                           } text-black`}
                           onClick={() => {
                             setPreviewType('tryout');
-                            // Select the first tryout if none selected
                             if (
                               !selectedTryoutKey &&
                               Object.keys(tryoutConfigs).length > 0
@@ -1202,7 +1072,6 @@ const RegistrationFormManager: React.FC = () => {
                     </Card.Body>
                   </Card>
 
-                  {/* Tournament Selection for Preview */}
                   {previewType === 'tournament' && (
                     <Card className='mb-3'>
                       <Card.Header>
@@ -1239,7 +1108,6 @@ const RegistrationFormManager: React.FC = () => {
                     </Card>
                   )}
 
-                  {/* Tryout Selection for Preview */}
                   {previewType === 'tryout' && (
                     <Card className='mb-3'>
                       <Card.Header>
@@ -1279,11 +1147,7 @@ const RegistrationFormManager: React.FC = () => {
                   {previewType === 'training' && selectedSeason ? (
                     <FormPreview
                       seasonEvent={selectedSeason}
-                      formConfig={
-                        formConfigs[
-                          getFormKey(selectedSeason.season, selectedSeason.year)
-                        ]
-                      }
+                      formConfig={formConfigs[getFormKey(selectedSeason)]}
                       previewType='training'
                     />
                   ) : previewType === 'tournament' &&

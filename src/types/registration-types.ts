@@ -327,6 +327,7 @@ export interface RegistrationFormConfig {
     basePrice: number;
     packages: any[];
   };
+  description?: string;
   tournamentName?: string;
   tournamentYear?: number;
   displayName?: string;
@@ -358,9 +359,15 @@ export interface SeasonEvent {
   year: number;
   eventId: string;
   description?: string;
+  pricing?: Pricing;
   registrationOpens?: Date;
   registrationCloses?: Date;
   createdAt?: Date;
+}
+
+export interface Pricing {
+  basePrice: number;
+  packages: PricingPackage[];
 }
 
 export interface Qualification {
@@ -419,6 +426,7 @@ export interface TournamentSpecificConfig {
   tournamentName: string;
   tournamentYear: number;
   displayName?: string;
+  description?: string;
   registrationDeadline: string;
   tournamentDates: string[];
   locations: string[];
@@ -444,6 +452,7 @@ export interface TryoutSpecificConfig {
   displayName?: string;
   eventId?: string;
   season?: string;
+  description?: string;
   registrationDeadline: string;
   tryoutDates: string[];
   locations: string[];

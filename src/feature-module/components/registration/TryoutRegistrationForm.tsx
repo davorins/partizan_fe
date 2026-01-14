@@ -63,7 +63,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
   const [configError, setConfigError] = useState<string | null>(null);
 
   // Player states
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[]>(savedPlayers || []);
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
   const [playerValidation, setPlayerValidation] = useState(false);
   const [playersForTryout, setPlayersForTryout] = useState<Player[]>([]);
@@ -269,32 +269,6 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
       },
     }));
   }, [defaultSeasonEvent]);
-
-  // ✅ Initialize players with correct season
-  useEffect(() => {
-    if (savedPlayers && savedPlayers.length > 0) {
-      setPlayers(savedPlayers);
-    } else if (currentStep === 'player' && players.length === 0) {
-      const blankPlayer: Player = {
-        fullName: '',
-        gender: '',
-        dob: '',
-        schoolName: '',
-        healthConcerns: '',
-        aauNumber: '',
-        registrationYear: defaultSeasonEvent.year,
-        season: defaultSeasonEvent.season, // ✅ Use correct tryout name
-        grade: '',
-      };
-      setPlayers([blankPlayer]);
-    }
-  }, [
-    currentStep,
-    players.length,
-    defaultSeasonEvent.year,
-    defaultSeasonEvent.season,
-    savedPlayers,
-  ]);
 
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));

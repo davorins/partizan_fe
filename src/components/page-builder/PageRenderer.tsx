@@ -256,6 +256,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
                   })
                 ),
               },
+              description: configData.description || '',
               displayName: configData.displayName,
               createdAt: configData.createdAt,
               updatedAt: configData.updatedAt,
@@ -333,6 +334,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
             createdAt: activeTournament.createdAt,
             updatedAt: activeTournament.updatedAt,
             __v: activeTournament.__v,
+            description: activeTournament.description || '',
           };
         }
       }
@@ -372,6 +374,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
             createdAt: activeTryout.createdAt,
             updatedAt: activeTryout.updatedAt,
             __v: activeTryout.__v,
+            description: activeTryout.description || '',
           };
         }
       }

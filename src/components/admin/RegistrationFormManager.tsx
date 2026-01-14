@@ -327,6 +327,7 @@ const RegistrationFormManager: React.FC = () => {
         isActive: config.isActive,
         eventId: config.eventId,
         season: config.season,
+        description: config.description || '',
       };
 
       const response = await fetch(`${API_BASE_URL}/admin/tryout-configs`, {

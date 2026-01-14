@@ -20,8 +20,8 @@ const SquarePaymentPreview: React.FC<SquarePaymentPreviewProps> = ({
   description = 'Payment for form submission',
   label = 'Payment',
   helpText,
-  squareAppId = 'sq0idp-jKCpX1oYcB5S-Qo5ncMMzw',
-  squareLocationId = 'LVGR2HHGZP0WY',
+  squareAppId = 'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
+  squareLocationId = 'L26Q50FWRCQW5',
   currency = 'USD',
   sandboxMode,
 }) => {

@@ -71,6 +71,7 @@ const tournamentToRegistrationConfig = (
     createdAt: tournamentConfig.createdAt,
     updatedAt: tournamentConfig.updatedAt,
     __v: tournamentConfig.__v,
+    description: tournamentConfig.description || '',
   };
 };
 
@@ -105,6 +106,7 @@ const tryoutToRegistrationConfig = (
     createdAt: tryoutConfig.createdAt,
     updatedAt: tryoutConfig.updatedAt,
     __v: tryoutConfig.__v,
+    description: tryoutConfig.description || '',
   };
 };
 
@@ -184,23 +186,38 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   const defaultFormConfig: RegistrationFormConfig = useMemo(() => {
     // If formConfig is provided
     if (formConfig) {
+      let resultConfig: RegistrationFormConfig;
+
       // Check if it's a tournament config
       if (isTournamentConfig(formConfig)) {
-        return tournamentToRegistrationConfig(formConfig);
+        resultConfig = tournamentToRegistrationConfig(formConfig);
       }
-
       // Check if it's a tryout config
-      if (isTryoutConfig(formConfig)) {
-        return tryoutToRegistrationConfig(formConfig);
+      else if (isTryoutConfig(formConfig)) {
+        resultConfig = tryoutToRegistrationConfig(formConfig);
+      }
+      // If it's already a RegistrationFormConfig, return it
+      else {
+        resultConfig = formConfig as RegistrationFormConfig;
       }
 
-      // If it's already a RegistrationFormConfig, return it
-      return formConfig as RegistrationFormConfig;
+      console.log('🔍 Original formConfig description:', {
+        hasDescription: !!formConfig.description,
+        descriptionLength: formConfig.description?.length || 0,
+        descriptionPreview: formConfig.description?.substring(0, 100),
+      });
+
+      // Preserve the description from original formConfig
+      if (formConfig.description) {
+        resultConfig.description = formConfig.description;
+      }
+
+      return resultConfig;
     }
 
     // Otherwise create defaults based on registration type
     const baseConfig: RegistrationFormConfig = {
-      isActive: registrationType === 'player' ? false : true, // Player registration is inactive by default
+      isActive: registrationType === 'player' ? false : true,
       requiresPayment:
         registrationType === 'training' ||
         registrationType === 'tournament' ||
@@ -242,6 +259,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               ]
             : [],
       },
+      description: '',
     };
 
     return baseConfig;

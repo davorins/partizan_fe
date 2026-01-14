@@ -63,7 +63,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
   const [configError, setConfigError] = useState<string | null>(null);
 
   // Player states
-  const [players, setPlayers] = useState<Player[]>(savedPlayers || []);
+  const [players, setPlayers] = useState<Player[]>([]);
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
   const [playerValidation, setPlayerValidation] = useState(false);
   const [playersForTryout, setPlayersForTryout] = useState<Player[]>([]);
@@ -269,6 +269,46 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
       },
     }));
   }, [defaultSeasonEvent]);
+
+  // ✅ Initialize players with correct season
+  useEffect(() => {
+    if (savedPlayers && savedPlayers.length > 0) {
+      setPlayers(savedPlayers);
+    } else if (currentStep === 'player' && players.length === 0) {
+      console.log('🔍 Player initialization check:', {
+        userPlayersLength: userPlayers?.length,
+        currentPlayersLength: players.length,
+        currentStep,
+      });
+
+      // Check if user already has any players in their account
+      const userHasExistingPlayers = userPlayers && userPlayers.length > 0;
+
+      if (!userHasExistingPlayers) {
+        // Only show blank form if user doesn't have any existing players
+        const blankPlayer: Player = {
+          fullName: '',
+          gender: '',
+          dob: '',
+          schoolName: '',
+          healthConcerns: '',
+          aauNumber: '',
+          registrationYear: defaultSeasonEvent.year,
+          season: defaultSeasonEvent.season,
+          grade: '',
+        };
+        setPlayers([blankPlayer]);
+        console.log('🆕 Created blank player form for first-time registration');
+      }
+    }
+  }, [
+    currentStep,
+    players.length,
+    defaultSeasonEvent.year,
+    defaultSeasonEvent.season,
+    savedPlayers,
+    userPlayers,
+  ]);
 
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));

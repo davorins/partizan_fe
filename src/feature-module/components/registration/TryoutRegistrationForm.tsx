@@ -1075,10 +1075,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
             <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
               <i className='ti ti-target-arrow fs-16' />
             </span>
-            <h4 className='text-dark'>
-              {effectiveTryoutConfig.tryoutName}{' '}
-              {effectiveTryoutConfig.tryoutYear}
-            </h4>
+            <h4 className='text-dark'>{effectiveTryoutConfig.tryoutName} </h4>
           </div>
         </div>
         <div className='card-body'>

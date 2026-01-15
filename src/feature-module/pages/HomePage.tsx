@@ -244,10 +244,10 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                 setShowVideoControls(false);
               }}
             >
-              {/* <video
+              <video
                 ref={videoRef}
                 className='video-background'
-                src='/assets/videos/winterClassicTournament-web-compressed.mp4'
+                src='/assets/videos/partizan.mp4'
                 autoPlay
                 muted
                 loop
@@ -269,7 +269,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   zIndex: 1,
                   backgroundColor: '#000',
                 }}
-              /> */}
+              />
 
               {/* Overlay Image */}
               <div
@@ -286,7 +286,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   }}
                 >
                   <ImageWithBasePath
-                    src='assets/img/watermark-logo-dark.png'
+                    src='assets/img/watermark-logo.png'
                     alt='Partizan AAU Basketball'
                     className='img-fluid hover-zoom'
                   />
@@ -294,7 +294,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               </div>
 
               {/* Video Controls */}
-              {/* <div
+              <div
                 className={`video-controls-overlay position-absolute bottom-0 left-0 right-0 transition-all ${
                   showVideoControls
                     ? 'opacity-100'
@@ -412,10 +412,10 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     )}
                   </button>
                 </div>
-              </div> */}
+              </div>
 
               {/* Play button overlay when paused */}
-              {/* {!videoControls.isPlaying && (
+              {!videoControls.isPlaying && (
                 <button
                   onClick={togglePlayPause}
                   className='btn btn-transparent btn-lg rounded-circle position-absolute d-flex align-items-center justify-content-center'
@@ -443,7 +443,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     <path d='M8 5v14l11-7z' />
                   </svg>
                 </button>
-              )} */}
+              )}
             </div>
           </div>
 

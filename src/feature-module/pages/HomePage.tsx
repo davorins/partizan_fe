@@ -247,7 +247,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               <video
                 ref={videoRef}
                 className='video-background'
-                src='/assets/videos/partizan.mp4'
+                src='https://res.cloudinary.com/dlmdnn3dk/video/upload/v1768769212/hfaygndoi84juvk1vd5e.mp4'
                 autoPlay
                 muted
                 loop

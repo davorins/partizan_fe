@@ -45,4 +45,4 @@ node_modules/.cache/
 public/assets/videos/*
 
 # Allow mp4 files (handled by Git LFS)
-!public/assets/videos/*.mp4
+#!public/assets/videos/*.mp4

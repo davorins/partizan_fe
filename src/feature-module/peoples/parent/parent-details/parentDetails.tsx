@@ -627,7 +627,7 @@ const ParentDetails = () => {
     }
   };
 
-  // Refund submission handler
+  // Refund submission handler - COMPLETE FIXED VERSION
   const handleRefundSubmit = async (
     paymentId: string,
     amount: number,
@@ -642,7 +642,7 @@ const ParentDetails = () => {
       console.log('Refund reason:', reason);
       console.log('Parent ID:', parent?._id);
 
-      // Find the payment in our local state
+      // Find the payment in our local state to get the Square paymentId
       const payment = payments.find((p) => p._id === paymentId);
 
       if (!payment) {
@@ -650,37 +650,33 @@ const ParentDetails = () => {
         throw new Error('Payment not found in local data');
       }
 
-      // Log the full payment object for debugging
-      console.log('📋 Full payment object:', {
+      if (!payment.paymentId) {
+        console.error('❌ Square payment ID is missing for this payment');
+        throw new Error('Square payment ID is missing for this payment');
+      }
+
+      console.log('✅ Payment found:', {
         mongoId: payment._id,
         squareId: payment.paymentId,
         amount: payment.amount,
-        totalRefunded: payment.totalRefunded || 0,
-        refundStatus: payment.refundStatus,
-        refunds: payment.refunds || [],
+        alreadyRefunded: payment.totalRefunded || 0,
       });
 
-      const requestData = {
-        paymentId: payment.paymentId,
-        refundAmount: amount,
-        refundReason: reason,
-        parentId: parent?._id,
-        originalAmount: payment.amount,
-        mongoPaymentId: payment._id,
-        timestamp: new Date().toISOString(),
-      };
-
-      console.log('📤 Sending refund request to backend...', requestData);
-
+      console.log('📤 Sending refund request to backend...');
       const response = await axios.post(
         `${API_BASE_URL}/payment/refund`,
-        requestData,
+        {
+          paymentId: payment.paymentId, // Square ID
+          amount,
+          reason,
+          parentId: parent?._id,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          timeout: 30000,
+          timeout: 30000, // 30 second timeout
         }
       );
 
@@ -691,6 +687,11 @@ const ParentDetails = () => {
 
         // Refresh payments to show updated refund status
         await refreshPayments();
+
+        // Show success message
+        alert(
+          '✅ Refund processed successfully! The payment has been refunded.'
+        );
 
         return response.data;
       } else {
@@ -708,31 +709,28 @@ const ParentDetails = () => {
         },
       });
 
-      let errorMessage = 'Failed to process refund. Please try again.';
-
-      if (error.response?.data) {
-        const errorData = error.response.data;
-
-        if (typeof errorData === 'string') {
-          errorMessage = errorData;
-        } else if (errorData.error) {
-          errorMessage = errorData.error;
-        } else if (errorData.message) {
-          errorMessage = errorData.message;
-        } else {
-          errorMessage = JSON.stringify(errorData);
-        }
-      }
+      // Handle specific error cases
+      let errorMessage = 'Failed to submit refund request. Please try again.';
 
       if (error.response?.status === 400) {
-        if (
-          errorMessage.toLowerCase().includes('already') &&
-          errorMessage.toLowerCase().includes('refund')
-        ) {
+        const errorData = error.response.data;
+        if (errorData?.error?.includes('already been refunded')) {
           errorMessage = 'This payment has already been refunded.';
-        } else if (errorMessage.toLowerCase().includes('not found')) {
-          errorMessage = 'Payment not found. Please contact support.';
+        } else if (errorData?.error?.includes('not found')) {
+          errorMessage = 'Payment not found in Square.';
+        } else if (errorData?.error) {
+          errorMessage = errorData.error;
         }
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      } else if (error.response?.status === 403) {
+        errorMessage = 'You do not have permission to process refunds.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Payment not found.';
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'Request timed out. Please try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
       console.error('Final error message:', errorMessage);

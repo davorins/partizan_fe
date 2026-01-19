@@ -636,76 +636,110 @@ const ParentDetails = () => {
     try {
       const token = localStorage.getItem('token');
 
-      // Find the payment to get refund ID if it exists
+      console.log('🔄 Starting refund submission...');
+      console.log('Payment ID (MongoDB):', paymentId);
+      console.log('Refund amount:', amount);
+      console.log('Refund reason:', reason);
+      console.log('Parent ID:', parent?._id);
+
+      // Find the payment in our local state
       const payment = payments.find((p) => p._id === paymentId);
 
       if (!payment) {
-        throw new Error('Payment not found');
+        console.error('❌ Payment not found in local data');
+        throw new Error('Payment not found in local data');
       }
 
-      // If there's an existing pending refund, use it
-      let refundId = null;
-      if (payment.refunds && payment.refunds.length > 0) {
-        const pendingRefund = payment.refunds.find(
-          (r) => r.status === 'pending'
-        );
-        if (pendingRefund) {
-          refundId = pendingRefund._id;
-        }
-      }
+      // Log the full payment object for debugging
+      console.log('📋 Full payment object:', {
+        mongoId: payment._id,
+        squareId: payment.paymentId,
+        amount: payment.amount,
+        totalRefunded: payment.totalRefunded || 0,
+        refundStatus: payment.refundStatus,
+        refunds: payment.refunds || [],
+      });
 
-      // If no existing refund, create one first
-      if (!refundId) {
-        console.log('📋 Creating new refund request...');
-        const refundRequest = await axios.post(
-          `${API_BASE_URL}/refunds/request`,
-          {
-            paymentId: paymentId,
-            amount: amount,
-            reason: reason,
-            notes: 'Requested via admin panel',
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      const requestData = {
+        paymentId: payment.paymentId,
+        refundAmount: amount,
+        refundReason: reason,
+        parentId: parent?._id,
+        originalAmount: payment.amount,
+        mongoPaymentId: payment._id,
+        timestamp: new Date().toISOString(),
+      };
 
-        refundId = refundRequest.data.refundRequest._id;
-      }
-
-      // Now process the refund
-      console.log('🔄 Processing refund...', { paymentId, refundId, amount });
+      console.log('📤 Sending refund request to backend...', requestData);
 
       const response = await axios.post(
-        `${API_BASE_URL}/refunds/process`,
-        {
-          paymentId: paymentId,
-          refundId: refundId,
-          action: 'approve',
-          adminNotes: `${reason} - Processed by admin`,
-        },
+        `${API_BASE_URL}/payment/refund`,
+        requestData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
+          timeout: 30000,
         }
       );
 
-      console.log('✅ Refund processed:', response.data);
+      console.log('✅ Refund response from backend:', response.data);
 
-      // Refresh payments
-      await refreshPayments();
+      if (response.data.success) {
+        console.log('✅ Refund processed successfully, refreshing payments...');
 
-      return response.data;
+        // Refresh payments to show updated refund status
+        await refreshPayments();
+
+        return response.data;
+      } else {
+        console.error('❌ Refund failed:', response.data.error);
+        throw new Error(response.data.error || 'Refund request failed');
+      }
     } catch (error: any) {
-      console.error('Refund error:', error.response?.data || error.message);
-      throw new Error(
-        error.response?.data?.error || error.message || 'Refund failed'
-      );
+      console.error('❌ Refund request error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: {
+          url: error.config?.url,
+          data: error.config?.data,
+        },
+      });
+
+      let errorMessage = 'Failed to process refund. Please try again.';
+
+      if (error.response?.data) {
+        const errorData = error.response.data;
+
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else {
+          errorMessage = JSON.stringify(errorData);
+        }
+      }
+
+      if (error.response?.status === 400) {
+        if (
+          errorMessage.toLowerCase().includes('already') &&
+          errorMessage.toLowerCase().includes('refund')
+        ) {
+          errorMessage = 'This payment has already been refunded.';
+        } else if (errorMessage.toLowerCase().includes('not found')) {
+          errorMessage = 'Payment not found. Please contact support.';
+        }
+      }
+
+      console.error('Final error message:', errorMessage);
+      throw new Error(errorMessage);
     }
   };
+
   // Manual eligibility calculation as fallback
   const calculateEligibilityManually = (payment: PaymentData) => {
     const totalRefunded = payment.totalRefunded || 0;

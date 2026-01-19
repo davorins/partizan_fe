@@ -919,7 +919,6 @@ const ParentDetails = () => {
             <table className='table table-sm'>
               <thead>
                 <tr>
-                  <th>Date</th>
                   <th>Amount</th>
                   <th>Status</th>
                   <th>Reason</th>
@@ -929,7 +928,6 @@ const ParentDetails = () => {
               <tbody>
                 {allRefunds.map((refund, index) => (
                   <tr key={index}>
-                    <td>{formatDate(refund.requestedAt)}</td>
                     <td>${refund.amount.toFixed(2)}</td>
                     <td>
                       <span

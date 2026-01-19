@@ -627,117 +627,85 @@ const ParentDetails = () => {
     }
   };
 
-  // Refund submission handler - COMPLETE FIXED VERSION
+  // Refund submission handler
   const handleRefundSubmit = async (
-    paymentId: string, // This is the MongoDB _id passed from the modal
+    paymentId: string,
     amount: number,
     reason: string
   ) => {
     try {
       const token = localStorage.getItem('token');
 
-      console.log('🔄 Starting refund submission...');
-      console.log('Payment ID (MongoDB):', paymentId);
-      console.log('Refund amount:', amount);
-      console.log('Refund reason:', reason);
-      console.log('Parent ID:', parent?._id);
-
-      // Find the payment in our local state to get the Square paymentId
+      // Find the payment to get refund ID if it exists
       const payment = payments.find((p) => p._id === paymentId);
 
       if (!payment) {
-        console.error('❌ Payment not found in local data');
-        throw new Error('Payment not found in local data');
+        throw new Error('Payment not found');
       }
 
-      if (!payment.paymentId) {
-        console.error('❌ Square payment ID is missing for this payment');
-        throw new Error('Square payment ID is missing for this payment');
+      // If there's an existing pending refund, use it
+      let refundId = null;
+      if (payment.refunds && payment.refunds.length > 0) {
+        const pendingRefund = payment.refunds.find(
+          (r) => r.status === 'pending'
+        );
+        if (pendingRefund) {
+          refundId = pendingRefund._id;
+        }
       }
 
-      console.log('✅ Payment found:', {
-        mongoId: payment._id,
-        squareId: payment.paymentId,
-        amount: payment.amount,
-        alreadyRefunded: payment.totalRefunded || 0,
-      });
+      // If no existing refund, create one first
+      if (!refundId) {
+        console.log('📋 Creating new refund request...');
+        const refundRequest = await axios.post(
+          `${API_BASE_URL}/refunds/request`,
+          {
+            paymentId: paymentId,
+            amount: amount,
+            reason: reason,
+            notes: 'Requested via admin panel',
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      console.log('📤 Sending refund request to backend...');
+        refundId = refundRequest.data.refundRequest._id;
+      }
+
+      // Now process the refund
+      console.log('🔄 Processing refund...', { paymentId, refundId, amount });
+
       const response = await axios.post(
-        `${API_BASE_URL}/payment/refund`,
+        `${API_BASE_URL}/refunds/process`,
         {
-          paymentId: payment.paymentId, // Square ID
-          amount,
-          reason,
-          parentId: parent?._id,
+          paymentId: paymentId,
+          refundId: refundId,
+          action: 'approve',
+          adminNotes: `${reason} - Processed by admin`,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
           },
-          timeout: 30000, // 30 second timeout
         }
       );
 
-      console.log('✅ Refund response from backend:', response.data);
+      console.log('✅ Refund processed:', response.data);
 
-      if (response.data.success) {
-        console.log('✅ Refund processed successfully, refreshing payments...');
+      // Refresh payments
+      await refreshPayments();
 
-        // Refresh payments to show updated refund status
-        await refreshPayments();
-
-        // Show success message
-        alert(
-          '✅ Refund processed successfully! The payment has been refunded.'
-        );
-
-        return response.data;
-      } else {
-        console.error('❌ Refund failed:', response.data.error);
-        throw new Error(response.data.error || 'Refund request failed');
-      }
+      return response.data;
     } catch (error: any) {
-      console.error('❌ Refund request error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        config: {
-          url: error.config?.url,
-          data: error.config?.data,
-        },
-      });
-
-      // Handle specific error cases
-      let errorMessage = 'Failed to submit refund request. Please try again.';
-
-      if (error.response?.status === 400) {
-        const errorData = error.response.data;
-        if (errorData?.error?.includes('already been refunded')) {
-          errorMessage = 'This payment has already been refunded.';
-        } else if (errorData?.error?.includes('not found')) {
-          errorMessage = 'Payment not found in Square.';
-        } else if (errorData?.error) {
-          errorMessage = errorData.error;
-        }
-      } else if (error.response?.status === 401) {
-        errorMessage = 'Authentication failed. Please log in again.';
-      } else if (error.response?.status === 403) {
-        errorMessage = 'You do not have permission to process refunds.';
-      } else if (error.response?.status === 404) {
-        errorMessage = 'Payment not found.';
-      } else if (error.message.includes('timeout')) {
-        errorMessage = 'Request timed out. Please try again.';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      console.error('Final error message:', errorMessage);
-      throw new Error(errorMessage);
+      console.error('Refund error:', error.response?.data || error.message);
+      throw new Error(
+        error.response?.data?.error || error.message || 'Refund failed'
+      );
     }
   };
-
   // Manual eligibility calculation as fallback
   const calculateEligibilityManually = (payment: PaymentData) => {
     const totalRefunded = payment.totalRefunded || 0;

@@ -1541,8 +1541,8 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                 eventData={formData.eventData}
                 savedUserData={localSavedUserData}
                 savedPlayers={playersForTraining}
-                appId={'sq0idp-sKm2lO4I-t5BuziKTaYoGg'}
-                locationId={'LHB5B04Q2CQDN'}
+                appId={'sq0idp-jUCxKnO_i8i7vccQjVj_0g'}
+                locationId={'L26Q50FWRCQW5'}
                 disabled={!selectedPackage || playersForTraining.length === 0}
                 onPaymentComplete={(successData) => {
                   const completeSuccessData = {

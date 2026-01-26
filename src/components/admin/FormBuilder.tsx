@@ -290,9 +290,9 @@ const FormBuilder: React.FC = () => {
     },
     paymentSettings: {
       squareAppId:
-        process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-sKm2lO4I-t5BuziKTaYoGg',
+        process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
       squareLocationId:
-        process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN',
+        process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5',
       sandboxMode: true,
       currency: 'USD',
     },
@@ -530,9 +530,9 @@ const FormBuilder: React.FC = () => {
         paymentSettings: {
           squareAppId:
             process.env.REACT_APP_SQUARE_APP_ID ||
-            'sq0idp-sKm2lO4I-t5BuziKTaYoGg',
+            'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
           squareLocationId:
-            process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN',
+            process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5',
           sandboxMode: true,
           currency: 'USD',
         },

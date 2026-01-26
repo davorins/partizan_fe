@@ -184,9 +184,9 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 
   const renderPaymentFields = (field: PaymentFormField) => {
     const SQUARE_APP_ID =
-      process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-sKm2lO4I-t5BuziKTaYoGg';
+      process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
     const SQUARE_LOCATION_ID =
-      process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN';
+      process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5';
 
     const handleCardTokenized = async (tokenResult: any) => {
       try {

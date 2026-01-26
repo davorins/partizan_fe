@@ -1294,8 +1294,8 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                   eventId: defaultSeasonEvent.eventId,
                 },
               }}
-              appId={'sq0idp-sKm2lO4I-t5BuziKTaYoGg'}
-              locationId={'LHB5B04Q2CQDN'}
+              appId={'sq0idp-jUCxKnO_i8i7vccQjVj_0g'}
+              locationId={'L26Q50FWRCQW5'}
               disabled={!playerValidation}
               registrationType='tryout'
             />

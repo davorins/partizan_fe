@@ -70,7 +70,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
   };
 
   const processPayment = async (
-    params: ProcessPaymentParams
+    params: ProcessPaymentParams,
   ): Promise<PaymentResult> => {
     try {
       setPaymentProcessing(true);
@@ -86,7 +86,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
       throw new Error(
         axios.isAxiosError(error)
           ? error.response?.data?.message || 'Payment processing failed'
-          : 'Payment processing failed'
+          : 'Payment processing failed',
       );
     } finally {
       setPaymentProcessing(false);
@@ -102,7 +102,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
     const missingFields = formFields
       .filter(
         (field) =>
-          field.required && !formData[field.id] && field.type !== 'payment'
+          field.required && !formData[field.id] && field.type !== 'payment',
       )
       .map((field) => field.label || field.id);
 
@@ -114,7 +114,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 
     try {
       const paymentField = formFields.find(
-        (f): f is PaymentFormField => f.type === 'payment'
+        (f): f is PaymentFormField => f.type === 'payment',
       );
 
       let paymentResult: PaymentResult | null = null;
@@ -175,7 +175,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
       setError(
         err instanceof Error
           ? err.message
-          : 'An unknown error occurred during submission'
+          : 'An unknown error occurred during submission',
       );
     } finally {
       setIsSubmitting(false);
@@ -184,9 +184,9 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 
   const renderPaymentFields = (field: PaymentFormField) => {
     const SQUARE_APP_ID =
-      process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
+      process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-sKm2lO4I-t5BuziKTaYoGg';
     const SQUARE_LOCATION_ID =
-      process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5';
+      process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN';
 
     const handleCardTokenized = async (tokenResult: any) => {
       try {
@@ -220,7 +220,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
             await handleSubmit();
           } else {
             throw new Error(
-              paymentResult.data.error || 'Payment processing failed'
+              paymentResult.data.error || 'Payment processing failed',
             );
           }
         } else {
@@ -235,7 +235,7 @@ const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
       } catch (error) {
         console.error('Payment error:', error);
         setError(
-          error instanceof Error ? error.message : 'Payment processing failed'
+          error instanceof Error ? error.message : 'Payment processing failed',
         );
         setPaymentComplete(false);
       } finally {

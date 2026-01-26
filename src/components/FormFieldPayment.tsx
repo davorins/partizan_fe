@@ -45,7 +45,7 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
     ) {
       // Pricing packages
       const selectedPackage = paymentConfig.pricingPackages.find(
-        (pkg: any) => pkg.defaultSelected || pkg.isEnabled
+        (pkg: any) => pkg.defaultSelected || pkg.isEnabled,
       );
       if (selectedPackage) {
         total = selectedPackage.price * (selectedPackage.quantity || 1);
@@ -96,7 +96,7 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
           formName: formData.name,
           fieldName: field.name,
           pricingPackage: paymentConfig.pricingPackages?.find(
-            (pkg: any) => pkg.defaultSelected
+            (pkg: any) => pkg.defaultSelected,
           ),
         },
       };
@@ -111,7 +111,7 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -142,7 +142,7 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
       setPaymentError(
         error.response?.data?.message ||
           error.message ||
-          'Payment processing failed'
+          'Payment processing failed',
       );
     } finally {
       setIsProcessing(false);
@@ -161,11 +161,11 @@ const FormFieldPayment: React.FC<FormFieldPaymentProps> = ({
       appId:
         paymentConfig.squareAppId ||
         field.squareAppId ||
-        'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
+        'sq0idp-sKm2lO4I-t5BuziKTaYoGg',
       locationId:
         paymentConfig.squareLocationId ||
         field.squareLocationId ||
-        'L26Q50FWRCQW5',
+        'LHB5B04Q2CQDN',
     };
   };
 

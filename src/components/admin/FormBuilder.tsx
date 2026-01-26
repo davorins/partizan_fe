@@ -290,9 +290,9 @@ const FormBuilder: React.FC = () => {
     },
     paymentSettings: {
       squareAppId:
-        process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
+        process.env.REACT_APP_SQUARE_APP_ID || 'sq0idp-sKm2lO4I-t5BuziKTaYoGg',
       squareLocationId:
-        process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5',
+        process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN',
       sandboxMode: true,
       currency: 'USD',
     },
@@ -394,9 +394,8 @@ const FormBuilder: React.FC = () => {
         field === 'country'
       ) {
         const venue = updatedVenues[index];
-        updatedVenues[
-          index
-        ].fullAddress = `${venue.address}, ${venue.city}, ${venue.state} ${venue.zipCode}, ${venue.country}`;
+        updatedVenues[index].fullAddress =
+          `${venue.address}, ${venue.city}, ${venue.state} ${venue.zipCode}, ${venue.country}`;
       }
 
       return { ...prev, venues: updatedVenues };
@@ -531,13 +530,13 @@ const FormBuilder: React.FC = () => {
         paymentSettings: {
           squareAppId:
             process.env.REACT_APP_SQUARE_APP_ID ||
-            'sq0idp-jUCxKnO_i8i7vccQjVj_0g',
+            'sq0idp-sKm2lO4I-t5BuziKTaYoGg',
           squareLocationId:
-            process.env.REACT_APP_SQUARE_LOCATION_ID || 'L26Q50FWRCQW5',
+            process.env.REACT_APP_SQUARE_LOCATION_ID || 'LHB5B04Q2CQDN',
           sandboxMode: true,
           currency: 'USD',
         },
-      }
+      },
     );
 
     // Load tournament settings
@@ -568,7 +567,7 @@ const FormBuilder: React.FC = () => {
       console.log('Loaded tournament settings:', form.tournamentSettings);
       console.log(
         'showScheduleTable from DB:',
-        form.tournamentSettings.showScheduleTable
+        form.tournamentSettings.showScheduleTable,
       );
 
       setTournamentSettings({
@@ -687,7 +686,7 @@ const FormBuilder: React.FC = () => {
       // Add debugging log
       console.log(
         'showScheduleTable value before save:',
-        tournamentSettings.showScheduleTable
+        tournamentSettings.showScheduleTable,
       );
 
       // Only include tournamentSettings if it's a tournament form
@@ -707,7 +706,7 @@ const FormBuilder: React.FC = () => {
         };
         console.log(
           'Tournament settings being saved:',
-          formData.tournamentSettings
+          formData.tournamentSettings,
         );
       } else {
         // Explicitly set to undefined when not a tournament form
@@ -721,7 +720,7 @@ const FormBuilder: React.FC = () => {
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
       } else {
         response = await axios.post(
@@ -729,7 +728,7 @@ const FormBuilder: React.FC = () => {
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
       }
 
@@ -740,7 +739,7 @@ const FormBuilder: React.FC = () => {
           // Verify the saved data
           console.log(
             'Saved tournament settings:',
-            response.data.data.tournamentSettings
+            response.data.data.tournamentSettings,
           );
         }
         fetchForms();
@@ -773,7 +772,7 @@ const FormBuilder: React.FC = () => {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -805,7 +804,7 @@ const FormBuilder: React.FC = () => {
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -821,7 +820,7 @@ const FormBuilder: React.FC = () => {
   const deleteForm = async (formId: string): Promise<void> => {
     if (
       !window.confirm(
-        'Are you sure you want to delete this form? All submissions will also be deleted.'
+        'Are you sure you want to delete this form? All submissions will also be deleted.',
       )
     ) {
       return;
@@ -838,7 +837,7 @@ const FormBuilder: React.FC = () => {
         `${API_BASE_URL}/forms/builder/forms/${formId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -890,7 +889,11 @@ const FormBuilder: React.FC = () => {
 
     console.log(
       'New order:',
-      reorderedFields.map((f) => ({ id: f.id, order: f.order, label: f.label }))
+      reorderedFields.map((f) => ({
+        id: f.id,
+        order: f.order,
+        label: f.label,
+      })),
     );
     setFormFields(reorderedFields);
   };
@@ -977,7 +980,7 @@ const FormBuilder: React.FC = () => {
   };
 
   const ensurePaymentConfig = (
-    config?: Partial<PaymentConfigWithDefaults>
+    config?: Partial<PaymentConfigWithDefaults>,
   ): PaymentConfigWithDefaults => {
     const defaultConfig = createDefaultPaymentConfig();
     return {
@@ -1029,7 +1032,7 @@ const FormBuilder: React.FC = () => {
 
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/forms/embed-code/${selectedForm._id}`
+        `${API_BASE_URL}/forms/embed-code/${selectedForm._id}`,
       );
       if (response.data.success) {
         setEmbedCode(response.data.data);
@@ -1061,7 +1064,7 @@ const FormBuilder: React.FC = () => {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -1071,7 +1074,7 @@ const FormBuilder: React.FC = () => {
       }
     } catch (err: any) {
       setError(
-        'Payment test error: ' + (err.response?.data?.error || err.message)
+        'Payment test error: ' + (err.response?.data?.error || err.message),
       );
       console.error('Payment test error:', err);
     }
@@ -1474,7 +1477,7 @@ const FormBuilder: React.FC = () => {
                           (opt) => ({
                             ...opt,
                             selected: opt.value === e.target.value,
-                          })
+                          }),
                         );
                         setEditingField({
                           ...editingField,
@@ -1609,7 +1612,7 @@ const FormBuilder: React.FC = () => {
                     onChange={(e) => {
                       const usePackages = e.target.checked;
                       const currentPaymentConfig = ensurePaymentConfig(
-                        editingField.paymentConfig
+                        editingField.paymentConfig,
                       );
 
                       setEditingField({
@@ -1655,7 +1658,7 @@ const FormBuilder: React.FC = () => {
                                     onChange={(e) => {
                                       const currentPaymentConfig =
                                         ensurePaymentConfig(
-                                          editingField.paymentConfig
+                                          editingField.paymentConfig,
                                         );
                                       const newPackages = [
                                         ...currentPaymentConfig.pricingPackages,
@@ -1684,7 +1687,7 @@ const FormBuilder: React.FC = () => {
                                       onChange={(e) => {
                                         const currentPaymentConfig =
                                           ensurePaymentConfig(
-                                            editingField.paymentConfig
+                                            editingField.paymentConfig,
                                           );
                                         const newPackages = [
                                           ...currentPaymentConfig.pricingPackages,
@@ -1715,7 +1718,7 @@ const FormBuilder: React.FC = () => {
                                   onChange={(e) => {
                                     const currentPaymentConfig =
                                       ensurePaymentConfig(
-                                        editingField.paymentConfig
+                                        editingField.paymentConfig,
                                       );
                                     const newPackages = [
                                       ...currentPaymentConfig.pricingPackages,
@@ -1744,7 +1747,7 @@ const FormBuilder: React.FC = () => {
                                     onChange={(e) => {
                                       const currentPaymentConfig =
                                         ensurePaymentConfig(
-                                          editingField.paymentConfig
+                                          editingField.paymentConfig,
                                         );
                                       const newPackages = [
                                         ...currentPaymentConfig.pricingPackages,
@@ -1772,7 +1775,7 @@ const FormBuilder: React.FC = () => {
                                     onChange={(e) => {
                                       const currentPaymentConfig =
                                         ensurePaymentConfig(
-                                          editingField.paymentConfig
+                                          editingField.paymentConfig,
                                         );
                                       const newPackages = [
                                         ...currentPaymentConfig.pricingPackages,
@@ -1804,7 +1807,7 @@ const FormBuilder: React.FC = () => {
                                     onChange={(e) => {
                                       const currentPaymentConfig =
                                         ensurePaymentConfig(
-                                          editingField.paymentConfig
+                                          editingField.paymentConfig,
                                         );
                                       const newPackages = [
                                         ...currentPaymentConfig.pricingPackages,
@@ -1829,7 +1832,7 @@ const FormBuilder: React.FC = () => {
                                     onChange={(e) => {
                                       const currentPaymentConfig =
                                         ensurePaymentConfig(
-                                          editingField.paymentConfig
+                                          editingField.paymentConfig,
                                         );
                                       const newPackages = [
                                         ...currentPaymentConfig.pricingPackages,
@@ -1860,11 +1863,11 @@ const FormBuilder: React.FC = () => {
                                 onClick={() => {
                                   const currentPaymentConfig =
                                     ensurePaymentConfig(
-                                      editingField.paymentConfig
+                                      editingField.paymentConfig,
                                     );
                                   const newPackages =
                                     currentPaymentConfig.pricingPackages.filter(
-                                      (_, i) => i !== index
+                                      (_, i) => i !== index,
                                     );
                                   setEditingField({
                                     ...editingField,
@@ -1879,7 +1882,7 @@ const FormBuilder: React.FC = () => {
                               </Button>
                             </Card.Body>
                           </Card>
-                        )
+                        ),
                       )}
                     </Form.Group>
 
@@ -1888,7 +1891,7 @@ const FormBuilder: React.FC = () => {
                       size='sm'
                       onClick={() => {
                         const currentPaymentConfig = ensurePaymentConfig(
-                          editingField.paymentConfig
+                          editingField.paymentConfig,
                         );
                         const newPackages = [
                           ...currentPaymentConfig.pricingPackages,
@@ -2274,7 +2277,7 @@ const FormBuilder: React.FC = () => {
                           setFormSettings({
                             ...formSettings,
                             allowedRoles: allowedRoles.filter(
-                              (r) => r !== role
+                              (r) => r !== role,
                             ),
                           });
                         }
@@ -3229,7 +3232,7 @@ const FormBuilder: React.FC = () => {
                         <td>
                           {venue.startTime && venue.endTime
                             ? `${formatTime(venue.startTime)} - ${formatTime(
-                                venue.endTime
+                                venue.endTime,
                               )}`
                             : 'All day'}
                         </td>
@@ -3855,7 +3858,7 @@ const FormBuilder: React.FC = () => {
                               value={formStatus}
                               onChange={(e) =>
                                 setFormStatus(
-                                  e.target.value as typeof formStatus
+                                  e.target.value as typeof formStatus,
                                 )
                               }
                             >

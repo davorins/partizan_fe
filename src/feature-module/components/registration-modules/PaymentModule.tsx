@@ -69,12 +69,8 @@ interface PaymentFormMethods {
 }
 
 // PROD
-const appId = 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
-const locationId = 'L26Q50FWRCQW5';
-
-// QA
-//const appId = 'sandbox-sq0idb-I4PAJ1f1XKYqYSwLovq0xQ';
-//const locationId = 'LCW4GM814GWXK';
+const appId = 'sq0idp-sKm2lO4I-t5BuziKTaYoGg';
+const locationId = 'LHB5B04Q2CQDN';
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
@@ -115,8 +111,8 @@ const PaymentForm = forwardRef<PaymentFormMethods, SquarePaymentFormProps>(
               } else {
                 reject(
                   new Error(
-                    result.errors?.[0]?.message || 'Tokenization failed'
-                  )
+                    result.errors?.[0]?.message || 'Tokenization failed',
+                  ),
                 );
               }
             },
@@ -130,7 +126,7 @@ const PaymentForm = forwardRef<PaymentFormMethods, SquarePaymentFormProps>(
         {props.children}
       </SquarePaymentForm>
     );
-  }
+  },
 );
 
 PaymentForm.displayName = 'PaymentForm';
@@ -166,7 +162,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
   const [calculatedAmount, setCalculatedAmount] = useState(amount);
   const [isPaying, setIsPaying] = useState(false);
   const [localCustomerEmail, setLocalCustomerEmail] = useState(
-    customerEmail || ''
+    customerEmail || '',
   );
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
@@ -193,7 +189,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     if (players && players.length > 0) {
       console.log(
         '✅ Using direct players prop:',
-        players.map((p: Player) => ({ id: p._id, name: p.fullName }))
+        players.map((p: Player) => ({ id: p._id, name: p.fullName })),
       );
       return players;
     }
@@ -202,7 +198,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     if (formData?.players && formData.players.length > 0) {
       console.log(
         '✅ Using formData players:',
-        formData.players.map((p: Player) => ({ id: p._id, name: p.fullName }))
+        formData.players.map((p: Player) => ({ id: p._id, name: p.fullName })),
       );
       return formData.players;
     }
@@ -245,7 +241,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         (player: Player) => {
           if (!player.seasons || player.seasons.length === 0) {
             console.log(
-              `✅ Player ${player.fullName} has no seasons - needs payment`
+              `✅ Player ${player.fullName} has no seasons - needs payment`,
             );
             return true;
           }
@@ -261,7 +257,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
                 s.paymentStatus === 'paid' || s.paymentComplete === true;
 
               return isTrainingSeason && isSameYear && isPaid;
-            }
+            },
           );
 
           console.log(`📊 Player ${player.fullName} training payment status:`, {
@@ -275,7 +271,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
           });
 
           return !hasPaidForTraining;
-        }
+        },
       );
 
       return unpaidTrainingPlayers.length;
@@ -291,7 +287,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         // Fallback: count all players who aren't marked as paid
         const unpaidTryoutPlayers = effectivePlayers.filter(
           (player: Player) =>
-            !player.paymentComplete || player.paymentStatus !== 'paid'
+            !player.paymentComplete || player.paymentStatus !== 'paid',
         );
         return unpaidTryoutPlayers.length;
       }
@@ -302,7 +298,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         if (!player.seasons || player.seasons.length === 0) {
           // No seasons at all - check top-level payment status
           console.log(
-            `✅ Player ${player.fullName} has no seasons - checking payment status`
+            `✅ Player ${player.fullName} has no seasons - checking payment status`,
           );
           return !player.paymentComplete || player.paymentStatus !== 'paid';
         }
@@ -312,7 +308,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
           (s: SeasonRegistration) =>
             s.tryoutId === tryoutEventId &&
             s.year === tryoutYear &&
-            s.paymentStatus === 'paid'
+            s.paymentStatus === 'paid',
         );
 
         console.log(`🔍 Player ${player.fullName} check:`, {
@@ -346,7 +342,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     // Default: count only unpaid players
     const unpaidPlayers = effectivePlayers.filter(
       (player: Player) =>
-        !player.paymentComplete || player.paymentStatus !== 'paid'
+        !player.paymentComplete || player.paymentStatus !== 'paid',
     );
 
     return unpaidPlayers.length;
@@ -606,7 +602,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         // this might be a new registration where teams haven't been saved yet
         if (validTeamIds.length === 0) {
           console.warn(
-            '⚠️ No valid team IDs found. Teams may need to be saved first.'
+            '⚠️ No valid team IDs found. Teams may need to be saved first.',
           );
 
           // Check if this is a new registration (all teams have no IDs)
@@ -616,12 +612,12 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
             // This is a new registration - we should save teams first
             // But we can't proceed without team IDs
             throw new Error(
-              'Teams have not been saved to the system yet. Please go back and complete team registration before payment.'
+              'Teams have not been saved to the system yet. Please go back and complete team registration before payment.',
             );
           } else {
             // Mixed state - some have IDs, some don't
             throw new Error(
-              'Some teams are not properly registered. Please ensure all teams are saved before payment.'
+              'Some teams are not properly registered. Please ensure all teams are saved before payment.',
             );
           }
         }
@@ -666,7 +662,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
               'Content-Type': 'application/json',
             },
             timeout: 30000,
-          }
+          },
         );
 
         console.log('✅ Tournament payment API response:', response.data);
@@ -714,7 +710,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
           });
         } else {
           throw new Error(
-            response.data.message || 'Tournament payment processing failed'
+            response.data.message || 'Tournament payment processing failed',
           );
         }
       } else {
@@ -726,7 +722,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
               (s: SeasonRegistration) =>
                 s.tryoutId === effectiveEventData?.eventId &&
                 s.year === effectiveEventData?.year &&
-                s.paymentStatus === 'paid'
+                s.paymentStatus === 'paid',
             );
             return !isPaidForThisTryout;
           } else if (registrationType === 'training') {
@@ -756,7 +752,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
                 }
 
                 return isTrainingSeason && isSameYear && isPaid;
-              }
+              },
             );
 
             console.log(
@@ -770,7 +766,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
                   paymentStatus: s.paymentStatus,
                   isTraining: s.season?.toLowerCase().includes('training'),
                 })),
-              }
+              },
             );
 
             return !isPaidForTraining;
@@ -780,7 +776,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
               (s: SeasonRegistration) =>
                 s.season === effectiveEventData?.season &&
                 s.year === effectiveEventData?.year &&
-                s.paymentStatus === 'paid'
+                s.paymentStatus === 'paid',
             );
             return !isPaidForThisSeason;
           }
@@ -837,7 +833,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
             .filter((player: Player) => {
               if (!player._id) {
                 console.error(
-                  `❌ Tryout player "${player.fullName}" has no ID! Skipping.`
+                  `❌ Tryout player "${player.fullName}" has no ID! Skipping.`,
                 );
                 return false;
               }
@@ -852,7 +848,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
 
           console.log(
             '✅ Tryout payment players with IDs:',
-            paymentData.players
+            paymentData.players,
           );
         } else {
           // For player, training, or any other type, use 'process' endpoint
@@ -861,7 +857,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
             .filter((player: Player) => {
               if (!player._id) {
                 console.error(
-                  `❌ Player "${player.fullName}" has no ID! Skipping.`
+                  `❌ Player "${player.fullName}" has no ID! Skipping.`,
                 );
                 return false;
               }
@@ -884,7 +880,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         if (paymentData.players.length === 0) {
           throw new Error(
             `No valid players with IDs found for ${registrationType} registration. ` +
-              `Please ensure all players are properly saved.`
+              `Please ensure all players are properly saved.`,
           );
         }
 
@@ -910,7 +906,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
               'Content-Type': 'application/json',
             },
             timeout: 30000,
-          }
+          },
         );
 
         console.log('✅ Payment API response:', response.data);
@@ -1176,12 +1172,12 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
 
     const unpaidPlayers = effectivePlayers.filter(
       (player: Player) =>
-        !player.paymentComplete || player.paymentStatus !== 'paid'
+        !player.paymentComplete || player.paymentStatus !== 'paid',
     );
 
     const paidPlayers = effectivePlayers.filter(
       (player: Player) =>
-        player.paymentComplete || player.paymentStatus === 'paid'
+        player.paymentComplete || player.paymentStatus === 'paid',
     );
   };
 

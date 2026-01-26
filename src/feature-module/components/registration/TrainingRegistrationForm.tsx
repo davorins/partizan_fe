@@ -121,7 +121,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
           }
         : {}),
     }),
-    [formConfig]
+    [formConfig],
   );
 
   type RegistrationStep =
@@ -136,7 +136,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<PricingPackage | null>(
-    defaultFormConfig.pricing.packages[0]
+    defaultFormConfig.pricing.packages[0],
   );
   const [formError, setFormError] = useState<string | null>(null);
   const [isLoadingUserData, setIsLoadingUserData] = useState(false);
@@ -191,7 +191,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     allSteps.map((step, index) => ({
       ...step,
       number: index + 1,
-    }))
+    })),
   );
 
   const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
@@ -226,7 +226,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
             season.paymentStatus === 'paid' || season.paymentComplete === true;
 
           return isTrainingSeason && isSameYear && isPaid;
-        }
+        },
       );
 
       return hasPaidForTraining;
@@ -242,7 +242,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
     // Return players who are NOT in the paid list
     const unpaidPlayers = userPlayers.filter(
-      (player) => !paidPlayerIds.has(player._id)
+      (player) => !paidPlayerIds.has(player._id),
     );
 
     console.log('🔍 Training Players Status:', {
@@ -256,7 +256,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
         name: p.fullName,
         seasons:
           p.seasons?.filter((s) =>
-            s.season.toLowerCase().includes('training')
+            s.season.toLowerCase().includes('training'),
           ) || [],
       })),
       unpaidPlayers: unpaidPlayers.map((p) => ({
@@ -302,7 +302,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   const isStepAccessible = (
     stepId: string,
     stepIndex: number,
-    currentStepIndex: number
+    currentStepIndex: number,
   ): boolean => {
     // For new users going through the flow
     if (!isAuthenticated && !isExistingUser && !hasCompletedUserRegistration) {
@@ -427,7 +427,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     });
 
     const newPlayersCount = players.filter(
-      (p) => !p._id && p.fullName?.trim()
+      (p) => !p._id && p.fullName?.trim(),
     ).length;
 
     const total = selectedUnpaidPlayers.length + newPlayersCount;
@@ -500,7 +500,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
   // ✅ Save user data function
   const saveUserData = async (
-    userData: UserRegistrationData
+    userData: UserRegistrationData,
   ): Promise<UserRegistrationData | null> => {
     try {
       const password = userData.password || formData.tempAccount?.password;
@@ -559,12 +559,12 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
-          }
+          },
         );
       } else {
         response = await axios.post(
           `${API_BASE_URL}/register`,
-          registrationData
+          registrationData,
         );
       }
 
@@ -602,7 +602,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   // ✅ Save player data function
   const savePlayerData = async (
     playersToSave: Player[],
-    immediatePaymentFlow = false
+    immediatePaymentFlow = false,
   ): Promise<Player[]> => {
     try {
       const token = localStorage.getItem('token');
@@ -647,14 +647,14 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-            }
+            },
           );
 
           // Check for duplicate player response
           if (response.data.error?.includes('already exists')) {
             console.log(
               'Duplicate player detected in response:',
-              response.data
+              response.data,
             );
 
             if (response.data.existingPlayer) {
@@ -669,7 +669,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
               savedPlayers.push(existingPlayer);
               console.log(
                 'Added existing player from response:',
-                existingPlayer
+                existingPlayer,
               );
             } else if (response.data.duplicatePlayerId) {
               const existingPlayer: Player = {
@@ -693,7 +693,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
           if (error.response?.data?.error?.includes('already exists')) {
             console.log(
               'Duplicate player in error response:',
-              error.response.data
+              error.response.data,
             );
 
             const responseData = error.response.data;
@@ -713,7 +713,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
             } else {
               console.warn(
                 'Duplicate error but no player ID found:',
-                responseData
+                responseData,
               );
               savedPlayers.push(player);
             }
@@ -757,13 +757,13 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-            }
+            },
           );
           console.log('Training registration pending email sent');
         } catch (emailError) {
           console.error(
             'Failed to send training registration email:',
-            emailError
+            emailError,
           );
         }
       }
@@ -871,22 +871,22 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
         paidPlayersCount: paidPlayers.length,
         selectedPlayerIds,
         selectedUnpaidPlayers: selectedPlayerIds.filter((id) =>
-          unpaidPlayers.some((p) => p._id === id)
+          unpaidPlayers.some((p) => p._id === id),
         ).length,
         selectedPaidPlayers: selectedPlayerIds.filter((id) =>
-          paidPlayers.some((p) => p._id === id)
+          paidPlayers.some((p) => p._id === id),
         ).length,
         newPlayers: players.filter((p) => !p._id && p.fullName?.trim()).length,
       });
 
       const alreadyPaidSelectedPlayers = selectedPlayerIds.filter((id) =>
-        paidPlayers.some((p) => p._id === id)
+        paidPlayers.some((p) => p._id === id),
       );
 
       if (alreadyPaidSelectedPlayers.length > 0) {
         console.warn(
           '⚠️ Some selected players are already paid for training:',
-          alreadyPaidSelectedPlayers
+          alreadyPaidSelectedPlayers,
         );
       }
 
@@ -897,16 +897,16 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
         try {
           const savedPlayers = await savePlayerData(playersToSave);
           const existingPlayerIds = new Set(
-            players.filter((p) => p._id).map((p) => p._id)
+            players.filter((p) => p._id).map((p) => p._id),
           );
           const newSavedPlayers = savedPlayers.filter(
-            (p) => !existingPlayerIds.has(p._id)
+            (p) => !existingPlayerIds.has(p._id),
           );
           allPlayers = [...players.filter((p) => p._id), ...newSavedPlayers];
         } catch (error: any) {
           if (error.message?.includes('already exists')) {
             console.log(
-              'Duplicate player error - continuing with existing players'
+              'Duplicate player error - continuing with existing players',
             );
             allPlayers = players;
           } else {
@@ -920,7 +920,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
       const existingPlayerIds = new Set(allPlayers.map((p) => p._id));
       const uniqueSelectedPlayers = selectedExistingPlayers.filter(
-        (p) => !existingPlayerIds.has(p._id!)
+        (p) => !existingPlayerIds.has(p._id!),
       );
 
       const finalPlayers = [...allPlayers, ...uniqueSelectedPlayers];
@@ -933,7 +933,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
       const playersForPayment = validPlayers.filter((player) => {
         if (!player.seasons || player.seasons.length === 0) {
           console.log(
-            `✅ Player ${player.fullName} has no seasons - eligible for payment`
+            `✅ Player ${player.fullName} has no seasons - eligible for payment`,
           );
           return true;
         }
@@ -961,7 +961,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
             }
 
             return exactSeasonMatch && exactYearMatch && isPaid;
-          }
+          },
         );
 
         // Also check for any training payment (looser check for debugging)
@@ -981,12 +981,12 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                   season: season.season,
                   year: season.year,
                   paymentStatus: season.paymentStatus,
-                }
+                },
               );
             }
 
             return isTraining && isPaid;
-          }
+          },
         );
 
         console.log(`📊 Player ${player.fullName} eligibility:`, {
@@ -1012,7 +1012,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
       if (playersForPayment.length === 0) {
         throw new Error(
-          `All selected players have already paid for ${dynamicSeasonEvent.season} ${dynamicSeasonEvent.year} training. Please select different players or add new players.`
+          `All selected players have already paid for ${dynamicSeasonEvent.season} ${dynamicSeasonEvent.year} training. Please select different players or add new players.`,
         );
       }
 
@@ -1033,7 +1033,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
         break;
       case 'user':
         setCurrentStep(
-          hasCompletedUserRegistration ? 'playerSelect' : 'verifyEmail'
+          hasCompletedUserRegistration ? 'playerSelect' : 'verifyEmail',
         );
         break;
       case 'playerSelect':
@@ -1062,7 +1062,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     if (successData.players && successData.players.length > 0) {
       const updatedPlayers = playersForTraining.map((player) => {
         const paidPlayer = successData.players.find(
-          (p: any) => p._id === player._id
+          (p: any) => p._id === player._id,
         );
         if (paidPlayer) {
           return {
@@ -1131,10 +1131,10 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     const paidPlayers = paidPlayersForTraining;
     const unpaidPlayers = unpaidPlayersForTraining;
     const selectedUnpaidPlayers = selectedPlayerIds.filter((id) =>
-      unpaidPlayers.some((p) => p._id === id)
+      unpaidPlayers.some((p) => p._id === id),
     );
     const newPlayersCount = players.filter(
-      (p) => !p._id && p.fullName?.trim()
+      (p) => !p._id && p.fullName?.trim(),
     ).length;
     const totalSelectedCount = selectedUnpaidPlayers.length + newPlayersCount;
 
@@ -1247,7 +1247,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   const renderSuccessMessage = () => {
     const paidPlayers = paidPlayersForTraining;
     const newlyRegisteredPlayers = playersForTraining.filter(
-      (p) => !paidPlayers.some((paid) => paid._id === p._id)
+      (p) => !paidPlayers.some((paid) => paid._id === p._id),
     );
 
     const actualPaymentAmount =
@@ -1257,7 +1257,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     const actualSelectedPackage =
       selectedPackage ||
       defaultFormConfig.pricing.packages.find(
-        (pkg) => pkg.price === actualTotalAmount / getEffectivePlayerCount()
+        (pkg) => pkg.price === actualTotalAmount / getEffectivePlayerCount(),
       );
 
     return (
@@ -1541,8 +1541,8 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                 eventData={formData.eventData}
                 savedUserData={localSavedUserData}
                 savedPlayers={playersForTraining}
-                appId={'sq0idp-jUCxKnO_i8i7vccQjVj_0g'}
-                locationId={'L26Q50FWRCQW5'}
+                appId={'sq0idp-sKm2lO4I-t5BuziKTaYoGg'}
+                locationId={'LHB5B04Q2CQDN'}
                 disabled={!selectedPackage || playersForTraining.length === 0}
                 onPaymentComplete={(successData) => {
                   const completeSuccessData = {

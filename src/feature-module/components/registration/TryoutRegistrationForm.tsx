@@ -130,8 +130,8 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
         try {
           const response = await fetch(
             `${API_BASE_URL}/admin/tryout-configs/${encodeURIComponent(
-              seasonEvent.season
-            )}/${seasonEvent.year}`
+              seasonEvent.season,
+            )}/${seasonEvent.year}`,
           );
 
           if (response.ok) {
@@ -142,7 +142,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
           } else {
             const errorData = await response.json();
             throw new Error(
-              errorData.message || 'Failed to load tryout config'
+              errorData.message || 'Failed to load tryout config',
             );
           }
         } catch (error) {
@@ -193,7 +193,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
       },
       ...formConfig,
     }),
-    [formConfig, effectiveTryoutConfig]
+    [formConfig, effectiveTryoutConfig],
   );
 
   // Define steps
@@ -351,7 +351,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
           }
 
           return result;
-        }
+        },
       );
 
       return hasPaidForThisTryout;
@@ -372,7 +372,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
     // Return players who are NOT in the paid list
     const unpaidPlayers = userPlayers.filter(
-      (player) => !paidPlayerIds.has(player._id)
+      (player) => !paidPlayerIds.has(player._id),
     );
 
     console.log('🔍 Tryout Players Status:', {
@@ -437,7 +437,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     });
 
     const newPlayersCount = players.filter(
-      (p) => !p._id && p.fullName?.trim()
+      (p) => !p._id && p.fullName?.trim(),
     ).length;
     const total = selectedUnpaidPlayers.length + newPlayersCount;
 
@@ -577,7 +577,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
         registrationData,
         {
           headers: { 'Content-Type': 'application/json' },
-        }
+        },
       );
 
       if (response.data.token) {
@@ -635,7 +635,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     if (selectedPlayerIds.length > 0 && userPlayers) {
       console.log(
         '🔄 Adding selected existing players:',
-        selectedPlayerIds.length
+        selectedPlayerIds.length,
       );
       selectedPlayerIds.forEach((playerId) => {
         const player = userPlayers.find((p) => p._id === playerId);
@@ -657,11 +657,11 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
     // 3. Add existing players in state that aren't selected
     const existingPlayersInState = players.filter(
-      (p) => p._id && !selectedPlayerIds.includes(p._id!)
+      (p) => p._id && !selectedPlayerIds.includes(p._id!),
     );
     console.log(
       '🔄 Adding existing players in state:',
-      existingPlayersInState.length
+      existingPlayersInState.length,
     );
     finalPlayers.push(...existingPlayersInState);
 
@@ -723,7 +723,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     } catch (error: any) {
       console.error('❌ Error saving players:', error);
       setFormError(
-        error.message || 'Failed to save player information. Please try again.'
+        error.message || 'Failed to save player information. Please try again.',
       );
     }
   };
@@ -747,7 +747,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
   const savePlayerData = async (
     playersToSave: Player[],
-    immediatePaymentFlow = false
+    immediatePaymentFlow = false,
   ): Promise<Player[]> => {
     try {
       const token = localStorage.getItem('token');
@@ -792,14 +792,14 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-            }
+            },
           );
 
           // Check for duplicate player response
           if (response.data.error?.includes('already exists')) {
             console.log(
               'Duplicate player detected in response:',
-              response.data
+              response.data,
             );
 
             if (response.data.existingPlayer) {
@@ -814,7 +814,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
               savedPlayers.push(existingPlayer);
               console.log(
                 'Added existing player from response:',
-                existingPlayer
+                existingPlayer,
               );
             } else if (response.data.duplicatePlayerId) {
               const existingPlayer: Player = {
@@ -838,7 +838,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
           if (error.response?.data?.error?.includes('already exists')) {
             console.log(
               'Duplicate player in error response:',
-              error.response.data
+              error.response.data,
             );
 
             const responseData = error.response.data;
@@ -858,7 +858,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
             } else {
               console.warn(
                 'Duplicate error but no player ID found:',
-                responseData
+                responseData,
               );
               savedPlayers.push(player);
             }
@@ -904,7 +904,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
   const renderSuccessMessage = () => {
     const paidPlayers = getPaidPlayersForTryout();
     const newlyRegisteredPlayers = playersForTryout.filter(
-      (p) => !paidPlayers.some((paid) => paid._id === p._id)
+      (p) => !paidPlayers.some((paid) => paid._id === p._id),
     );
 
     return (
@@ -1089,7 +1089,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 <p className='mb-2'>
                   <strong>Registration Deadline:</strong>{' '}
                   {new Date(
-                    effectiveTryoutConfig.registrationDeadline
+                    effectiveTryoutConfig.registrationDeadline,
                   ).toLocaleDateString()}
                 </p>
               )}
@@ -1294,8 +1294,8 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                   eventId: defaultSeasonEvent.eventId,
                 },
               }}
-              appId={'sq0idp-jUCxKnO_i8i7vccQjVj_0g'}
-              locationId={'L26Q50FWRCQW5'}
+              appId={'sq0idp-sKm2lO4I-t5BuziKTaYoGg'}
+              locationId={'LHB5B04Q2CQDN'}
               disabled={!playerValidation}
               registrationType='tryout'
             />

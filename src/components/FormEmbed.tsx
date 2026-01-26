@@ -22,7 +22,7 @@ const SquarePaymentFormWithRef = React.forwardRef<any, PaymentFormProps>(
     <SquarePaymentForm {...props} ref={ref}>
       {props.children}
     </SquarePaymentForm>
-  )
+  ),
 );
 SquarePaymentFormWithRef.displayName = 'SquarePaymentFormWithRef';
 
@@ -157,7 +157,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
         setServerErrors([]);
 
         const response = await axios.get(
-          `${API_BASE_URL}/forms/published/${formId}`
+          `${API_BASE_URL}/forms/published/${formId}`,
         );
 
         if (response.data.success) {
@@ -400,7 +400,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
                       <td>
                         {venue.startTime && venue.endTime
                           ? `${formatTime(venue.startTime)} - ${formatTime(
-                              venue.endTime
+                              venue.endTime,
                             )}`
                           : 'All day'}
                       </td>
@@ -484,7 +484,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
     if (!formData) return '';
 
     const emailField = formData.fields.find(
-      (field: FormField) => field.type === 'email'
+      (field: FormField) => field.type === 'email',
     );
 
     if (!emailField) return '';
@@ -544,7 +544,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
 
       // Ensure email is at root level for all possible field names
       const emailField = formData.fields.find(
-        (f: FormField) => f.type === 'email'
+        (f: FormField) => f.type === 'email',
       );
       if (emailField) {
         const emailValue =
@@ -557,7 +557,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
       // Ensure name is at root level for all possible field names
       const nameField = formData.fields.find(
         (f: FormField) =>
-          f.type === 'text' && f.label.toLowerCase().includes('name')
+          f.type === 'text' && f.label.toLowerCase().includes('name'),
       );
       if (nameField) {
         const nameValue =
@@ -575,7 +575,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       console.log('Form submission response:', response.data);
@@ -592,7 +592,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
         console.log('Submission ID set:', submissionId);
 
         const paymentFields = formData.fields.filter(
-          (field: FormField) => field.type === 'payment'
+          (field: FormField) => field.type === 'payment',
         );
 
         if (paymentFields.length > 0) {
@@ -604,7 +604,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
           if (pricingPackages && pricingPackages.length > 0) {
             const defaultPackage =
               pricingPackages.find(
-                (pkg: PricingPackage) => pkg.defaultSelected && pkg.isEnabled
+                (pkg: PricingPackage) => pkg.defaultSelected && pkg.isEnabled,
               ) || pricingPackages[0];
 
             if (defaultPackage) {
@@ -691,7 +691,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
 
     if (selectedPackage.maxQuantity && quantity > selectedPackage.maxQuantity) {
       setPaymentError(
-        `Maximum quantity for this package is ${selectedPackage.maxQuantity}`
+        `Maximum quantity for this package is ${selectedPackage.maxQuantity}`,
       );
       return false;
     }
@@ -817,7 +817,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
           selectedPackage: packageName,
           quantity: quantity,
           amount: amount, // Send the calculated amount
-        }
+        },
       );
 
       console.log('Payment response:', paymentResponse.data);
@@ -851,7 +851,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
         }
       } else {
         throw new Error(
-          paymentResponse.data.error || 'Payment processing failed'
+          paymentResponse.data.error || 'Payment processing failed',
         );
       }
     } catch (err: any) {
@@ -860,7 +860,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
         err.response?.data?.error ||
           err.response?.data?.message ||
           err.message ||
-          'Payment processing failed'
+          'Payment processing failed',
       );
     } finally {
       setIsSubmitting(false);
@@ -876,7 +876,7 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
     }
 
     const packages = paymentField.paymentConfig.pricingPackages.filter(
-      (pkg: PricingPackage) => pkg.isEnabled !== false
+      (pkg: PricingPackage) => pkg.isEnabled !== false,
     );
 
     const handleQuantityChange = (newQuantity: number) => {
@@ -1149,11 +1149,11 @@ const FormEmbed: React.FC<FormEmbedProps> = ({
     const appId =
       paymentField.paymentConfig?.squareAppId ||
       formData!.settings?.paymentSettings?.squareAppId ||
-      'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
+      'sq0idp-sKm2lO4I-t5BuziKTaYoGg';
     const locationId =
       paymentField.paymentConfig?.squareLocationId ||
       formData!.settings?.paymentSettings?.squareLocationId ||
-      'L26Q50FWRCQW5';
+      'LHB5B04Q2CQDN';
 
     return (
       <div className='payment-step'>

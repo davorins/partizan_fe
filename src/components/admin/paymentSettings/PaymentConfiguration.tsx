@@ -1403,7 +1403,7 @@ const PaymentConfiguration: React.FC<PaymentConfigurationProps> = ({}) => {
   const renderConfigurationsList = () => (
     <>
       <div className='page-wrapper'>
-        <div className='content content-two'>
+        <div className='content'>
           <div className='d-flex justify-content-between align-items-center mb-4'>
             <h5>Payment Configurations</h5>
             <Button

@@ -8,6 +8,7 @@ import MainLayout from '../components/MainLayout';
 import HomePage from '../pages/HomePage';
 import ContactUsPage from '../pages/ContactUsPage';
 import AboutUsPage from '../pages/AboutUsPage';
+import ProgramLeadership from '../pages/ProgramLeadership';
 import OurTeamPage from '../pages/OurTeamPage';
 import FAQUserView from '../content/FAQUserView';
 import PrivacyPolicy from '../pages/PrivacyPolicy';
@@ -60,6 +61,14 @@ const ALLRoutes = ({ showSponsorLogo, onSplashClose }: ALLRoutesProps) => {
         element={
           <MainLayout showSponsorLogo={showSponsorLogo}>
             <AboutUsPage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path='/program-leadership'
+        element={
+          <MainLayout showSponsorLogo={showSponsorLogo}>
+            <ProgramLeadership />
           </MainLayout>
         }
       />

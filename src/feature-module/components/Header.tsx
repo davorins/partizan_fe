@@ -25,10 +25,11 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
   const navigate = useNavigate();
   const routes = all_routes;
   const [avatarSrc, setAvatarSrc] = useState(DEFAULT_AVATAR);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [teamDropdownOpen, setTeamDropdownOpen] = useState(false);
 
   const mobileSidebar = useSelector(
-    (state: any) => state.sidebarSlice.mobileSidebar
+    (state: any) => state.sidebarSlice.mobileSidebar,
   );
 
   const sponsors = [
@@ -65,8 +66,23 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
     dispatch(setExpandMenu(false));
   }, [dispatch]);
 
+  const toggleAboutDropdown = () => {
+    setAboutDropdownOpen((prev) => !prev);
+    setTeamDropdownOpen(false);
+  };
+
   const toggleTeamDropdown = () => {
-    setTeamDropdownOpen(!teamDropdownOpen);
+    setTeamDropdownOpen((prev) => !prev);
+    setAboutDropdownOpen(false);
+  };
+
+  const closeAboutDropdown = () => {
+    setAboutDropdownOpen(false);
+  };
+
+  const closeAllDropdowns = () => {
+    setAboutDropdownOpen(false);
+    setTeamDropdownOpen(false);
   };
 
   const closeTeamDropdown = () => {
@@ -90,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const avatar = response.data?.avatar;
@@ -175,15 +191,39 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
                 Tournaments
               </Link>
             </li>
-            {/* <li className='nav-item'>
-              <Link className='nav-link' to='/tournament'>
-                Tournament
-              </Link>
-            </li> */}
-            <li className='nav-item'>
-              <Link className='nav-link' to='/about-us'>
+            <li className='nav-item dropdown'>
+              <Link
+                className='nav-link dropdown-toggle'
+                to='#'
+                role='button'
+                data-bs-toggle='dropdown'
+                aria-expanded={aboutDropdownOpen}
+                onClick={toggleAboutDropdown}
+              >
                 About Us
               </Link>
+              <ul
+                className={`dropdown-menu ${aboutDropdownOpen ? 'show' : ''}`}
+              >
+                <li>
+                  <Link
+                    className='dropdown-item'
+                    to='/about-us'
+                    onClick={closeAboutDropdown}
+                  >
+                    Our Mission
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className='dropdown-item'
+                    to='/program-leadership'
+                    onClick={closeAboutDropdown}
+                  >
+                    Program Leadership
+                  </Link>
+                </li>
+              </ul>
             </li>
             <li className='nav-item dropdown'>
               <Link
@@ -339,23 +379,42 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
                 <i className='ti ti-tournament' /> Tournaments
               </Link>
             </li>
-            {/* <li className='nav-item'>
+            <li className='nav-item dropdown'>
               <Link
-                className='nav-link'
-                to='/tournament'
-                onClick={toggleMobileSidebar}
-              >
-                <i className='ti ti-tournament' /> Tournament
-              </Link>
-            </li> */}
-            <li className='nav-item'>
-              <Link
-                className='nav-link'
-                to='/about-us'
-                onClick={toggleMobileSidebar}
+                className='nav-link dropdown-toggle'
+                to='#'
+                onClick={(e) => {
+                  e.preventDefault();
+                  const nextSibling = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (nextSibling) {
+                    nextSibling.style.display =
+                      nextSibling.style.display === 'block' ? 'none' : 'block';
+                  }
+                }}
               >
                 <i className='ti ti-chess-knight' /> About Us
               </Link>
+              <ul className='dropdown-mobile' style={{ display: 'none' }}>
+                <li>
+                  <Link
+                    className='dropdown-item'
+                    to='/about-us'
+                    onClick={toggleMobileSidebar}
+                  >
+                    Our Mission
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className='dropdown-item'
+                    to='/program-leadership'
+                    onClick={toggleMobileSidebar}
+                  >
+                    Program Leadership
+                  </Link>
+                </li>
+              </ul>
             </li>
             <li className='nav-item dropdown'>
               <Link

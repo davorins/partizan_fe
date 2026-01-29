@@ -338,4 +338,7 @@ export const all_routes = {
   pageBuilderNew: '/admin/page-builder/new',
   pageBuilderEdit: '/admin/page-builder/edit/:id',
   dynamicPage: '/page/:slug',
+
+  // Payment Configuration
+  paymentConfiguration: '/admin/payment-configuration',
 };

@@ -69,8 +69,8 @@ interface PaymentFormMethods {
 }
 
 // PROD
-const appId = 'sq0idp-jUCxKnO_i8i7vccQjVj_0g';
-const locationId = 'L26Q50FWRCQW5';
+const appId = 'sq0idp-sKm2lO4I-t5BuziKTaYoGg';
+const locationId = 'LHB5B04Q2CQDN';
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';

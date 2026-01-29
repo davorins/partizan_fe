@@ -210,28 +210,68 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
     const trainingSeason = dynamicSeasonEvent.season;
     const trainingYear = dynamicSeasonEvent.year;
+    const trainingEventId = dynamicSeasonEvent.eventId;
 
-    console.log('🔍 Checking paid players for training:', {
+    console.log('🔍 Checking paid players for training/camp:', {
       trainingSeason,
       trainingYear,
+      trainingEventId,
       totalPlayers: userPlayers.length,
     });
 
     return userPlayers.filter((player) => {
-      const hasPaidForTraining = player.seasons?.some(
+      const hasPaidForThisTraining = player.seasons?.some(
         (season: SeasonRegistration) => {
-          const isTrainingSeason = season.season === 'Basketball Training';
-          const isSameYear = season.year === trainingYear;
+          // Check if this is a training/camp program (not a tryout)
+          // Training programs can be: "Basketball Training", "Winter Break Camp", etc.
+          const isTrainingOrCampSeason =
+            season.season === 'Basketball Training' ||
+            season.season.toLowerCase().includes('training') ||
+            season.season.toLowerCase().includes('camp') ||
+            season.season.toLowerCase().includes('clinic');
+
+          if (!isTrainingOrCampSeason) {
+            // This is not a training/camp season (might be a tryout)
+            return false;
+          }
+
+          // Check if it's the same specific training/camp event
+          const exactSeasonMatch = season.season === trainingSeason;
+          const exactYearMatch = season.year === trainingYear;
+          // Use tryoutId to match specific event
+          const isSameEvent = season.tryoutId === trainingEventId;
+
           const isPaid =
             season.paymentStatus === 'paid' || season.paymentComplete === true;
 
-          return isTrainingSeason && isSameYear && isPaid;
+          const result =
+            exactSeasonMatch && exactYearMatch && isSameEvent && isPaid;
+
+          if (result) {
+            console.log(
+              `✅ Player ${player.fullName} paid for "${trainingSeason}":`,
+              {
+                seasonInDB: season.season,
+                yearInDB: season.year,
+                tryoutIdInDB: season.tryoutId,
+                currentEventId: trainingEventId,
+                paymentStatus: season.paymentStatus,
+              },
+            );
+          }
+
+          return result;
         },
       );
 
-      return hasPaidForTraining;
+      return hasPaidForThisTraining;
     });
-  }, [userPlayers, dynamicSeasonEvent.season, dynamicSeasonEvent.year]);
+  }, [
+    userPlayers,
+    dynamicSeasonEvent.season,
+    dynamicSeasonEvent.year,
+    dynamicSeasonEvent.eventId,
+  ]);
 
   // ✅ Get unpaid players (those not already paid for this training)
   const getUnpaidPlayers = useCallback((): Player[] => {
@@ -938,9 +978,21 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
           return true;
         }
 
-        // Check if player has paid for THIS EXACT training season
+        // Check if player has paid for THIS EXACT training/camp season
         const hasPaidForThisExactTraining = player.seasons.some(
           (season: SeasonRegistration) => {
+            // Check if this is a training/camp program
+            const isTrainingOrCampSeason =
+              season.season === 'Basketball Training' ||
+              season.season.toLowerCase().includes('training') ||
+              season.season.toLowerCase().includes('camp') ||
+              season.season.toLowerCase().includes('clinic');
+
+            if (!isTrainingOrCampSeason) {
+              // Skip non-training seasons (like tryouts)
+              return false;
+            }
+
             const exactSeasonMatch =
               season.season === dynamicSeasonEvent.season;
             const exactYearMatch = season.year === dynamicSeasonEvent.year;
@@ -949,11 +1001,13 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
               season.paymentComplete === true;
 
             if (exactSeasonMatch && exactYearMatch) {
-              console.log(`🔍 Player ${player.fullName} season check:`, {
+              console.log(`🔍 Player ${player.fullName} training/camp check:`, {
                 seasonInDB: season.season,
                 currentSeason: dynamicSeasonEvent.season,
                 yearInDB: season.year,
                 currentYear: dynamicSeasonEvent.year,
+                tryoutIdInDB: season.tryoutId,
+                currentEventId: dynamicSeasonEvent.eventId,
                 isPaid,
                 paymentStatus: season.paymentStatus,
                 exactMatch: true,
@@ -964,34 +1018,8 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
           },
         );
 
-        // Also check for any training payment (looser check for debugging)
-        const hasAnyTrainingPayment = player.seasons.some(
-          (season: SeasonRegistration) => {
-            const isTraining = season.season
-              ?.toLowerCase()
-              .includes('training');
-            const isPaid =
-              season.paymentStatus === 'paid' ||
-              season.paymentComplete === true;
-
-            if (isTraining && isPaid) {
-              console.log(
-                `🏀 Player ${player.fullName} has training payment:`,
-                {
-                  season: season.season,
-                  year: season.year,
-                  paymentStatus: season.paymentStatus,
-                },
-              );
-            }
-
-            return isTraining && isPaid;
-          },
-        );
-
         console.log(`📊 Player ${player.fullName} eligibility:`, {
           hasPaidForThisExactTraining,
-          hasAnyTrainingPayment,
           isEligible: !hasPaidForThisExactTraining,
           seasonsCount: player.seasons?.length || 0,
         });

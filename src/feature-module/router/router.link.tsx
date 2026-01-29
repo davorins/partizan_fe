@@ -1,6 +1,6 @@
 // router.link.tsx
 import React from 'react';
-import { Route, Navigate, useParams } from 'react-router-dom'; // Fix import
+import { Route, Navigate, useParams } from 'react-router-dom';
 import { all_routes } from './all_routes';
 import DeleteRequest from '../userManagement/deleteRequest';
 import Login from '../auth/login/login';
@@ -76,6 +76,7 @@ import PageBuilder from '../../components/page-builder/PageBuilder';
 import CreateNewPage from '../../components/page-builder/CreateNewPage';
 import PageList from '../../components/page-builder/PageList';
 import PageRenderer from '../../components/page-builder/PageRenderer';
+import PaymentConfiguration from '../../components/admin/paymentSettings/PaymentConfiguration';
 
 const routes = all_routes;
 
@@ -578,6 +579,11 @@ export const protectedRoutes = [
   {
     path: routes.adminRefundsPanel,
     element: <AdminRefundsPanel />,
+    roles: ['admin'],
+  },
+  {
+    path: routes.paymentConfiguration,
+    element: <PaymentConfiguration />,
     roles: ['admin'],
   },
   {

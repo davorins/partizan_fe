@@ -250,6 +250,14 @@ export const SidebarData = [
         icon: 'ti ti-ticket',
         roles: ['admin'],
       },
+      {
+        label: 'Payment Configuration',
+        submenu: false,
+        showSubRoute: false,
+        link: '/admin/payment-configuration',
+        icon: 'ti ti-credit-card-pay',
+        roles: ['admin'],
+      },
     ],
   },
   {

@@ -161,7 +161,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
 
       try {
         const tournamentResponse = await fetch(
-          `${API_BASE_URL}/admin/tournament-configs`
+          `${API_BASE_URL}/admin/tournament-configs`,
         );
         if (tournamentResponse.ok) {
           tournamentConfigsData = await tournamentResponse.json();
@@ -172,7 +172,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
 
       try {
         const tryoutResponse = await fetch(
-          `${API_BASE_URL}/admin/tryout-configs`
+          `${API_BASE_URL}/admin/tryout-configs`,
         );
         if (tryoutResponse.ok) {
           tryoutConfigsData = await tryoutResponse.json();
@@ -229,7 +229,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
             !configsData.training
           ) {
             console.log(
-              `✅ Found ACTIVE training: ${configData.season || key}`
+              `✅ Found ACTIVE training: ${configData.season || key}`,
             );
             configsData.training = {
               _id: configData._id,
@@ -253,7 +253,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
                     name: pkg.name || '',
                     price: pkg.price || 0,
                     description: pkg.description || '',
-                  })
+                  }),
                 ),
               },
               description: configData.description || '',
@@ -274,7 +274,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
               configData.pricing.packages.length === 0)
           ) {
             console.log(
-              `✅ Found ACTIVE player registration: ${configData.season || key}`
+              `✅ Found ACTIVE player registration: ${configData.season || key}`,
             );
             configsData.player = {
               _id: configData._id,
@@ -292,18 +292,18 @@ const PageRenderer: React.FC<PageRendererProps> = ({
               __v: configData.__v,
             };
           }
-        }
+        },
       );
 
       // Process tournament configs
       if (tournamentConfigsData.length > 0) {
         const activeTournament = tournamentConfigsData.find(
-          (config: TournamentSpecificConfig) => config.isActive
+          (config: TournamentSpecificConfig) => config.isActive,
         );
 
         if (activeTournament) {
           console.log(
-            `✅ Found ACTIVE tournament: ${activeTournament.tournamentName}`
+            `✅ Found ACTIVE tournament: ${activeTournament.tournamentName}`,
           );
           configsData.tournament = {
             _id: activeTournament._id,
@@ -342,7 +342,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
       // Process tryout configs
       if (tryoutConfigsData.length > 0) {
         const activeTryout = tryoutConfigsData.find(
-          (config: TryoutSpecificConfig) => config.isActive
+          (config: TryoutSpecificConfig) => config.isActive,
         );
 
         if (activeTryout) {
@@ -415,7 +415,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
     } catch (error) {
       console.error(
         '❌ Error fetching form configurations in PageRenderer:',
-        error
+        error,
       );
       // Set default player registration on error (MATCHING HomePage LOGIC)
       setFormConfigs({
@@ -588,8 +588,8 @@ const PageRenderer: React.FC<PageRendererProps> = ({
               alignment === 'center'
                 ? 'justify-content-center'
                 : alignment === 'right'
-                ? 'justify-content-end'
-                : ''
+                  ? 'justify-content-end'
+                  : ''
             } flex-wrap gap-3`}
           >
             {/* Primary Button */}
@@ -896,7 +896,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
                         section.config.videoUrl.includes('youtu.be')
                           ? section.config.videoUrl.split('/').pop()
                           : new URL(section.config.videoUrl).searchParams.get(
-                              'v'
+                              'v',
                             )
                       }`}
                       title={section.title || 'Video'}
@@ -1131,7 +1131,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
                               )}
                             </div>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   ) : (
@@ -1242,7 +1242,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
           .filter((section: PageSection) => section.isActive)
           .sort((a: PageSection, b: PageSection) => a.position - b.position)
           .map((section: PageSection, index: number) =>
-            renderSection(section, index)
+            renderSection(section, index),
           )}
       </main>
     </div>

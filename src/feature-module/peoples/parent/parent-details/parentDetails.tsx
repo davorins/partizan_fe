@@ -622,7 +622,7 @@ const ParentDetails = () => {
     paymentMongoId: string,
     amount: number,
     reason: string,
-  ) => {
+  ): Promise<{ success: boolean }> => {
     try {
       const token = localStorage.getItem('token');
 
@@ -664,17 +664,21 @@ const ParentDetails = () => {
 
       console.log('✅ Backend response:', response.data);
 
+      handleCloseRefundModal();
+
       if (response.data.success) {
         alert('✅ Refund processed successfully!');
-        handleCloseRefundModal();
 
+        // Refresh payments after a short delay
         setTimeout(() => {
           refreshPayments();
         }, 1000);
 
         return { success: true };
       } else {
-        throw new Error(response.data.error || 'Refund failed');
+        // Show error message even after closing modal
+        alert(`❌ Refund failed: ${response.data.error || 'Unknown error'}`);
+        return { success: false };
       }
     } catch (error: any) {
       console.error('❌ Refund error details:', {
@@ -683,22 +687,28 @@ const ParentDetails = () => {
         status: error.response?.status,
       });
 
-      // FIXED ERROR HANDLING:
+      // ALWAYS close the modal on error too
+      handleCloseRefundModal();
+
+      // SAFE ERROR HANDLING - NO .errors[0].code access
       let errorMessage = 'Failed to process refund request';
 
+      // Check backend response first
       if (error.response?.data?.error) {
-        // Direct error message from backend
         errorMessage = error.response.data.error;
-      } else if (error.response?.data?.message) {
-        // Alternative error field
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        // Axios error message
+      }
+      // Check for generic error message
+      else if (error.message) {
         errorMessage = error.message;
       }
 
+      // Show error alert after modal is closed
+      setTimeout(() => {
+        alert(`❌ Refund Error: ${errorMessage}`);
+      }, 100); // Small delay to ensure modal is closed first
+
       console.error('Final error message:', errorMessage);
-      throw new Error(errorMessage);
+      return { success: false };
     }
   };
 

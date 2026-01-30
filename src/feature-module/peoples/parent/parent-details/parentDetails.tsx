@@ -23,8 +23,8 @@ interface RefundModalProps {
   onRefundSubmit: (
     paymentId: string,
     amount: number,
-    reason: string
-  ) => Promise<void>;
+    reason: string,
+  ) => Promise<{ success: boolean } | void>;
   onClose: () => void;
 }
 
@@ -35,7 +35,7 @@ const RefundModal: React.FC<RefundModalProps> = ({
   onClose,
 }) => {
   const [refundAmount, setRefundAmount] = useState<string>(
-    maxRefundAmount.toFixed(2)
+    maxRefundAmount.toFixed(2),
   );
   const [refundReason, setRefundReason] = useState<string>('Customer request');
   const [customReason, setCustomReason] = useState<string>('');
@@ -101,32 +101,28 @@ const RefundModal: React.FC<RefundModalProps> = ({
     try {
       console.log('🔄 Submitting refund...');
       await onRefundSubmit(payment._id, amount, finalReason);
-
-      // Show success message
-      alert('✅ Refund processed successfully!');
-      onClose();
-
-      // Optional: Refresh page data
-      if (window.location.reload) {
-        setTimeout(() => window.location.reload(), 1000);
-      }
     } catch (error: any) {
       console.error('Refund error:', error);
 
-      // Show user-friendly error message
-      let userMessage = error.message || 'Failed to process refund';
+      // Only show actual errors (not success cases)
+      if (!error.message.includes('Refund has been initiated')) {
+        let userMessage = error.message || 'Failed to process refund';
 
-      // Make error messages more user-friendly
-      if (userMessage.includes('already been refunded')) {
-        userMessage = 'This payment has already been refunded.';
-      } else if (userMessage.includes('not found')) {
-        userMessage =
-          'Payment not found. Please refresh the page and try again.';
-      } else if (userMessage.includes('authentication')) {
-        userMessage = 'Session expired. Please log in again.';
+        // Make error messages more user-friendly
+        if (userMessage.includes('already been refunded')) {
+          userMessage = 'This payment has already been refunded.';
+        } else if (userMessage.includes('not found')) {
+          userMessage =
+            'Payment not found. Please refresh the page and try again.';
+        } else if (userMessage.includes('authentication')) {
+          userMessage = 'Session expired. Please log in again.';
+        }
+
+        setError(userMessage);
+      } else {
+        // If it's a success message, just close the modal
+        onClose();
       }
-
-      setError(userMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -171,12 +167,6 @@ const RefundModal: React.FC<RefundModalProps> = ({
                       <p className='mb-1'>{formatCurrency(payment.amount)}</p>
                     </div>
                     <div className='col-6'>
-                      <small className='text-muted'>Already Refunded</small>
-                      <p className='mb-1'>
-                        {formatCurrency(payment.totalRefunded || 0)}
-                      </p>
-                    </div>
-                    <div className='col-12 mt-2'>
                       <small className='text-muted'>
                         Maximum Refund Available
                       </small>
@@ -395,10 +385,10 @@ const ParentDetails = () => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const [parent, setParent] = useState<ParentWithStatus | null>(
-    location.state?.parent || null
+    location.state?.parent || null,
   );
   const [players, setPlayers] = useState<Player[]>(
-    location.state?.players || []
+    location.state?.players || [],
   );
   const [payments, setPayments] = useState<PaymentData[]>([]);
   const [activeTab, setActiveTab] = useState('family');
@@ -421,7 +411,7 @@ const ParentDetails = () => {
   // Helper function to calculate parent status based on player registrations
   const calculateParentStatus = (
     parentData: ParentWithStatus,
-    playersData: Player[]
+    playersData: Player[],
   ): string => {
     if (parentData.isCoach) return 'Active';
 
@@ -436,13 +426,13 @@ const ParentDetails = () => {
       // Check player seasons array first
       if (player.seasons && Array.isArray(player.seasons)) {
         const hasCurrentYearSeason = player.seasons.some(
-          (season: any) => season.year === currentYear
+          (season: any) => season.year === currentYear,
         );
         console.log(
           `Player ${player.fullName} has seasons:`,
           player.seasons,
           'Has current year:',
-          hasCurrentYearSeason
+          hasCurrentYearSeason,
         );
         if (hasCurrentYearSeason) return true;
       }
@@ -455,21 +445,21 @@ const ParentDetails = () => {
         player.season,
         player.registrationYear,
         'Has current year:',
-        hasDirectSeason
+        hasDirectSeason,
       );
       return hasDirectSeason;
     });
 
     console.log(
       'Has current season registration:',
-      hasCurrentSeasonRegistration
+      hasCurrentSeasonRegistration,
     );
 
     if (hasCurrentSeasonRegistration) return 'Active';
 
     // Check for pending payments
     const hasPendingPayments = playersData.some(
-      (player) => player.registrationComplete && !player.paymentComplete
+      (player) => player.registrationComplete && !player.paymentComplete,
     );
 
     return hasPendingPayments ? 'Pending Payment' : 'Inactive';
@@ -507,7 +497,7 @@ const ParentDetails = () => {
         // Calculate status and set parent with status
         const parentStatus = calculateParentStatus(
           formattedParent,
-          formattedPlayers
+          formattedPlayers,
         );
         const parentWithStatus = {
           ...formattedParent,
@@ -539,7 +529,7 @@ const ParentDetails = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         console.log('Payments API response:', response.data);
@@ -610,7 +600,7 @@ const ParentDetails = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         if (response.data && Array.isArray(response.data)) {
@@ -627,46 +617,38 @@ const ParentDetails = () => {
     }
   };
 
-  // Refund submission handler - COMPLETE FIXED VERSION
+  // Refund submission handler
   const handleRefundSubmit = async (
-    paymentId: string,
+    paymentMongoId: string,
     amount: number,
-    reason: string
+    reason: string,
   ) => {
     try {
       const token = localStorage.getItem('token');
 
-      console.log('🔄 Starting refund submission...');
-      console.log('Payment ID (MongoDB):', paymentId);
-      console.log('Refund amount:', amount);
-      console.log('Refund reason:', reason);
-      console.log('Parent ID:', parent?._id);
+      // Find the payment
+      const payment = payments.find((p) => p._id === paymentMongoId);
 
-      // Find the payment in our local state to get the Square paymentId
-      const payment = payments.find((p) => p._id === paymentId);
+      console.log('🔍 Payment found:', {
+        mongoId: payment?._id,
+        squareId: payment?.paymentId,
+        amount: payment?.amount,
+      });
 
       if (!payment) {
-        console.error('❌ Payment not found in local data');
         throw new Error('Payment not found in local data');
       }
 
       if (!payment.paymentId) {
-        console.error('❌ Square payment ID is missing for this payment');
-        throw new Error('Square payment ID is missing for this payment');
+        throw new Error('No Square payment ID found for this payment');
       }
 
-      console.log('✅ Payment found:', {
-        mongoId: payment._id,
-        squareId: payment.paymentId,
-        amount: payment.amount,
-        alreadyRefunded: payment.totalRefunded || 0,
-      });
+      console.log('📤 Sending refund request...');
 
-      console.log('📤 Sending refund request to backend...');
       const response = await axios.post(
         `${API_BASE_URL}/payment/refund`,
         {
-          paymentId: payment.paymentId, // Square ID
+          paymentId: payment.paymentId,
           amount,
           reason,
           parentId: parent?._id,
@@ -676,60 +658,42 @@ const ParentDetails = () => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          timeout: 30000, // 30 second timeout
-        }
+          timeout: 30000,
+        },
       );
 
-      console.log('✅ Refund response from backend:', response.data);
+      console.log('✅ Backend response:', response.data);
 
       if (response.data.success) {
-        console.log('✅ Refund processed successfully, refreshing payments...');
+        alert('✅ Refund processed successfully!');
+        handleCloseRefundModal();
 
-        // Refresh payments to show updated refund status
-        await refreshPayments();
+        setTimeout(() => {
+          refreshPayments();
+        }, 1000);
 
-        // Show success message
-        alert(
-          '✅ Refund processed successfully! The payment has been refunded.'
-        );
-
-        return response.data;
+        return { success: true };
       } else {
-        console.error('❌ Refund failed:', response.data.error);
-        throw new Error(response.data.error || 'Refund request failed');
+        throw new Error(response.data.error || 'Refund failed');
       }
     } catch (error: any) {
-      console.error('❌ Refund request error details:', {
+      console.error('❌ Refund error details:', {
         message: error.message,
         response: error.response?.data,
         status: error.response?.status,
-        config: {
-          url: error.config?.url,
-          data: error.config?.data,
-        },
       });
 
-      // Handle specific error cases
-      let errorMessage = 'Failed to submit refund request. Please try again.';
+      // FIXED ERROR HANDLING:
+      let errorMessage = 'Failed to process refund request';
 
-      if (error.response?.status === 400) {
-        const errorData = error.response.data;
-        if (errorData?.error?.includes('already been refunded')) {
-          errorMessage = 'This payment has already been refunded.';
-        } else if (errorData?.error?.includes('not found')) {
-          errorMessage = 'Payment not found in Square.';
-        } else if (errorData?.error) {
-          errorMessage = errorData.error;
-        }
-      } else if (error.response?.status === 401) {
-        errorMessage = 'Authentication failed. Please log in again.';
-      } else if (error.response?.status === 403) {
-        errorMessage = 'You do not have permission to process refunds.';
-      } else if (error.response?.status === 404) {
-        errorMessage = 'Payment not found.';
-      } else if (error.message.includes('timeout')) {
-        errorMessage = 'Request timed out. Please try again.';
+      if (error.response?.data?.error) {
+        // Direct error message from backend
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.message) {
+        // Alternative error field
+        errorMessage = error.response.data.message;
       } else if (error.message) {
+        // Axios error message
         errorMessage = error.message;
       }
 
@@ -769,7 +733,7 @@ const ParentDetails = () => {
           `${API_BASE_URL}/payment/${payment._id}/refund-eligibility`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         if (response.data.success) {
@@ -779,7 +743,7 @@ const ParentDetails = () => {
         // If endpoint doesn't exist (404), fall back to manual calculation
         if (endpointError.response?.status === 404) {
           console.log(
-            'Eligibility endpoint not found, falling back to manual calculation'
+            'Eligibility endpoint not found, falling back to manual calculation',
           );
           return calculateEligibilityManually(payment);
         }
@@ -801,7 +765,7 @@ const ParentDetails = () => {
       // Check user role first - ONLY ADMINS can process refunds
       if (!isAdmin) {
         alert(
-          'Only administrators can process refunds. Please contact support.'
+          'Only administrators can process refunds. Please contact support.',
         );
         return;
       }
@@ -813,7 +777,7 @@ const ParentDetails = () => {
         let message = 'This payment cannot be refunded.';
         if (eligibility.alreadyRefunded > 0) {
           message += ` Already refunded: $${eligibility.alreadyRefunded.toFixed(
-            2
+            2,
           )}`;
         }
         if (eligibility.refundStatus && eligibility.refundStatus !== 'none') {
@@ -899,7 +863,7 @@ const ParentDetails = () => {
   const renderRefundHistory = () => {
     const allRefunds = payments
       .flatMap((payment) =>
-        (payment.refunds || []).map((refund) => ({ ...refund, payment }))
+        (payment.refunds || []).map((refund) => ({ ...refund, payment })),
       )
       .sort((a, b) => {
         const dateA = new Date(a.requestedAt).getTime();
@@ -935,8 +899,8 @@ const ParentDetails = () => {
                           refund.status === 'completed'
                             ? 'success'
                             : refund.status === 'pending'
-                            ? 'warning'
-                            : 'danger'
+                              ? 'warning'
+                              : 'danger'
                         }`}
                       >
                         {refund.status}
@@ -1267,7 +1231,7 @@ const ParentDetails = () => {
                                       src={
                                         player.imgSrc
                                           ? player.imgSrc.includes(
-                                              'res.cloudinary.com'
+                                              'res.cloudinary.com',
                                             )
                                             ? `${player.imgSrc}?${Date.now()}`
                                             : player.imgSrc
@@ -1279,7 +1243,7 @@ const ParentDetails = () => {
                                         const target =
                                           e.target as HTMLImageElement;
                                         target.src = getDefaultAvatar(
-                                          player.gender
+                                          player.gender,
                                         );
                                       }}
                                     />

@@ -47,6 +47,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 }) => {
   const navigate = useNavigate();
   const routes = all_routes;
+  const currentYear = new Date().getFullYear();
 
   const {
     isAuthenticated,
@@ -60,27 +61,89 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
   // ✅ Extract season and year from formConfig or use defaults
   const dynamicSeasonEvent = useMemo(() => {
-    // If seasonEvent is provided, use it
+    // Base defaults
+    const defaults = {
+      season: 'Basketball Training',
+      year: currentYear,
+      eventId: `training-${currentYear}`,
+    };
+
+    console.log('🔍 Building dynamicSeasonEvent from:', {
+      seasonEvent,
+      formConfig,
+      hasSeasonEvent: !!seasonEvent,
+      hasFormConfig: !!formConfig,
+    });
+
+    // Priority 1: Use seasonEvent if it's a training/camp event
     if (seasonEvent) {
-      return seasonEvent;
+      const isTrainingEvent =
+        seasonEvent.eventId?.includes('-camp-') ||
+        seasonEvent.eventId?.includes('-training-') ||
+        seasonEvent.season?.toLowerCase().includes('camp') ||
+        seasonEvent.season?.toLowerCase().includes('training') ||
+        seasonEvent.season?.toLowerCase().includes('clinic');
+
+      if (isTrainingEvent && seasonEvent.season && seasonEvent.year) {
+        console.log(
+          '✅ Using seasonEvent (training/camp):',
+          seasonEvent.season,
+        );
+        return {
+          season: seasonEvent.season,
+          year: seasonEvent.year,
+          eventId: seasonEvent.eventId || `training-${seasonEvent.year}`,
+        };
+      }
     }
 
-    // If formConfig has eventId, try to get the season event
-    if (formConfig?.eventId) {
+    // Priority 2: Use formConfig if it's a training/camp event
+    if (formConfig) {
+      const isTrainingEvent =
+        formConfig.season?.toLowerCase().includes('camp') ||
+        formConfig.season?.toLowerCase().includes('training') ||
+        formConfig.season?.toLowerCase().includes('clinic');
+
+      if (isTrainingEvent && formConfig.season && formConfig.year) {
+        console.log('✅ Using formConfig (training/camp):', formConfig.season);
+        return {
+          season: formConfig.season,
+          year: formConfig.year,
+          eventId: formConfig.eventId || `training-${formConfig.year}`,
+        };
+      }
+    }
+
+    // Priority 3: If seasonEvent exists (even if not training), use it
+    if (seasonEvent?.season && seasonEvent?.year) {
+      console.log(
+        '⚠️ Using seasonEvent (not training-specific):',
+        seasonEvent.season,
+      );
       return {
-        season: formConfig.season || 'Basketball Training',
-        year: formConfig.year || new Date().getFullYear(),
-        eventId: formConfig.eventId,
+        season: seasonEvent.season,
+        year: seasonEvent.year,
+        eventId: seasonEvent.eventId || `training-${seasonEvent.year}`,
       };
     }
 
-    // Fallback to training season name
-    return {
-      season: 'Basketball Training',
-      year: formConfig?.year || new Date().getFullYear(),
-      eventId: `training-${formConfig?.year || new Date().getFullYear()}`,
-    };
-  }, [formConfig, seasonEvent]);
+    // Priority 4: If formConfig exists (even if not training), use it
+    if (formConfig?.season && formConfig?.year) {
+      console.log(
+        '⚠️ Using formConfig (not training-specific):',
+        formConfig.season,
+      );
+      return {
+        season: formConfig.season,
+        year: formConfig.year,
+        eventId: formConfig.eventId || `training-${formConfig.year}`,
+      };
+    }
+
+    // Fallback to defaults
+    console.log('⚠️ Using defaults for dynamicSeasonEvent');
+    return defaults;
+  }, [formConfig, seasonEvent, currentYear]);
 
   const defaultFormConfig: RegistrationFormConfig = useMemo(
     () => ({
@@ -111,13 +174,11 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
         ],
       },
       // For training, always use training season name
-      season: 'Basketball Training',
-      year: formConfig?.year || new Date().getFullYear(),
-      // Spread other formConfig properties except season
+      season: dynamicSeasonEvent.season,
+      year: dynamicSeasonEvent.year,
       ...(formConfig
         ? {
             ...formConfig,
-            season: 'Basketball Training', // Override any season from formConfig
           }
         : {}),
     }),

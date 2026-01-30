@@ -717,68 +717,140 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         // PLAYER/TRYOUT/TRAINING REGISTRATION
         const playersToPay = effectivePlayers.filter((player: Player) => {
           if (registrationType === 'tryout') {
-            // For tryouts, check for tryoutId specifically
+            // ✅ FIRST: Check for PENDING tryout registration
+            const hasPendingTryout = player.seasons?.some(
+              (s: SeasonRegistration) =>
+                s.tryoutId === effectiveEventData?.eventId &&
+                s.year === effectiveEventData?.year &&
+                s.paymentStatus === 'pending',
+            );
+
+            if (hasPendingTryout) {
+              console.log(
+                `✅ Player ${player.fullName} has PENDING tryout - can pay`,
+              );
+              return true;
+            }
+
+            // ✅ SECOND: Check if already PAID for this tryout
             const isPaidForThisTryout = player.seasons?.some(
               (s: SeasonRegistration) =>
                 s.tryoutId === effectiveEventData?.eventId &&
                 s.year === effectiveEventData?.year &&
                 s.paymentStatus === 'paid',
             );
-            return !isPaidForThisTryout;
+
+            if (isPaidForThisTryout) {
+              console.log(
+                `⚠️ Player ${player.fullName} already PAID for tryout - skip`,
+              );
+              return false;
+            }
+
+            // ✅ THIRD: Player needs new tryout registration
+            console.log(
+              `✅ Player ${player.fullName} needs NEW tryout registration`,
+            );
+            return true;
           } else if (registrationType === 'training') {
-            // For training, ALWAYS check for "Basketball Training" season specifically
-            // This ensures we don't confuse tournament payments with training payments
-            const isPaidForTraining = player.seasons?.some(
+            // For training, check for pending training seasons
+            const hasPendingTraining = player.seasons?.some(
               (s: SeasonRegistration) => {
-                // Check if it's actually a training season (contains "training" or is exactly "Basketball Training")
                 const isTrainingSeason =
                   s.season?.toLowerCase().includes('training') ||
-                  s.season === 'Basketball Training';
-
+                  s.season === 'Basketball Training' ||
+                  s.season === 'Training';
                 const isSameYear = s.year === effectiveEventData?.year;
-                const isPaid =
-                  s.paymentStatus === 'paid' || s.paymentComplete === true;
+                const isPending = s.paymentStatus === 'pending';
 
-                // Debug logging
-                if (isTrainingSeason && isSameYear) {
-                  console.log(`🎯 Training check for ${player.fullName}:`, {
-                    seasonInDB: s.season,
-                    isTrainingSeason,
-                    yearInDB: s.year,
-                    currentYear: effectiveEventData?.year,
-                    isPaid,
-                    paymentStatus: s.paymentStatus,
-                  });
+                // Also check tryoutId if available
+                if (effectiveEventData?.eventId) {
+                  const isSameEvent =
+                    s.tryoutId === effectiveEventData?.eventId;
+                  return (
+                    isTrainingSeason && isSameYear && isSameEvent && isPending
+                  );
+                }
+
+                return isTrainingSeason && isSameYear && isPending;
+              },
+            );
+
+            if (hasPendingTraining) {
+              console.log(
+                `✅ Player ${player.fullName} has PENDING training - can pay`,
+              );
+              return true;
+            }
+
+            // Check if already PAID for training
+            const isPaidForTraining = player.seasons?.some(
+              (s: SeasonRegistration) => {
+                const isTrainingSeason =
+                  s.season?.toLowerCase().includes('training') ||
+                  s.season === 'Basketball Training' ||
+                  s.season === 'Training';
+                const isSameYear = s.year === effectiveEventData?.year;
+                const isPaid = s.paymentStatus === 'paid';
+
+                if (effectiveEventData?.eventId) {
+                  const isSameEvent =
+                    s.tryoutId === effectiveEventData?.eventId;
+                  return (
+                    isTrainingSeason && isSameYear && isSameEvent && isPaid
+                  );
                 }
 
                 return isTrainingSeason && isSameYear && isPaid;
               },
             );
 
+            if (isPaidForTraining) {
+              console.log(
+                `⚠️ Player ${player.fullName} already PAID for training - skip`,
+              );
+              return false;
+            }
+
+            // Player needs new training registration
             console.log(
-              `📊 Player ${player.fullName} training payment eligibility:`,
-              {
-                isPaidForTraining,
-                isEligibleForPayment: !isPaidForTraining,
-                seasons: player.seasons?.map((s) => ({
-                  season: s.season,
-                  year: s.year,
-                  paymentStatus: s.paymentStatus,
-                  isTraining: s.season?.toLowerCase().includes('training'),
-                })),
-              },
+              `✅ Player ${player.fullName} needs NEW training registration`,
+            );
+            return true;
+          } else {
+            // For regular player registration
+            const hasPendingSeason = player.seasons?.some(
+              (s: SeasonRegistration) =>
+                s.season === effectiveEventData?.season &&
+                s.year === effectiveEventData?.year &&
+                s.paymentStatus === 'pending',
             );
 
-            return !isPaidForTraining;
-          } else {
-            // For regular player registration (non-training, non-tryout)
+            if (hasPendingSeason) {
+              console.log(
+                `✅ Player ${player.fullName} has PENDING season - can pay`,
+              );
+              return true;
+            }
+
             const isPaidForThisSeason = player.seasons?.some(
               (s: SeasonRegistration) =>
                 s.season === effectiveEventData?.season &&
                 s.year === effectiveEventData?.year &&
                 s.paymentStatus === 'paid',
             );
-            return !isPaidForThisSeason;
+
+            if (isPaidForThisSeason) {
+              console.log(
+                `⚠️ Player ${player.fullName} already PAID for season - skip`,
+              );
+              return false;
+            }
+
+            console.log(
+              `✅ Player ${player.fullName} needs NEW season registration`,
+            );
+            return true;
           }
         });
 

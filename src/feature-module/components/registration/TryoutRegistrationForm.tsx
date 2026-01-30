@@ -83,37 +83,34 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
   const [registrationTimestamp, setRegistrationTimestamp] =
     useState<string>('');
 
-  // ✅ CRITICAL FIX: Use tryout config to determine season info
   const defaultSeasonEvent = useMemo(() => {
-    // If we have a loaded tryout config, use it
-    if (loadedTryoutConfig) {
-      return {
-        season: loadedTryoutConfig.tryoutName, // Use the actual tryout name
-        year: loadedTryoutConfig.tryoutYear,
-        eventId:
-          loadedTryoutConfig._id || `tryout-${loadedTryoutConfig.tryoutYear}`,
-      };
-    }
+    const currentYear = new Date().getFullYear();
 
-    // If we have a prop tryout config, use it
     if (propTryoutConfig) {
       return {
         season: propTryoutConfig.tryoutName,
         year: propTryoutConfig.tryoutYear,
         eventId:
-          propTryoutConfig._id || `tryout-${propTryoutConfig.tryoutYear}`,
+          propTryoutConfig.eventId || `tryout-${propTryoutConfig.tryoutYear}`,
       };
     }
 
-    // Fallback to seasonEvent prop or default
-    return (
-      seasonEvent || {
-        season: 'Basketball Tryouts',
-        year: new Date().getFullYear(),
-        eventId: `tryout-${new Date().getFullYear()}`,
-      }
-    );
-  }, [loadedTryoutConfig, propTryoutConfig, seasonEvent]);
+    // Use seasonEvent if available
+    if (seasonEvent) {
+      return {
+        season: seasonEvent.season,
+        year: seasonEvent.year,
+        eventId: seasonEvent.eventId,
+      };
+    }
+
+    // Fallback
+    return {
+      season: 'Spring Tryout 2026',
+      year: currentYear,
+      eventId: `tryout-${currentYear}`,
+    };
+  }, [propTryoutConfig, seasonEvent]);
 
   // Load tryout configuration
   useEffect(() => {
@@ -314,7 +311,6 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     setFormData((prev) => ({ ...prev, ...newData }));
   };
 
-  // ✅ Get paid players for THIS SPECIFIC tryout - FIXED VERSION
   const getPaidPlayersForTryout = useCallback((): Player[] => {
     if (!userPlayers) return [];
 

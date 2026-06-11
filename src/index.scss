@@ -37,7 +37,7 @@ a {
 
 /* ant datatable pagination */
 .ant-pagination-item.ant-pagination-item-1.ant-pagination-item-active {
-  background: #506ee4;
+  background: #594230;
   border-color: rgba(0, 0, 0, 0.7);
   color: #fff;
 }
@@ -62,7 +62,7 @@ h4,
 .applyBtn.btn.btn-sm.btn-primary {
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
-  border: 1px solid #506ee4;
+  border: 1px solid #594230;
 }
 
 /* react-select plugin */
@@ -223,7 +223,7 @@ span.form-icon {
 }
 
 /* select__control — NOTE: two conflicting definitions existed.
-   First used $light for bg/border; second used #506ee4.
+   First used $light for bg/border; second used #594230.
    Keeping the branded blue version (was last/winning rule) for the
    general control, and restoring the $light version at the bottom
    where it was re-declared. If both are intentional, scope them. */
@@ -386,7 +386,7 @@ div.rc-slider-track,
 }
 
 div.rc-slider-handle {
-  border: solid 2px #506ee4;
+  border: solid 2px #594230;
 }
 
 span.rc-slider-dot-active {
@@ -395,13 +395,13 @@ span.rc-slider-dot-active {
 
 div.rc-slider-handle:active {
   border-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 5px #506ee4;
+  box-shadow: 0 0 5px #594230;
   cursor: grabbing;
 }
 
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
   border-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 0 5px #506ee4;
+  box-shadow: 0 0 0 5px #594230;
 }
 
 div.rc-slider-handle:hover {
@@ -410,7 +410,7 @@ div.rc-slider-handle:hover {
 
 div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
   border-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 0 5px #506ee4;
+  box-shadow: 0 0 0 5px #594230;
 }
 
 [data-theme='dark'] {
@@ -886,7 +886,7 @@ div.sidebar-themesettings
 }
 
 .theme-layout.active .layout-img img {
-  border: 1px solid #506ee4;
+  border: 1px solid #594230;
   border-radius: 5px;
 }
 
@@ -912,11 +912,11 @@ div.sidebar-themesettings
 }
 
 .theme-colorselect.active label {
-  outline: 1px solid #506ee4;
+  outline: 1px solid #594230;
 }
 
 .theme-colorselect.active label.primary-topbar {
-  background: #506ee4;
+  background: #594230;
 }
 
 .theme-colorselect.active label.primary-topbar:after,
@@ -948,7 +948,7 @@ div.sidebar-themesettings
 }
 
 .theme-mode.active label {
-  border: 1px solid #506ee4;
+  border: 1px solid #594230;
 }
 
 .theme-mode.active label .avatar {
@@ -1028,7 +1028,7 @@ div.sidebar-themesettings
 }
 
 .select .ant-select-selection-item {
-  background: #506ee4 !important;
+  background: #594230 !important;
 }
 
 .ant-select-selection-item-content {
@@ -2102,7 +2102,7 @@ a.custom-btn-close:hover {
   background: #d97706;
 }
 .badge-1 {
-  background: #506ee4;
+  background: #594230;
 }
 .badge-2 {
   background: #16a34a;
@@ -2420,10 +2420,10 @@ a.custom-btn-close:hover {
   .private-section {
     background: linear-gradient(
       135deg,
-      rgba(80, 100, 220, 0.05),
-      rgba(80, 100, 220, 0.02)
+      rgba(89, 66, 48, 0.05),
+      rgba(89, 66, 48, 0.02)
     );
-    border-left: 3px solid rgba(80, 100, 220, 0.5);
+    border-left: 3px solid rgba(89, 66, 48, 0.5);
   }
 
   .logout-item button {
@@ -2448,7 +2448,7 @@ a.custom-btn-close:hover {
     padding: 12px 20px;
     background: linear-gradient(
       135deg,
-      rgba(80, 100, 220, 0.9),
+      rgba(89, 66, 48, 0.9),
       rgba(60, 80, 200, 0.9)
     );
     border: none;
@@ -2462,7 +2462,7 @@ a.custom-btn-close:hover {
 
   .mobile-auth-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(80, 100, 220, 0.4);
+    box-shadow: 0 4px 12px rgba(89, 66, 48, 0.4);
   }
 
   .mobile-nav-glass::-webkit-scrollbar {
@@ -2599,7 +2599,7 @@ a.custom-btn-close:hover {
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #506ee4;
+    background: #594230;
     border-radius: 10px;
   }
 
@@ -2774,7 +2774,7 @@ a.custom-btn-close:hover {
 
 /* SweetAlert2 brand overrides */
 .swal2-timer-progress-bar {
-  background: #506ee4 !important;
+  background: #594230 !important;
 }
 
 .swal2-popup {

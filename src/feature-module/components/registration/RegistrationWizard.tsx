@@ -181,9 +181,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
     // Fallback to old hardcoded values
     return {
-      season: 'Bothell Select Team',
+      season: 'Partizan Team',
       year: new Date().getFullYear(),
-      eventId: 'bothellselect-2026',
+      eventId: 'partizanhoops-2026',
     };
   }, [seasonEvent, seasonEvents, registrationType]);
 

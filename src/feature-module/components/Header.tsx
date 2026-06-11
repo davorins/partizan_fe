@@ -13,7 +13,7 @@ import NotificationDropdown from '../../core/common/header/NotificationDropdown'
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const DEFAULT_AVATAR =
-  'https://bothell-select.onrender.com/uploads/avatars/parents.png';
+  'https://partizan-be.onrender.com/uploads/avatars/parents.png';
 
 interface HeaderProps {
   showSponsorLogo: boolean;
@@ -52,7 +52,6 @@ const S = {
   logoImg: (): React.CSSProperties => ({
     height: 36,
     width: 'auto',
-    filter: 'brightness(0) invert(1)',
   }),
 
   nav: (): React.CSSProperties => ({
@@ -81,7 +80,7 @@ const S = {
     borderTop: 'none',
     borderRight: 'none',
     borderLeft: 'none',
-    borderBottom: active ? '2px solid #506ee4' : '2px solid transparent',
+    borderBottom: active ? '2px solid #594230' : '2px solid transparent',
     transition: 'color 0.18s, background 0.18s, border-color 0.18s',
     whiteSpace: 'nowrap',
     cursor: 'pointer',
@@ -103,7 +102,7 @@ const S = {
     borderTop: 'none',
     borderRight: 'none',
     borderLeft: 'none',
-    borderBottom: active ? '2px solid #506ee4' : '2px solid transparent',
+    borderBottom: active ? '2px solid #594230' : '2px solid transparent',
 
     cursor: 'pointer',
     transition: 'color 0.18s, background 0.18s',
@@ -155,7 +154,7 @@ const S = {
     width: 5,
     height: 5,
     borderRadius: '50%',
-    background: active ? '#506ee4' : 'rgba(255,255,255,0.25)',
+    background: active ? '#594230' : 'rgba(255,255,255,0.25)',
     flexShrink: 0,
     transition: 'background 0.15s',
   }),
@@ -177,7 +176,7 @@ const S = {
     fontWeight: 600,
     fontFamily: "'DM Sans', sans-serif",
     letterSpacing: '0.04em',
-    background: '#506ee4',
+    background: '#594230',
     color: '#fff',
     border: 'none',
     cursor: 'pointer',
@@ -251,7 +250,7 @@ const S = {
   userDropdownHeaderRole: (): React.CSSProperties => ({
     fontSize: 11,
     fontFamily: "'DM Sans', sans-serif",
-    color: '#506ee4',
+    color: '#594230',
     textTransform: 'uppercase',
     letterSpacing: '0.06em',
     marginTop: 2,
@@ -537,7 +536,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
           av
             ? av.startsWith('http')
               ? av
-              : `https://bothell-select.onrender.com${av}`
+              : `https://partizan-be.onrender.com${av}`
             : DEFAULT_AVATAR,
         );
       })
@@ -622,11 +621,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
           onMouseLeave={onMouseLeave}
         >
           <Link to={getDashboardRoute()} style={S.logo()}>
-            <img
-              src='assets/img/logo.png'
-              alt='Bothell Select'
-              style={S.logoImg()}
-            />
+            <img src='assets/img/logo.png' alt='Partizan' style={S.logoImg()} />
           </Link>
         </div>
 
@@ -818,7 +813,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
             <button
               style={{
                 ...S.loginBtn(),
-                background: loginHovered ? '#3f5cd6' : '#506ee4',
+                background: loginHovered ? '#3f5cd6' : '#594230',
                 transform: loginHovered ? 'translateY(-1px)' : 'translateY(0)',
               }}
               onClick={handleLoginRedirect}

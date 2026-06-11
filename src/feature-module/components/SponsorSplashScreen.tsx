@@ -187,7 +187,7 @@ const SponsorSplashScreen: React.FC<SponsorSplashScreenProps> = ({
                 ))}
               </div>
               <p className='splash-text'>
-                Proudly supporting Bothell Select Basketball!
+                Proudly supporting Partizan Basketball!
               </p>
             </div>
           </div>

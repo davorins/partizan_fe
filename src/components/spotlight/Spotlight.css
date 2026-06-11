@@ -12,11 +12,6 @@
   padding: 20px;
 }
 
-/* Hide main spotlight when modal is open */
-.spotlight-glass-container.modal-open {
-  display: none !important;
-}
-
 /* Header Section */
 .spotlight-glass-header {
   display: flex;
@@ -68,18 +63,12 @@
   border-radius: 32px;
   overflow: hidden;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  /* box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1); */
 }
 
 .spotlight-glass-card:hover {
   transform: translateY(-4px);
   background: rgba(0, 0, 0, 0.5);
   border-color: rgba(255, 255, 255, 0.25);
-  /* box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15); */
 }
 
 .spotlight-glass-overlay {
@@ -193,8 +182,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(80, 100, 220, 0.2);
-  border: 1px solid rgba(80, 100, 220, 0.3);
+  background: rgba(89, 66, 48, 0.2);
+  border: 1px solid rgba(89, 66, 48, 0.3);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.7rem;
@@ -268,8 +257,8 @@
   gap: 8px;
   background: linear-gradient(
     135deg,
-    rgba(80, 100, 220, 0.9) 0%,
-    rgba(80, 100, 220, 0.9) 100%
+    rgba(89, 66, 48, 0.9) 0%,
+    rgba(89, 66, 48, 0.9) 100%
   );
   border: none;
   border-radius: 12px;
@@ -285,19 +274,41 @@
 .spotlight-glass-btn:hover {
   transform: translateY(-2px);
   filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(80, 100, 220, 0.3);
+  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3);
   text-decoration: none;
   color: white;
 }
 
 /* ============================================
-   MODAL STYLES
+   MODAL STYLES - FIXED POSITIONING
    ============================================ */
 
+/* Modal overlay - full viewport fixed positioning */
+.spotlight-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Modal container */
 .spotlight-modal-glass {
   width: 100%;
   max-width: 1100px;
-  height: 55vh;
+  height: 85vh;
+  max-height: 85vh;
   background: rgba(20, 25, 45, 0.96);
   backdrop-filter: blur(22px);
   border-radius: 28px;
@@ -307,6 +318,8 @@
   flex-direction: column;
   overflow: hidden;
   margin: auto;
+  position: relative;
+  z-index: 100000;
 }
 
 /* Modal Header */
@@ -375,8 +388,8 @@
 }
 
 .spotlight-modal-tool-btn:hover {
-  background: rgba(80, 100, 220, 0.6);
-  border-color: rgba(80, 100, 220, 0.8);
+  background: rgba(89, 66, 48, 0.6);
+  border-color: rgba(89, 66, 48, 0.8);
   transform: translateY(-2px);
   color: white;
 }
@@ -452,8 +465,177 @@
   gap: 6px;
 }
 
+/* Header wrapper */
+.spotlight-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Grid layout for multiple items */
+.spotlight-grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* Card styles for grid items */
+.spotlight-card-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.spotlight-card-image-wrapper {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.spotlight-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.spotlight-card-image-wrapper:hover .spotlight-card-image {
+  transform: scale(1.05);
+}
+
+.spotlight-card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.spotlight-card-image-wrapper:hover .spotlight-card-image-overlay {
+  opacity: 1;
+}
+
+.spotlight-card-placeholder {
+  aspect-ratio: 16/9;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.spotlight-card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spotlight-card-badge-wrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spotlight-featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.spotlight-category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(89, 66, 48, 0.2);
+  border: 1px solid rgba(89, 66, 48, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #8098ff;
+}
+
+.spotlight-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.spotlight-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.spotlight-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spotlight-card-description {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.spotlight-card-players {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.spotlight-card-players strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.spotlight-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.spotlight-card-badge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* ============================================
-   MOBILE RESPONSIVE + SCROLLABLE CONTENT
+   MOBILE RESPONSIVE
    ============================================ */
 
 @media (max-width: 768px) {
@@ -496,6 +678,25 @@
     width: 92vw;
     height: 85vh;
   }
+
+  .spotlight-grid-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .spotlight-header-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .spotlight-glass-title {
+    font-size: 1.5rem;
+  }
+
+  .spotlight-glass-link {
+    position: relative;
+    right: auto;
+  }
 }
 
 @media (max-width: 480px) {
@@ -529,6 +730,18 @@
   .spotlight-modal-tool-btn {
     width: 32px;
     height: 32px;
+  }
+
+  .spotlight-card-content {
+    padding: 16px;
+  }
+
+  .spotlight-card-title {
+    font-size: 1.1rem;
+  }
+
+  .spotlight-card-description {
+    font-size: 0.8rem;
   }
 }
 

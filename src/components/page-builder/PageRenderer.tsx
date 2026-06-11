@@ -119,7 +119,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({
             defaultSectionSpacing: '2rem',
             backgroundColor: '#ffffff',
             textColor: '#000000',
-            accentColor: '#506ee4',
+            accentColor: '#594230',
             canonicalUrl: '/',
             openGraphImage: '',
             headerScripts: '',

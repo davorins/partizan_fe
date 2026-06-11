@@ -94,7 +94,7 @@ const SeasonEventManager: React.FC<SeasonEventManagerProps> = ({
                           season: e.target.value,
                         }))
                       }
-                      placeholder='e.g., Bothell Select Team, Winter Classic'
+                      placeholder='e.g., Partizan Team, Winter Classic'
                       required
                     />
                   </div>
@@ -131,7 +131,7 @@ const SeasonEventManager: React.FC<SeasonEventManagerProps> = ({
                           eventId: e.target.value,
                         }))
                       }
-                      placeholder='e.g., bothellselect-2026'
+                      placeholder='e.g., partizanhoops-2026'
                       required
                     />
                     <small className='text-muted'>

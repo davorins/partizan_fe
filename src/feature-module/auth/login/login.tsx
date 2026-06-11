@@ -211,7 +211,7 @@ const Login = () => {
                           </Link>
                         </div>
                         <p className='mb-0 '>
-                          © {currentYear} Bothell Select by{' '}
+                          © {currentYear} Partizan by{' '}
                           <a href='https://rainbootsmarketing.com/'>
                             Rainboots
                           </a>

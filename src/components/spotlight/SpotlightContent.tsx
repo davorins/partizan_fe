@@ -12,6 +12,7 @@ import {
   ZoomOut,
   RotateCcw,
 } from 'lucide-react';
+import ReactDOM from 'react-dom';
 import './Spotlight.css';
 
 interface SpotlightItem {
@@ -41,12 +42,12 @@ interface SpotlightContentProps {
 }
 
 const SpotlightContent: React.FC<SpotlightContentProps> = ({
-  limit = 1,
+  limit = 3,
   showTitle = true,
   title = 'In The Spotlight',
   showViewAll = true,
   viewAllLink = '/in-the-spotlight',
-  featuredOnly = true,
+  featuredOnly = false,
   showImageModal = true,
   className = '',
   embedded = false,
@@ -59,7 +60,8 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
   const [spotlightError, setSpotlightError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showImageModalState, setShowImageModalState] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -79,49 +81,57 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
       setSpotlightLoading(true);
       setSpotlightError(null);
 
+      const fetchLimit = Math.max(limit, 6);
       const endpoint = featuredOnly
-        ? `${API_BASE_URL}/spotlight?featured=true&limit=${limit}`
-        : `${API_BASE_URL}/spotlight?limit=${limit}`;
+        ? `${API_BASE_URL}/spotlight?featured=true&limit=${fetchLimit}`
+        : `${API_BASE_URL}/spotlight?limit=${fetchLimit}`;
 
       const response = await axios.get(endpoint);
       let items = response.data;
 
-      if (featuredOnly && items.length === 0) {
+      if (featuredOnly && items.length < limit) {
         const recentResponse = await axios.get(
-          `${API_BASE_URL}/spotlight?limit=${limit}`,
+          `${API_BASE_URL}/spotlight?limit=${fetchLimit}`,
         );
         items = recentResponse.data;
       }
 
-      const processedItems = items.map((item: SpotlightItem) => {
-        const fullSizeImages =
-          item.fullSizeImages ||
-          item.images.map((img) => {
-            let highResImg = img;
-            highResImg = highResImg
-              .replace(/thumbnail_/gi, '')
-              .replace(/thumb_/gi, '')
-              .replace(/small_/gi, '')
-              .replace(/medium_/gi, '')
-              .replace(/_thumb/gi, '')
-              .replace(/_small/gi, '')
-              .replace(/_medium/gi, '')
-              .replace(/_200x200/gi, '')
-              .replace(/_300x300/gi, '')
-              .replace(/\/thumb\//gi, '/original/')
-              .replace(/\/thumbnail\//gi, '/')
-              .replace(/\/small\//gi, '/')
-              .replace(/\/medium\//gi, '/large/');
-            return highResImg;
-          });
+      const processedItems = items
+        .slice(0, limit)
+        .map((item: SpotlightItem) => {
+          const fullSizeImages =
+            item.fullSizeImages ||
+            (item.images || []).map((img) => {
+              let highResImg = img;
+              highResImg = highResImg
+                .replace(/thumbnail_/gi, '')
+                .replace(/thumb_/gi, '')
+                .replace(/small_/gi, '')
+                .replace(/medium_/gi, '')
+                .replace(/_thumb/gi, '')
+                .replace(/_small/gi, '')
+                .replace(/_medium/gi, '')
+                .replace(/_200x200/gi, '')
+                .replace(/_300x300/gi, '')
+                .replace(/\/thumb\//gi, '/original/')
+                .replace(/\/thumbnail\//gi, '/')
+                .replace(/\/small\//gi, '/')
+                .replace(/\/medium\//gi, '/large/');
+              return highResImg;
+            });
 
-        return {
-          ...item,
-          images: item.images && item.images.length > 0 ? item.images : [''],
-          fullSizeImages:
-            fullSizeImages && fullSizeImages.length > 0 ? fullSizeImages : [''],
-        };
-      });
+          return {
+            ...item,
+            images:
+              item.images && item.images.length > 0
+                ? item.images
+                : ['/assets/img/placeholder.jpg'],
+            fullSizeImages:
+              fullSizeImages && fullSizeImages.length > 0
+                ? fullSizeImages
+                : [''],
+          };
+        });
 
       setSpotlightItems(processedItems);
     } catch (err) {
@@ -137,18 +147,19 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
   }, [fetchSpotlightItems]);
 
   const handleImageClick = useCallback(
-    (imageUrl: string, index: number) => {
+    (imageUrl: string, imageIndex: number, itemIndex: number) => {
       if (!showImageModal) return;
 
-      const mainSpotlightItem = spotlightItems[0];
-      if (!mainSpotlightItem) return;
+      const spotlightItem = spotlightItems[itemIndex];
+      if (!spotlightItem) return;
 
       const highResImage =
-        mainSpotlightItem.fullSizeImages?.[index] || imageUrl;
+        spotlightItem.fullSizeImages?.[imageIndex] || imageUrl;
 
       setSelectedImage(highResImage);
       setShowImageModalState(true);
-      setIsModalOpen(true);
+      setSelectedImageIndex(imageIndex);
+      setSelectedItemIndex(itemIndex);
 
       setZoomLevel(1);
       setPosition({ x: 0, y: 0 });
@@ -178,6 +189,7 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
       };
       img.src = highResImage;
 
+      // Prevent body scroll
       document.body.style.overflow = 'hidden';
     },
     [spotlightItems, showImageModal],
@@ -185,12 +197,12 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
 
   const handleCloseModal = useCallback(() => {
     setShowImageModalState(false);
-    setIsModalOpen(false);
     setSelectedImage(null);
     setZoomLevel(1);
     setPosition({ x: 0, y: 0 });
     setImageNaturalSize({ width: 0, height: 0 });
 
+    // Restore body scroll
     document.body.style.overflow = '';
   }, []);
 
@@ -355,216 +367,225 @@ const SpotlightContent: React.FC<SpotlightContentProps> = ({
     );
   }
 
-  const mainSpotlightItem = spotlightItems[0];
-
   return (
     <>
-      <div
-        className={`spotlight-glass-container ${className} ${
-          isModalOpen ? 'modal-open' : ''
-        }`}
-      >
-        <div className='spotlight-glass-card'>
-          <div className='spotlight-glass-overlay'></div>
-          <div className='spotlight-glass-content'>
-            {(showTitle || showViewAll) && (
-              <div>
-                {showTitle && (
-                  <h2 className='spotlight-glass-title'>{title}</h2>
-                )}
-                {showViewAll && (
-                  <Link to={viewAllLink} className='spotlight-glass-link'>
-                    View All
-                    <ArrowRight size={16} className='ms-1' />
-                  </Link>
-                )}
-              </div>
+      <div className={`spotlight-glass-container ${className}`}>
+        {(showTitle || showViewAll) && (
+          <div className='spotlight-header-wrapper'>
+            {showTitle && <h2 className='spotlight-glass-title'>{title}</h2>}
+            {showViewAll && (
+              <Link to={viewAllLink} className='spotlight-glass-link'>
+                View All
+                <ArrowRight size={16} className='ms-1' />
+              </Link>
             )}
+          </div>
+        )}
 
-            <div className='spotlight-glass-grid'>
-              <div className='spotlight-glass-image-col'>
-                {mainSpotlightItem.images && mainSpotlightItem.images[0] ? (
+        <div className='spotlight-grid-wrapper'>
+          {spotlightItems.map((item, itemIndex) => (
+            <div key={item._id} className='spotlight-glass-card'>
+              <div className='spotlight-glass-overlay'></div>
+              <div className='spotlight-card-content-wrapper'>
+                {item.images && item.images[0] ? (
                   <div
-                    className='spotlight-glass-image-wrapper'
+                    className='spotlight-card-image-wrapper'
                     onClick={() =>
-                      handleImageClick(mainSpotlightItem.images[0], 0)
+                      handleImageClick(item.images[0], 0, itemIndex)
                     }
                   >
                     <img
-                      src={mainSpotlightItem.images[0]}
-                      alt={mainSpotlightItem.title}
-                      className='spotlight-glass-image'
+                      src={item.images[0]}
+                      alt={item.title}
+                      className='spotlight-card-image'
                       loading='lazy'
                     />
-                    <div className='spotlight-glass-image-overlay'>
-                      <ZoomIn size={32} className='text-white' />
-                      <small className='text-white d-block mt-2'>
+                    <div className='spotlight-card-image-overlay'>
+                      <ZoomIn size={24} className='text-white' />
+                      <small className='text-white d-block mt-1'>
                         Click to enlarge
                       </small>
                     </div>
                   </div>
                 ) : (
-                  <div className='spotlight-glass-image-placeholder'>
-                    <Award size={64} className='opacity-50' />
-                  </div>
-                )}
-              </div>
-
-              <div className='spotlight-glass-content-col'>
-                <div className='spotlight-glass-badge-wrapper'>
-                  {mainSpotlightItem.featured && (
-                    <span className='spotlight-glass-featured-badge'>
-                      <Star size={14} fill='currentColor' />
-                      Featured
-                    </span>
-                  )}
-                  <span className='spotlight-glass-category-badge'>
-                    <Users size={14} />
-                    {mainSpotlightItem.category}
-                  </span>
-                </div>
-
-                <h3 className='spotlight-glass-item-title'>
-                  {mainSpotlightItem.title}
-                </h3>
-
-                <div className='spotlight-glass-meta'>
-                  <span>
-                    <Calendar size={14} />
-                    {new Date(mainSpotlightItem.date).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <p className='spotlight-glass-description'>
-                  {mainSpotlightItem.description}
-                </p>
-
-                {mainSpotlightItem.playerNames.length > 0 && (
-                  <div className='spotlight-glass-players'>
-                    <strong>Players:</strong>
-                    <span>{mainSpotlightItem.playerNames.join(', ')}</span>
+                  <div className='spotlight-card-placeholder'>
+                    <Award size={48} className='opacity-50' />
                   </div>
                 )}
 
-                {mainSpotlightItem.badges.length > 0 && (
-                  <div className='spotlight-glass-badges'>
-                    {mainSpotlightItem.badges.map((badge, index) => (
-                      <span key={index} className='spotlight-glass-badge'>
-                        {badge}
+                <div className='spotlight-card-content'>
+                  <div className='spotlight-card-badge-wrapper'>
+                    {item.featured && (
+                      <span className='spotlight-featured-badge'>
+                        <Star size={12} fill='currentColor' />
+                        Featured
                       </span>
-                    ))}
+                    )}
+                    <span className='spotlight-category-badge'>
+                      <Users size={12} />
+                      {item.category}
+                    </span>
                   </div>
-                )}
+
+                  <h3 className='spotlight-card-title'>{item.title}</h3>
+
+                  <div className='spotlight-card-meta'>
+                    <span>
+                      <Calendar size={12} />
+                      {new Date(item.date).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <p className='spotlight-card-description'>
+                    {item.description.length > 120
+                      ? `${item.description.substring(0, 120)}...`
+                      : item.description}
+                  </p>
+
+                  {item.playerNames.length > 0 && (
+                    <div className='spotlight-card-players'>
+                      <strong>Players:</strong>
+                      <span>{item.playerNames.slice(0, 3).join(', ')}</span>
+                      {item.playerNames.length > 3 && (
+                        <span> +{item.playerNames.length - 3}</span>
+                      )}
+                    </div>
+                  )}
+
+                  {item.badges.length > 0 && (
+                    <div className='spotlight-card-badges'>
+                      {item.badges.slice(0, 3).map((badge, index) => (
+                        <span key={index} className='spotlight-card-badge'>
+                          {badge}
+                        </span>
+                      ))}
+                      {item.badges.length > 3 && (
+                        <span className='spotlight-card-badge'>
+                          +{item.badges.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Modal */}
-      {showImageModalState && selectedImage && (
-        <div className='spotlight-modal-glass' onClick={handleBackdropClick}>
-          <div className='spotlight-modal-header'>
-            <div className='spotlight-modal-title'>
-              <Star size={16} />
-              <span>Image Preview</span>
-            </div>
-            <button
-              className='spotlight-modal-close'
-              onClick={handleCloseModal}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className='spotlight-modal-toolbar'>
-            <button
-              className='spotlight-modal-tool-btn'
-              onClick={handleZoomIn}
-              title='Zoom In (Mouse wheel)'
-            >
-              <ZoomIn size={18} />
-            </button>
-            <button
-              className='spotlight-modal-tool-btn'
-              onClick={handleZoomOut}
-              title='Zoom Out (Mouse wheel)'
-            >
-              <ZoomOut size={18} />
-            </button>
-            <button
-              className='spotlight-modal-tool-btn'
-              onClick={handleResetZoom}
-              title='Reset Zoom'
-            >
-              <RotateCcw size={18} />
-            </button>
-            <div className='spotlight-modal-zoom-level'>
-              {Math.round(zoomLevel * 100)}%
-            </div>
-          </div>
-
-          <div className='spotlight-modal-image-wrapper'>
-            <div
-              ref={containerRef}
-              className='spotlight-modal-image-container'
-              onWheel={handleWheel}
-              onMouseDown={handleDragStart}
-              onMouseMove={handleDragMove}
-              onMouseUp={handleDragEnd}
-              onMouseLeave={handleDragEnd}
-              style={{
-                cursor:
-                  zoomLevel > 1
-                    ? isDragging
-                      ? 'grabbing'
-                      : 'grab'
-                    : 'default',
-              }}
-            >
-              {isImageLoading && (
-                <div className='spotlight-modal-loader'>
-                  <div className='spinner-border text-light' role='status'>
-                    <span className='visually-hidden'>Loading...</span>
-                  </div>
+      {/* Modal rendered via React Portal */}
+      {showImageModalState &&
+        selectedImage &&
+        ReactDOM.createPortal(
+          <div
+            className='spotlight-modal-overlay'
+            onClick={handleBackdropClick}
+          >
+            <div className='spotlight-modal-glass'>
+              <div className='spotlight-modal-header'>
+                <div className='spotlight-modal-title'>
+                  <Star size={16} />
+                  <span>Image Preview</span>
                 </div>
-              )}
-              <img
-                ref={imageRef}
-                src={selectedImage}
-                alt='Full size preview'
-                className='spotlight-modal-image'
-                style={{
-                  transform: `translate(${position.x}px, ${position.y}px) scale(${zoomLevel})`,
-                  transition: isDragging
-                    ? 'none'
-                    : 'transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
-                  opacity: isImageLoading ? 0 : 1,
-                }}
-                draggable='false'
-                onLoad={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  setImageNaturalSize({
-                    width: img.naturalWidth,
-                    height: img.naturalHeight,
-                  });
-                  setIsImageLoading(false);
-                }}
-              />
-            </div>
-          </div>
+                <button
+                  className='spotlight-modal-close'
+                  onClick={handleCloseModal}
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
-          <div className='spotlight-modal-footer'>
-            <div className='spotlight-modal-instructions'>
-              <span>
-                🖱️ {zoomLevel > 1 ? 'Click & drag to pan' : 'Scroll to zoom'}
-              </span>
-              <span>⎋ Press ESC to close</span>
-              <span>✕ Click outside to close</span>
+              <div className='spotlight-modal-toolbar'>
+                <button
+                  className='spotlight-modal-tool-btn'
+                  onClick={handleZoomIn}
+                  title='Zoom In (Mouse wheel)'
+                >
+                  <ZoomIn size={18} />
+                </button>
+                <button
+                  className='spotlight-modal-tool-btn'
+                  onClick={handleZoomOut}
+                  title='Zoom Out (Mouse wheel)'
+                >
+                  <ZoomOut size={18} />
+                </button>
+                <button
+                  className='spotlight-modal-tool-btn'
+                  onClick={handleResetZoom}
+                  title='Reset Zoom'
+                >
+                  <RotateCcw size={18} />
+                </button>
+                <div className='spotlight-modal-zoom-level'>
+                  {Math.round(zoomLevel * 100)}%
+                </div>
+              </div>
+
+              <div className='spotlight-modal-image-wrapper'>
+                <div
+                  ref={containerRef}
+                  className='spotlight-modal-image-container'
+                  onWheel={handleWheel}
+                  onMouseDown={handleDragStart}
+                  onMouseMove={handleDragMove}
+                  onMouseUp={handleDragEnd}
+                  onMouseLeave={handleDragEnd}
+                  style={{
+                    cursor:
+                      zoomLevel > 1
+                        ? isDragging
+                          ? 'grabbing'
+                          : 'grab'
+                        : 'default',
+                  }}
+                >
+                  {isImageLoading && (
+                    <div className='spotlight-modal-loader'>
+                      <div className='spinner-border text-light' role='status'>
+                        <span className='visually-hidden'>Loading...</span>
+                      </div>
+                    </div>
+                  )}
+                  <img
+                    ref={imageRef}
+                    src={selectedImage}
+                    alt='Full size preview'
+                    className='spotlight-modal-image'
+                    style={{
+                      transform: `translate(${position.x}px, ${position.y}px) scale(${zoomLevel})`,
+                      transition: isDragging
+                        ? 'none'
+                        : 'transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
+                      opacity: isImageLoading ? 0 : 1,
+                    }}
+                    draggable='false'
+                    onLoad={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      setImageNaturalSize({
+                        width: img.naturalWidth,
+                        height: img.naturalHeight,
+                      });
+                      setIsImageLoading(false);
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className='spotlight-modal-footer'>
+                <div className='spotlight-modal-instructions'>
+                  <span>
+                    🖱️{' '}
+                    {zoomLevel > 1 ? 'Click & drag to pan' : 'Scroll to zoom'}
+                  </span>
+                  <span>⎋ Press ESC to close</span>
+                  <span>✕ Click outside to close</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 };

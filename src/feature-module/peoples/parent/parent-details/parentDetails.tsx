@@ -445,7 +445,7 @@ const ParentDetails = () => {
       const currentAvatar = parent?.avatar ?? '';
       const isLegacyOrMissing =
         !currentAvatar ||
-        currentAvatar.includes('bothell-select.onrender.com') ||
+        currentAvatar.includes('partizan-be.onrender.com') ||
         !currentAvatar.startsWith('http');
       if (!isLegacyOrMissing) return;
       try {

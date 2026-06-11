@@ -10,7 +10,7 @@ const HomeModals = () => {
           <div className='modal-content'>
             <div className='modal-header'>
               <h4 className='modal-title'>
-                Fall '25, Bothell Select Basketball Training
+                Fall '25, Partizan Basketball Training
               </h4>
               <button
                 type='button'
@@ -31,7 +31,7 @@ const HomeModals = () => {
                 </span>
                 <div className='name-info'>
                   <h4>
-                    Bothell Select is pleased to offer Basketball Fall Training
+                    Partizan is pleased to offer Basketball Fall Training
                     Program for all boys and girls currently attending 3rd thru
                     12th grade.
                   </h4>
@@ -592,7 +592,7 @@ const HomeModals = () => {
           <div className='modal-content'>
             <div className='modal-header'>
               <h4 className='modal-title'>
-                Bothell Select Basketball Camp Waiver and Release of Liability
+                Partizan Basketball Camp Waiver and Release of Liability
               </h4>
               <button
                 type='button'
@@ -613,8 +613,8 @@ const HomeModals = () => {
                 </span>
                 <div className='name-info'>
                   <h4>
-                    In consideration of my child’s participation in the Bothell
-                    Select Basketball Camp ("Camp"), I, as the parent or legal
+                    In consideration of my child’s participation in the Partizan
+                    AAU Basketball Camp ("Camp"), I, as the parent or legal
                     guardian, acknowledge and agree to the following:
                   </h4>
                 </div>
@@ -631,7 +631,7 @@ const HomeModals = () => {
                     child.
                     <li className='me-2' />
                     <strong>Release and Waiver: </strong>I hereby release,
-                    discharge, and hold harmless Bothell Select, its directors,
+                    discharge, and hold harmless Partizan, its directors,
                     coaches, staff, volunteers, sponsors, and affiliates from
                     any and all liability, claims, demands, or causes of action
                     that may arise from my child’s participation in the Camp,
@@ -716,18 +716,18 @@ const HomeModals = () => {
                   carries inherent risks of injury, and on behalf of myself, my
                   team, and all team members (including players, parents, and
                   guardians), I assume full responsibility for such risks. I
-                  release and hold harmless Bothell Select, its staff,
-                  volunteers, facilities, and sponsors from any liability,
-                  claims, or demands arising out of participation in the
-                  tournament, including but not limited to injuries, accidents,
-                  or illnesses. I confirm that I have communicated these risks
-                  to all parents/guardians of the players on my team and have
+                  release and hold harmless Partizan, its staff, volunteers,
+                  facilities, and sponsors from any liability, claims, or
+                  demands arising out of participation in the tournament,
+                  including but not limited to injuries, accidents, or
+                  illnesses. I confirm that I have communicated these risks to
+                  all parents/guardians of the players on my team and have
                   obtained their consent for participation. I also grant
                   permission for photos and videos of the team and its players
-                  taken during the event to be used by Bothell Select for
-                  promotional purposes. By checking the box, I confirm that I
-                  have read, understood, and agreed to this waiver and release
-                  of liability on behalf of my team and its members.
+                  taken during the event to be used by Partizan for promotional
+                  purposes. By checking the box, I confirm that I have read,
+                  understood, and agreed to this waiver and release of liability
+                  on behalf of my team and its members.
                 </div>
               </div>
             </div>

@@ -142,7 +142,7 @@ const UserTickets: React.FC<UserTicketsProps> = ({
         title: 'No Receipt Available',
         text: 'This ticket does not have a receipt available for download.',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#506ee4',
+        confirmButtonColor: '#594230',
         customClass: {
           confirmButton: 'btn btn-primary',
         },
@@ -158,7 +158,7 @@ const UserTickets: React.FC<UserTicketsProps> = ({
         title: 'Cannot Send Receipt',
         text: 'No receipt or email available for this ticket.',
         confirmButtonText: 'OK',
-        confirmButtonColor: '#506ee4',
+        confirmButtonColor: '#594230',
         customClass: {
           confirmButton: 'btn btn-primary',
         },
@@ -197,7 +197,7 @@ const UserTickets: React.FC<UserTicketsProps> = ({
         `,
           showConfirmButton: true,
           confirmButtonText: 'OK',
-          confirmButtonColor: '#506ee4',
+          confirmButtonColor: '#594230',
           customClass: {
             confirmButton: 'btn btn-primary',
           },

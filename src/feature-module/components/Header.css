@@ -238,7 +238,7 @@
 }
 
 .user-role.role-admin {
-  background: rgba(80, 100, 220, 0.3);
+  background: rgba(89, 66, 48, 0.3);
   color: #8098ff;
 }
 
@@ -283,16 +283,16 @@
 .btn-glass-primary {
   background: linear-gradient(
     135deg,
-    rgba(80, 100, 220, 0.9),
+    rgba(89, 66, 48, 0.9),
     rgba(60, 80, 200, 0.9)
   );
   color: white;
-  box-shadow: 0 2px 8px rgba(80, 100, 220, 0.3);
+  box-shadow: 0 2px 8px rgba(89, 66, 48, 0.3);
 }
 
 .btn-glass-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(80, 100, 220, 0.4);
+  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.4);
   filter: brightness(1.05);
 }
 
@@ -535,10 +535,10 @@
 .private-section {
   background: linear-gradient(
     135deg,
-    rgba(80, 100, 220, 0.05),
-    rgba(80, 100, 220, 0.02)
+    rgba(89, 66, 48, 0.05),
+    rgba(89, 66, 48, 0.02)
   );
-  border-left: 3px solid rgba(80, 100, 220, 0.5);
+  border-left: 3px solid rgba(89, 66, 48, 0.5);
 }
 
 .auth-section {

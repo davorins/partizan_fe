@@ -1,0 +1,562 @@
+/* ── Tournaments Page - White Background Theme ───────────────────────── */
+
+.tournaments-white-root {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  position: relative;
+  overflow-x: hidden;
+  font-family:
+    'DM Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    sans-serif;
+}
+
+.tournaments-white-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 15% 40%,
+      rgba(89, 66, 48, 0.04) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 70%,
+      rgba(89, 66, 48, 0.03) 0%,
+      transparent 55%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tournaments-white-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  animation: orbWhiteFloat 22s ease-in-out infinite;
+  z-index: 0;
+}
+
+.tournaments-white-orb-1 {
+  width: 420px;
+  height: 420px;
+  background: rgba(89, 66, 48, 0.06);
+  top: -120px;
+  left: -120px;
+  animation-delay: 0s;
+}
+
+.tournaments-white-orb-2 {
+  width: 520px;
+  height: 520px;
+  background: rgba(89, 66, 48, 0.05);
+  bottom: -160px;
+  right: -160px;
+  animation-delay: 6s;
+}
+
+.tournaments-white-orb-3 {
+  width: 320px;
+  height: 320px;
+  background: rgba(89, 66, 48, 0.04);
+  top: 45%;
+  left: 42%;
+  animation-delay: 12s;
+}
+
+@keyframes orbWhiteFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(28px, -28px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-18px, 18px) rotate(240deg);
+  }
+}
+
+/* ── Wrapper ──────────────────────────────────────────── */
+.tournaments-white-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+}
+
+/* ── Loading State ──────────────────────────────────────── */
+.tournaments-white-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.white-card-loading {
+  background: #ffffff;
+  border-radius: 32px;
+  border: 1px solid #e2e8f0;
+  padding: 48px;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.white-card-loading h4 {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.white-card-loading p {
+  color: #64748b;
+}
+
+/* ── White Header Card ──────────────────────────────────── */
+.white-header-card {
+  background: linear-gradient(
+    135deg,
+    rgba(89, 66, 48, 0.08),
+    rgba(89, 66, 48, 0.02)
+  );
+  border-radius: 32px;
+  border: 1px solid #e2e8f0;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.white-header-title {
+  color: #1e293b !important;
+  margin: 0 !important;
+  font-size: 42px !important;
+  font-weight: 800 !important;
+}
+
+.header-icon-white {
+  margin-right: 16px;
+  font-size: 36px;
+  color: #594230;
+}
+
+.white-header-subtitle {
+  color: #64748b !important;
+  font-size: 18px !important;
+  margin: 0 !important;
+}
+
+.white-stats-badge {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.stat-title-white {
+  color: #64748b;
+}
+
+/* ── White Filters Card ─────────────────────────────────── */
+.white-filters-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.white-filters-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ── White Search ───────────────────────────────────────── */
+.white-search .ant-input-group-addon .ant-btn {
+  background: #594230;
+  border-color: #594230;
+  color: white;
+}
+
+.white-search .ant-input-group-addon .ant-btn:hover {
+  background: #8b7355;
+  border-color: #8b7355;
+}
+
+.white-search .ant-input {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.white-search .ant-input::placeholder {
+  color: #94a3b8;
+}
+
+.white-search .ant-input:hover,
+.white-search .ant-input:focus {
+  background: #ffffff;
+  border-color: #594230;
+  box-shadow: 0 0 0 2px rgba(89, 66, 48, 0.1);
+}
+
+/* ── White Select ───────────────────────────────────────── */
+.white-select .ant-select-selector {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+.white-select .ant-select-arrow {
+  color: #94a3b8;
+}
+
+.white-select .ant-select-selection-placeholder {
+  color: #94a3b8;
+}
+
+.white-select .ant-select-selector:hover {
+  border-color: #594230 !important;
+}
+
+.white-dropdown {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.white-dropdown .ant-dropdown-menu-item {
+  color: #475569;
+}
+
+.white-dropdown .ant-dropdown-menu-item:hover {
+  background: rgba(89, 66, 48, 0.1);
+  color: #594230;
+}
+
+/* ── White Buttons ──────────────────────────────────────── */
+.white-btn-outline {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.white-btn-outline:hover {
+  background: #f1f5f9;
+  border-color: #594230;
+  color: #594230;
+}
+
+.white-btn-secondary {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.white-btn-secondary:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.white-btn-primary {
+  background: linear-gradient(135deg, #594230 0%, #8b7355 100%);
+  border: none;
+  color: white;
+}
+
+.white-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(89, 66, 48, 0.3);
+}
+
+/* ── White Tags ─────────────────────────────────────────── */
+.white-tag {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.filter-label-white {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+/* ── White Tournament Card ──────────────────────────────── */
+.white-tournament-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.white-tournament-card:hover {
+  transform: translateY(-4px);
+  border-color: #594230;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.tournament-white-card-cover {
+  height: 120px;
+  background: linear-gradient(135deg, #594230, #8b7355);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-icon-white {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.status-white-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.status-white-badge .ant-badge-status-text {
+  color: white !important;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.tournament-white-card-content {
+  padding: 20px;
+}
+
+.card-white-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.tournament-white-title {
+  color: #1e293b !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.tournament-white-year {
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+.stats-white-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-white-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-white-label {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.stat-white-value {
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.stat-icon-white-success {
+  color: #10b981;
+}
+
+.stat-icon-white-primary {
+  color: #594230;
+}
+
+.stat-icon-white-purple {
+  color: #8b5cf6;
+}
+
+.stat-icon-white-orange {
+  color: #f59e0b;
+}
+
+.date-white-range {
+  text-align: right;
+}
+
+.date-white-range div {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.card-white-divider {
+  background: #e2e8f0;
+  margin: 16px 0;
+}
+
+.view-white-btn {
+  border-radius: 8px;
+}
+
+/* ── White Empty Card ───────────────────────────────────── */
+.white-empty-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.white-empty-card h4 {
+  color: #1e293b;
+}
+
+.white-empty-card p {
+  color: #64748b;
+}
+
+/* ── White Footer Stats ─────────────────────────────────── */
+.white-footer-stats {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  padding: 32px;
+  margin-top: 32px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.footer-stat-title-white {
+  color: #64748b;
+}
+
+/* ── White Pagination ───────────────────────────────────── */
+.pagination-white-wrapper {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.white-pagination .ant-pagination-item {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.white-pagination .ant-pagination-item a {
+  color: #475569;
+}
+
+.white-pagination .ant-pagination-item-active {
+  background: #594230;
+  border-color: #594230;
+}
+
+.white-pagination .ant-pagination-item-active a {
+  color: white;
+}
+
+.white-pagination .ant-pagination-item:hover {
+  border-color: #594230;
+}
+
+.white-pagination .ant-pagination-item:hover a {
+  color: #594230;
+}
+
+.white-pagination .ant-pagination-prev button,
+.white-pagination .ant-pagination-next button {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.white-pagination .ant-pagination-prev:hover button,
+.white-pagination .ant-pagination-next:hover button {
+  border-color: #594230;
+  color: #594230;
+}
+
+.white-pagination .ant-pagination-options-quick-jumper input {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.white-pagination .ant-pagination-options-quick-jumper input:focus {
+  border-color: #594230;
+  box-shadow: 0 0 0 2px rgba(89, 66, 48, 0.1);
+}
+
+.white-pagination .ant-pagination-total-text {
+  color: #64748b;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .tournaments-white-wrap {
+    padding: 60px 16px 80px;
+  }
+
+  .white-header-title {
+    font-size: 32px !important;
+  }
+
+  .white-header-subtitle {
+    font-size: 14px !important;
+  }
+
+  .white-filters-card {
+    padding: 16px;
+  }
+
+  .tournament-white-card-cover {
+    height: 100px;
+  }
+
+  .cover-icon-white {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .white-header-title {
+    font-size: 24px !important;
+  }
+
+  .tournament-white-title {
+    font-size: 14px !important;
+  }
+
+  .tournament-white-year {
+    font-size: 12px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tournaments-white-orb,
+  .white-tournament-card,
+  .white-filters-card {
+    animation: none;
+    transition: none;
+  }
+}

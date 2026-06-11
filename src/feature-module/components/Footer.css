@@ -1,0 +1,160 @@
+/* ── Footer ────────────────────────────────────────────── */
+.footer {
+  background: #0d0d0d;
+  color: #e0d5c8;
+  padding: 48px 32px 24px;
+  border-top: 1px solid #2a2218;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+/* Brand column */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f5ede0;
+}
+
+.footer-brand-name span {
+  color: #c9933a;
+}
+
+.footer-brand-desc {
+  font-size: 13px;
+  color: #7a6e60;
+  line-height: 1.6;
+  max-width: 220px;
+  margin: 0;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.footer-socials a {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #2e2417;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7a6e60;
+  font-size: 16px;
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.footer-socials a:hover {
+  border-color: #c9933a;
+  color: #c9933a;
+}
+
+/* Nav columns */
+.footer-col-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9933a;
+  margin-bottom: 14px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: #7a6e60;
+  text-decoration: none;
+  margin-bottom: 9px;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover {
+  color: #f5ede0;
+}
+
+.footer-col a i {
+  margin-right: 6px;
+  font-size: 14px;
+  vertical-align: -1px;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  border-top: 1px solid #1e1a14;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer .copyright {
+  font-size: 12px;
+  color: #4a4238;
+}
+
+.footer .copyright a {
+  color: #6a5c4a;
+  text-decoration: none;
+}
+
+.footer .copyright a:hover {
+  color: #c9933a;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-legal a {
+  font-size: 12px;
+  color: #4a4238;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-legal a:hover {
+  color: #c9933a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

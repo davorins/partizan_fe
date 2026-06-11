@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className='footer'>
       <div className='copyright'>
-        © {currentYear} Bothell Select by{' '}
+        © {currentYear} Partizan by{' '}
         <a href='https://rainbootsmarketing.com/'>Rainboots</a>
       </div>
       <div className='footer-links'>

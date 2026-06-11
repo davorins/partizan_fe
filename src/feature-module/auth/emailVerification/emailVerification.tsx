@@ -264,7 +264,7 @@ const EmailVerification = () => {
                       </div>
                       <div className='mt-5 text-center'>
                         <p className='mb-0'>
-                          © {new Date().getFullYear()} Bothell Select by{' '}
+                          © {new Date().getFullYear()} Partizan by{' '}
                           <a href='https://rainbootsmarketing.com/'>
                             Rainboots
                           </a>
@@ -561,7 +561,7 @@ const EmailVerification = () => {
                     </div>
                     <div className='mt-5 text-center'>
                       <p className='mb-0'>
-                        © {new Date().getFullYear()} Bothell Select by{' '}
+                        © {new Date().getFullYear()} Partizan by{' '}
                         <a href='https://rainbootsmarketing.com/'>Rainboots</a>
                       </p>
                     </div>

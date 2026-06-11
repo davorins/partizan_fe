@@ -35,7 +35,7 @@ const InTheSpotlight = () => {
     <div
       className='spotlight-glass-page'
       style={{
-        backgroundImage: 'url(/assets/img/bg/spotlight.jpg)',
+        backgroundImage: 'url(/assets/img/theme/spotlight.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

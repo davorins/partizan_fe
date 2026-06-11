@@ -59,7 +59,7 @@ const ProgramLeadership = () => {
               <h1 className='hero-title'>
                 Meet the Leaders
                 <br />
-                <span className='hero-accent'>Behind Bothell Select</span>
+                <span className='hero-accent'>Behind Partizan</span>
               </h1>
               <p className='hero-lead'>
                 Our leadership team brings decades of professional and
@@ -449,7 +449,7 @@ const ProgramLeadership = () => {
           display: inline-block;
           font-size: .73rem; font-weight: 700;
           letter-spacing: .12em; text-transform: uppercase;
-          color: #506ee4;
+          color: #594230;
           background: rgba(80,110,228,.12);
           border: 1px solid rgba(80,110,228,.28);
           padding: 4px 14px; border-radius: 40px; margin-bottom: 12px;
@@ -485,7 +485,7 @@ const ProgramLeadership = () => {
         }
         .eyebrow-dot {
           width: 6px; height: 6px; border-radius: 50%;
-          background: #506ee4; box-shadow: 0 0 8px #506ee4; flex-shrink: 0;
+          background: #594230; box-shadow: 0 0 8px #594230; flex-shrink: 0;
         }
 
         .hero-title {
@@ -494,7 +494,7 @@ const ProgramLeadership = () => {
           margin: 0 0 18px; color: #fff;
         }
         .hero-accent {
-          background: linear-gradient(135deg, #506ee4, #7b94f5);
+          background: linear-gradient(135deg, #594230, #7b94f5);
           -webkit-background-clip: text; background-clip: text; color: transparent;
         }
 
@@ -595,13 +595,13 @@ const ProgramLeadership = () => {
           font-size: clamp(1.6rem, 2.5vw, 2.2rem);
           font-weight: 800; letter-spacing: -.025em;
           margin: 0 0 8px;
-          background: linear-gradient(135deg, #fff, #506ee4);
+          background: linear-gradient(135deg, #fff, #594230);
           -webkit-background-clip: text; background-clip: text; color: transparent;
         }
 
         .leader-title-line {
           font-size: .9rem; font-weight: 600;
-          color: #506ee4; margin-bottom: 0;
+          color: #594230; margin-bottom: 0;
           letter-spacing: .05em;
         }
 
@@ -635,7 +635,7 @@ const ProgramLeadership = () => {
         .stat-value {
           font-size: 1.8rem;
           font-weight: 800;
-          background: linear-gradient(135deg, #fff, #506ee4);
+          background: linear-gradient(135deg, #fff, #594230);
           -webkit-background-clip: text; background-clip: text; color: transparent;
           line-height: 1;
         }
@@ -657,7 +657,7 @@ const ProgramLeadership = () => {
         }
 
         .leader-bio-full strong {
-          color: #506ee4;
+          color: #594230;
           font-weight: 600;
         }
 
@@ -671,7 +671,7 @@ const ProgramLeadership = () => {
         .leader-philosophy h4 {
           font-size: 1rem;
           font-weight: 700;
-          color: #506ee4;
+          color: #594230;
           margin: 0 0 16px;
           text-transform: uppercase;
           letter-spacing: .08em;
@@ -694,7 +694,7 @@ const ProgramLeadership = () => {
           padding: 24px 32px;
           background: rgba(80,110,228,.06);
           border-radius: 24px;
-          border-left: 3px solid #506ee4;
+          border-left: 3px solid #594230;
           text-align: center;
         }
 
@@ -717,7 +717,7 @@ const ProgramLeadership = () => {
           display: block;
           font-size: .8rem;
           font-style: normal;
-          color: #506ee4;
+          color: #594230;
           font-weight: 600;
         }
 
@@ -727,7 +727,7 @@ const ProgramLeadership = () => {
           background: rgba(80,110,228,.15);
           border: 1px solid rgba(80,110,228,.25);
           border-radius: 40px;
-          color: #506ee4;
+          color: #594230;
           font-size: .9rem;
           font-weight: 600;
           cursor: pointer;
@@ -775,7 +775,7 @@ const ProgramLeadership = () => {
           justify-content: center;
           margin: 0 auto 20px;
         }
-        .value-icon i { font-size: 1.6rem; color: #506ee4; }
+        .value-icon i { font-size: 1.6rem; color: #594230; }
 
         .value-card h3 {
           font-size: 1.1rem; font-weight: 700;

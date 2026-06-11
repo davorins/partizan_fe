@@ -1,266 +1,631 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import ImageWithBasePath from '../../core/common/imageWithBasePath';
+import SpotlightContent from '../../components/spotlight/SpotlightContent';
+import RegistrationHub from '../../feature-module/components/registration/RegistrationHub';
+import FormEmbed from '../../components/FormEmbed';
 import HomeModals from './homeModals';
-import HomeTileRenderer from './HomeTileRenderer';
+import {
+  RegistrationFormConfig,
+  TournamentSpecificConfig,
+  TryoutSpecificConfig,
+  SeasonEvent,
+} from '../../types/registration-types';
 import './HomePage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+// Default video URL (provided)
+const DEFAULT_VIDEO_URL =
+  'https://pub-3eb0901007e24e51b6ed1bde149cb0bb.r2.dev/videos/d5544a4901f1332b3c3be0eecb4aeb8f-1771636396900.mp4';
 
 interface HomePageProps {
   onSplashClose: () => void;
 }
 
-interface VideoControls {
-  isPlaying: boolean;
-  isFullscreen: boolean;
-  isMuted: boolean;
-}
-
-// ─── Tile grid layout logic ───────────────────────────────────────────────────
-function getTileLayout(count: number): {
-  gridCols: string;
-  tileClass: string;
-} {
-  switch (count) {
-    case 1:
-      return { gridCols: '1fr', tileClass: 'tile-single' };
-    case 2:
-      return { gridCols: '1fr 1fr', tileClass: 'tile-half' };
-    case 3:
-      return { gridCols: '1fr 1fr 1fr', tileClass: 'tile-third' };
-    case 4:
-      return { gridCols: '1fr 1fr', tileClass: 'tile-quarter' };
-    case 5:
-    case 6:
-      return { gridCols: '1fr 1fr 1fr', tileClass: 'tile-sixth' };
-    default:
-      return { gridCols: '1fr 1fr 1fr', tileClass: 'tile-sixth' };
-  }
-}
+const HERO_TITLE = 'Welcome to Partizan!';
+const HERO_BODY =
+  'Being part of the Partizan basketball program requires a dedicated commitment throughout the season. Our objective is to develop well-rounded players who are prepared to compete successfully at the next level by emphasizing strong fundamentals, discipline, and basketball IQ.';
 
 const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
-  const { isLoading, parent } = useAuth();
+  const { isLoading, parent, isAuthenticated, checkAuth } = useAuth();
+  const navigate = useNavigate();
   const isAdmin = parent?.role === 'admin';
   const token = localStorage.getItem('token');
 
-  const [promoVideoUrl, setPromoVideoUrl] = useState<string>('');
-  const [videoUploading, setVideoUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Video player controls state
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [showControls, setShowControls] = useState(false);
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
+
+  // Promo video state
+  const [promoVideoUrl, setPromoVideoUrl] = useState<string>(DEFAULT_VIDEO_URL);
   const [videoError, setVideoError] = useState(false);
+  const [showVideoElement, setShowVideoElement] = useState(true);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [showVideoElement, setShowVideoElement] = useState(false);
-  const [isMobile, setIsMobile] = useState(true); // Default to true for safety
+  const [hasCustomVideo, setHasCustomVideo] = useState(false);
+  const sectionVideoRef = useRef<HTMLVideoElement>(null);
 
-  const [videoControls, setVideoControls] = useState<VideoControls>({
-    isPlaying: false,
-    isFullscreen: false,
-    isMuted: true,
-  });
-  const [showControlsPanel, setShowControlsPanel] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(0);
-  const [videoDuration, setVideoDuration] = useState(0);
-  const [showVideoPopup, setShowVideoPopup] = useState(false);
+  // Modal state for forms
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Track if background video should be paused
-  const [isBackgroundVideoPaused, setIsBackgroundVideoPaused] = useState(false);
-  const backgroundVideoCurrentTime = useRef<number>(0);
-  const wasBackgroundPlaying = useRef<boolean>(false);
+  const [formConfigs, setFormConfigs] = useState<{
+    player: RegistrationFormConfig | null;
+    training: RegistrationFormConfig | null;
+    tournament: RegistrationFormConfig | null;
+    tryout: RegistrationFormConfig | null;
+  }>({ player: null, training: null, tournament: null, tryout: null });
+  const [activeFormIds, setActiveFormIds] = useState<Set<string>>(new Set());
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const popupVideoRef = useRef<HTMLVideoElement>(null);
-  const animationFrameId = useRef<number | null>(null);
-  const lastRoundedProgress = useRef<number>(0);
-  const timeUpdateThrottle = useRef<number>(0);
-  const videoFileInputRef = useRef<HTMLInputElement>(null);
+  const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLImageElement>(null);
+  const player3Ref = useRef<HTMLImageElement>(null);
+  const player4Ref = useRef<HTMLImageElement>(null);
+  const scrollYRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
 
-  // Check mobile - more aggressive detection
-  const checkIfMobile = useCallback(() => {
-    const mobileWidth = window.innerWidth <= 768;
-    const mobileUA =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent,
-      );
-    const isMobileDevice = mobileWidth || mobileUA;
-    setIsMobile(isMobileDevice);
+  const setSectionRef = (index: number) => (el: HTMLDivElement | null) => {
+    sectionsRef.current[index] = el;
+  };
 
-    // If mobile, force hide video element
-    if (isMobileDevice && videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.style.display = 'none';
-    }
-
-    return isMobileDevice;
-  }, []);
-
-  // Preload background image
-  const preloadBackgroundImage = useCallback(() => {
-    const img = new Image();
-    img.src = '/assets/img/bg/main.png';
-    img.onload = () => {
-      console.log('Background image loaded');
-    };
-    img.onerror = () => {
-      console.log('Background image failed to load');
-    };
-  }, []);
-
-  // ── Fetch promo video URL ───────────────────────────────────────────────
-  useEffect(() => {
-    const fetchPromoVideo = async () => {
-      const isMobileDevice = checkIfMobile();
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/upload/promo-video`);
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data = await res.json();
-        if (data.videoUrl) {
-          const urlWithCache = `${data.videoUrl}?t=${Date.now()}`;
-          setPromoVideoUrl(urlWithCache);
-
-          // Only preload video on desktop
-          if (!isMobileDevice) {
-            const video = document.createElement('video');
-            video.preload = 'auto';
-            video.src = urlWithCache;
-            video.oncanplaythrough = () => {
-              console.log('Video preloaded, ready to show');
-              setShowVideoElement(true);
-            };
-            video.onerror = () => {
-              console.log('Video failed to preload, showing background image');
-              setShowVideoElement(false);
-            };
-          }
-        } else {
-          setShowVideoElement(false);
-        }
-      } catch (err) {
-        console.error('Could not fetch promo video URL:', err);
-        setShowVideoElement(false);
+  // Video control handlers
+  const handlePlayPause = useCallback(() => {
+    if (sectionVideoRef.current) {
+      if (isPlaying) {
+        sectionVideoRef.current.pause();
+      } else {
+        sectionVideoRef.current.play();
       }
+      setIsPlaying(!isPlaying);
+    }
+  }, [isPlaying]);
+
+  const handleVolumeToggle = useCallback(() => {
+    if (sectionVideoRef.current) {
+      const video = sectionVideoRef.current;
+      video.muted = !video.muted;
+    }
+  }, []);
+
+  const handleTimeUpdate = useCallback(() => {
+    if (sectionVideoRef.current) {
+      setCurrentTime(sectionVideoRef.current.currentTime);
+    }
+  }, []);
+
+  const handleLoadedMetadata = useCallback(() => {
+    if (sectionVideoRef.current) {
+      setDuration(sectionVideoRef.current.duration);
+    }
+  }, []);
+
+  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (sectionVideoRef.current) {
+      const newTime = parseFloat(e.target.value);
+      sectionVideoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  }, []);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const showControlsTemporarily = useCallback(() => {
+    setShowControls(true);
+    if (controlsTimeout) clearTimeout(controlsTimeout);
+    const timeout = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+    setControlsTimeout(timeout);
+  }, [controlsTimeout]);
+
+  // Parallax scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollYRef.current = window.scrollY;
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        const y = scrollYRef.current;
+        const heroElement = heroRef.current;
+
+        if (heroElement && bgRef.current) {
+          const heroRect = heroElement.getBoundingClientRect();
+          const heroTop = heroRect.top + window.scrollY;
+          const heroHeight = heroRect.height;
+          let scrollProgress = (y - heroTop) / heroHeight;
+          scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+          const translateY = scrollProgress * 400;
+          const opacity = Math.max(0, 1 - scrollProgress * 1.2);
+          bgRef.current.style.transform = `translate(-50%, calc(-50% - ${translateY}px))`;
+          bgRef.current.style.opacity = opacity.toString();
+        }
+
+        if (player3Ref.current) {
+          const yOffset = y * 0.15;
+          player3Ref.current.style.transform = `translateY(${yOffset}px)`;
+        }
+
+        if (player4Ref.current) {
+          const yOffset = y * 0.15;
+          player4Ref.current.style.transform = `translateY(${yOffset}px)`;
+        }
+
+        const regSection = document.querySelector('.hp-section--reg');
+        if (regSection) {
+          const rect = regSection.getBoundingClientRect();
+          const scrollPercent =
+            (window.scrollY - (rect.top + window.scrollY)) / rect.height;
+          if (scrollPercent > -0.5 && scrollPercent < 1.5) {
+            const bgOffset = scrollPercent * 100;
+            (regSection as HTMLElement).style.setProperty(
+              '--bg-offset',
+              `${bgOffset}px`,
+            );
+          }
+        }
+
+        rafRef.current = null;
+      });
     };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
-    preloadBackgroundImage();
+  // Intersection observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('hp-visible');
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' },
+    );
+    sectionsRef.current.forEach((s) => s && observer.observe(s));
+    return () => observer.disconnect();
+  }, [formConfigs, activeFormIds, promoVideoUrl]);
+
+  // Fetch promo video from server
+  const fetchPromoVideo = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload/promo-video`);
+      if (!res.ok) {
+        if (res.status === 404) {
+          console.log('No custom video found, using default');
+          setHasCustomVideo(false);
+          setPromoVideoUrl(DEFAULT_VIDEO_URL);
+          setShowVideoElement(true);
+          return;
+        }
+        throw new Error('Failed to fetch');
+      }
+
+      const data = await res.json();
+      if (data.videoUrl) {
+        const urlWithCache = `${data.videoUrl}?t=${Date.now()}`;
+        setPromoVideoUrl(urlWithCache);
+        setHasCustomVideo(true);
+        setShowVideoElement(true);
+        setVideoLoaded(false);
+
+        const probe = document.createElement('video');
+        probe.preload = 'metadata';
+        probe.src = urlWithCache;
+        probe.oncanplaythrough = () => {
+          setShowVideoElement(true);
+        };
+        probe.onerror = () => {
+          console.error('Custom video failed to load, falling back to default');
+          setPromoVideoUrl(DEFAULT_VIDEO_URL);
+          setHasCustomVideo(false);
+          setShowVideoElement(true);
+        };
+      } else {
+        setHasCustomVideo(false);
+        setPromoVideoUrl(DEFAULT_VIDEO_URL);
+        setShowVideoElement(true);
+      }
+    } catch (error) {
+      console.error('Error fetching promo video:', error);
+      setHasCustomVideo(false);
+      setPromoVideoUrl(DEFAULT_VIDEO_URL);
+      setShowVideoElement(true);
+    }
+  }, []);
+
+  // Fetch active forms
+  const fetchActiveForms = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/forms/published`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          const ids = new Set<string>(
+            data.data
+              .filter((f: any) => f.status === 'published')
+              .map((f: any) => f._id?.toString())
+              .filter(Boolean),
+          );
+          setActiveFormIds(ids);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const fetchAllFormConfigs = useCallback(async () => {
+    try {
+      let formConfigsData: Record<string, any> = {};
+      let tournamentConfigs: TournamentSpecificConfig[] = [];
+      let tryoutConfigs: TryoutSpecificConfig[] = [];
+      try {
+        const r = await fetch(`${API_BASE_URL}/admin/form-configs`);
+        if (r.ok) formConfigsData = await r.json();
+      } catch {
+        /* ignore */
+      }
+      try {
+        const r = await fetch(`${API_BASE_URL}/admin/tournament-configs`);
+        if (r.ok) tournamentConfigs = await r.json();
+      } catch {
+        /* ignore */
+      }
+      try {
+        const r = await fetch(`${API_BASE_URL}/admin/tryout-configs`);
+        if (r.ok) tryoutConfigs = await r.json();
+      } catch {
+        /* ignore */
+      }
+
+      const configs: typeof formConfigs = {
+        player: null,
+        training: null,
+        tournament: null,
+        tryout: null,
+      };
+
+      Object.entries(formConfigsData).forEach(([key, c]: [string, any]) => {
+        if (!c.isActive || c.tournamentName || c.tryoutName) return;
+        const isTraining =
+          key.toLowerCase().includes('training') ||
+          key.toLowerCase().includes('select') ||
+          (c.season && c.season.toLowerCase().includes('training')) ||
+          (c.pricing?.packages && c.pricing.packages.length > 0);
+        if (isTraining && !configs.training) {
+          configs.training = {
+            _id: c._id,
+            season: c.season || key.split('-')[0],
+            year:
+              c.year || parseInt(key.split('-')[1]) || new Date().getFullYear(),
+            isActive: c.isActive,
+            requiresPayment: c.requiresPayment ?? true,
+            requiresQualification: c.requiresQualification || false,
+            pricing: {
+              basePrice: c.pricing?.basePrice || 0,
+              packages: (c.pricing?.packages || []).map((p: any) => ({
+                id: p.id || p._id?.toString() || Math.random().toString(),
+                name: p.name || '',
+                price: p.price || 0,
+                description: p.description || '',
+              })),
+            },
+            description: c.description || '',
+            displayName: c.displayName,
+            createdAt: c.createdAt,
+            updatedAt: c.updatedAt,
+            __v: c.__v,
+            trainingDetails: c.trainingDetails,
+          };
+          return;
+        }
+        if (!configs.player && !c.pricing?.packages?.length) {
+          configs.player = {
+            _id: c._id,
+            season: c.season || key.split('-')[0],
+            year:
+              c.year || parseInt(key.split('-')[1]) || new Date().getFullYear(),
+            isActive: c.isActive,
+            requiresPayment: false,
+            requiresQualification: false,
+            pricing: { basePrice: 0, packages: [] },
+            createdAt: c.createdAt,
+            updatedAt: c.updatedAt,
+            __v: c.__v,
+          };
+        }
+      });
+
+      const activeTournament = tournamentConfigs.find((c) => c.isActive);
+      if (activeTournament) {
+        configs.tournament = {
+          _id: activeTournament._id,
+          season: activeTournament.tournamentName,
+          year: activeTournament.tournamentYear,
+          isActive: activeTournament.isActive,
+          requiresPayment: true,
+          requiresQualification: false,
+          pricing: {
+            basePrice: activeTournament.tournamentFee || 0,
+            packages: [],
+          },
+          tournamentName: activeTournament.tournamentName,
+          tournamentYear: activeTournament.tournamentYear,
+          displayName: activeTournament.displayName,
+          registrationDeadline: activeTournament.registrationDeadline,
+          tournamentDates: activeTournament.tournamentDates || [],
+          locations: activeTournament.locations || [],
+          divisions: activeTournament.divisions || [],
+          ageGroups: activeTournament.ageGroups || [],
+          requiresRoster: activeTournament.requiresRoster || false,
+          requiresInsurance: activeTournament.requiresInsurance || false,
+          paymentDeadline: activeTournament.paymentDeadline,
+          refundPolicy: activeTournament.refundPolicy,
+          rulesDocumentUrl: activeTournament.rulesDocumentUrl,
+          scheduleDocumentUrl: activeTournament.scheduleDocumentUrl,
+          tournamentFee: activeTournament.tournamentFee || 0,
+          createdAt: activeTournament.createdAt,
+          updatedAt: activeTournament.updatedAt,
+          __v: activeTournament.__v,
+          description: activeTournament.description || '',
+        };
+      }
+
+      const activeTryout = tryoutConfigs.find((c) => c.isActive);
+      if (activeTryout) {
+        const locationStrings: string[] = (activeTryout.locations || [])
+          .map((loc) => loc.name)
+          .filter(Boolean);
+        configs.tryout = {
+          _id: activeTryout._id,
+          season: activeTryout.tryoutName,
+          year: activeTryout.tryoutYear,
+          isActive: activeTryout.isActive,
+          requiresPayment: activeTryout.requiresPayment,
+          requiresQualification: false,
+          pricing: { basePrice: activeTryout.tryoutFee || 0, packages: [] },
+          tryoutName: activeTryout.tryoutName,
+          tryoutYear: activeTryout.tryoutYear,
+          displayName: activeTryout.displayName,
+          registrationDeadline: activeTryout.registrationDeadline,
+          tryoutDates: activeTryout.tryoutDates || [],
+          locations: locationStrings,
+          divisions: activeTryout.divisions || [],
+          ageGroups: activeTryout.ageGroups || [],
+          requiresRoster: activeTryout.requiresRoster || false,
+          requiresInsurance: activeTryout.requiresInsurance || false,
+          paymentDeadline: activeTryout.paymentDeadline,
+          refundPolicy: activeTryout.refundPolicy,
+          tryoutFee: activeTryout.tryoutFee || 0,
+          createdAt: activeTryout.createdAt,
+          updatedAt: activeTryout.updatedAt,
+          __v: activeTryout.__v,
+          description: activeTryout.description || '',
+          tryoutDetails: activeTryout.tryoutDetails,
+        };
+      }
+
+      if (
+        !configs.tournament?.isActive &&
+        !configs.tryout?.isActive &&
+        !configs.training?.isActive &&
+        !configs.player?.isActive
+      ) {
+        configs.player = {
+          season: 'Player Registration',
+          year: new Date().getFullYear(),
+          isActive: true,
+          requiresPayment: false,
+          requiresQualification: false,
+          pricing: { basePrice: 0, packages: [] },
+        };
+      }
+      setFormConfigs(configs);
+    } catch {
+      setFormConfigs({
+        player: {
+          season: 'Player Registration',
+          year: new Date().getFullYear(),
+          isActive: true,
+          requiresPayment: false,
+          requiresQualification: false,
+          pricing: { basePrice: 0, packages: [] },
+        },
+        training: null,
+        tournament: null,
+        tryout: null,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchActiveForms();
+    fetchAllFormConfigs();
     fetchPromoVideo();
-  }, [preloadBackgroundImage, checkIfMobile]);
+  }, [fetchActiveForms, fetchAllFormConfigs, fetchPromoVideo]);
 
-  // ── Admin video upload ─────────────────────────────────────────────────
-  const uploadVideo = useCallback(
+  const getDefaultSeasonEvent = (): SeasonEvent => {
+    if (formConfigs.tournament?.isActive)
+      return {
+        season: formConfigs.tournament.tournamentName || 'Tournament',
+        year:
+          formConfigs.tournament.tournamentYear ||
+          formConfigs.tournament.year ||
+          2025,
+        eventId:
+          formConfigs.tournament._id?.toString() || 'tournament-registration',
+        description:
+          formConfigs.tournament.displayName || 'Tournament Registration',
+      };
+    if (formConfigs.tryout?.isActive)
+      return {
+        season: formConfigs.tryout.tryoutName || 'Tryout',
+        year: formConfigs.tryout.tryoutYear || formConfigs.tryout.year || 2025,
+        eventId: formConfigs.tryout._id?.toString() || 'tryout-registration',
+        description: formConfigs.tryout.displayName || 'Tryout Registration',
+      };
+    if (formConfigs.training?.isActive)
+      return {
+        season: formConfigs.training.season || 'Training',
+        year: formConfigs.training.year || 2025,
+        eventId:
+          formConfigs.training._id?.toString() || 'training-registration',
+        description:
+          formConfigs.training.season || 'Basketball Training Registration',
+      };
+    return {
+      season: formConfigs.player?.season || 'Player Registration',
+      year: formConfigs.player?.year || 2025,
+      eventId: formConfigs.player?._id?.toString() || 'player-registration',
+      description: 'Add Players to Your Account',
+    };
+  };
+
+  const hasActiveEmbeddedForms = useCallback(
+    () => activeFormIds.size > 0,
+    [activeFormIds],
+  );
+  const hasActiveRegistrationForms = useCallback(
+    () =>
+      !!(
+        formConfigs.player?.isActive ||
+        formConfigs.training?.isActive ||
+        formConfigs.tournament?.isActive ||
+        formConfigs.tryout?.isActive
+      ),
+    [formConfigs],
+  );
+
+  // Modal handlers
+  const openFormModal = (formId: string) => {
+    setSelectedFormId(formId);
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeFormModal = () => {
+    setIsModalOpen(false);
+    setSelectedFormId(null);
+    document.body.style.overflow = '';
+  };
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isModalOpen) closeFormModal();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isModalOpen]);
+
+  // Admin upload
+  const uploadContent = useCallback(
     async (file: File) => {
       if (!file || !token) {
         setUploadError('Authentication required');
         return;
       }
-      const validTypes = [
-        'video/mp4',
-        'video/webm',
-        'video/ogg',
-        'video/quicktime',
-      ];
-      if (!validTypes.includes(file.type)) {
-        setUploadError(
-          'Please upload a valid video file (MP4, WebM, OGG, or MOV)',
-        );
+
+      if (!file.type.startsWith('video/')) {
+        setUploadError('Please upload a valid video file');
         return;
       }
+
       if (file.size > 200 * 1024 * 1024) {
-        setUploadError('Video file must be less than 200MB');
+        setUploadError('File size must be less than 200MB');
         return;
       }
+
       setVideoUploading(true);
       setUploadProgress(0);
       setUploadError(null);
       setUploadSuccess(false);
-      setDebugInfo(null);
       setShowAdminPanel(false);
-      if (videoRef.current && videoControls.isPlaying) {
-        videoRef.current.pause();
-        setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-      }
+
       try {
         const formData = new FormData();
         formData.append('video', file);
+
         const xhr = new XMLHttpRequest();
-        const uploadPromise = new Promise((resolve, reject) => {
-          xhr.upload.addEventListener('progress', (event) => {
-            if (event.lengthComputable)
-              setUploadProgress(Math.round((event.loaded / event.total) * 100));
+
+        await new Promise((resolve, reject) => {
+          xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+              setUploadProgress(Math.round((e.loaded / e.total) * 100));
+            }
           });
+
           xhr.addEventListener('load', () => {
             if (xhr.status >= 200 && xhr.status < 300) {
               try {
-                resolve(JSON.parse(xhr.responseText));
-              } catch (e) {
+                const response = JSON.parse(xhr.responseText);
+                resolve(response);
+              } catch {
                 reject(new Error('Invalid response from server'));
               }
             } else {
               try {
                 const err = JSON.parse(xhr.responseText);
                 reject(new Error(err.error || err.message || 'Upload failed'));
-              } catch (e) {
+              } catch {
                 reject(new Error(`Upload failed with status ${xhr.status}`));
               }
             }
           });
-          xhr.addEventListener('error', () =>
-            reject(new Error('Network error')),
-          );
-          xhr.addEventListener('abort', () =>
-            reject(new Error('Upload aborted')),
-          );
+
+          xhr.addEventListener('error', () => {
+            reject(new Error('Network error occurred'));
+          });
+
+          xhr.addEventListener('timeout', () => {
+            reject(new Error('Upload timeout'));
+          });
+
           xhr.open('PUT', `${API_BASE_URL}/upload/promo-video`);
           xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+          xhr.timeout = 300000;
           xhr.send(formData);
         });
-        const data = (await uploadPromise) as {
-          videoUrl: string;
-          success: boolean;
-        };
-        if (data.videoUrl) {
-          const urlWithCache = `${data.videoUrl}?t=${Date.now()}`;
-          setPromoVideoUrl(urlWithCache);
-          setUploadSuccess(true);
-          setTimeout(() => setUploadSuccess(false), 3000);
 
-          // Only preload on desktop
-          if (!isMobile) {
-            const video = document.createElement('video');
-            video.preload = 'auto';
-            video.src = urlWithCache;
-            video.oncanplaythrough = () => {
-              setShowVideoElement(true);
-            };
-          }
-        } else throw new Error('No video URL returned from server');
+        setUploadSuccess(true);
+        setTimeout(() => setUploadSuccess(false), 5000);
+
+        setShowVideoElement(false);
+        setVideoLoaded(false);
+        setPromoVideoUrl('');
+
+        await fetchPromoVideo();
       } catch (err: any) {
-        setUploadError(err.message || 'Failed to upload video');
-        setDebugInfo(JSON.stringify(err, null, 2));
+        console.error('Upload error:', err);
+        setUploadError(
+          err.message || 'Failed to upload video. Please try again.',
+        );
       } finally {
         setVideoUploading(false);
-        if (videoFileInputRef.current) videoFileInputRef.current.value = '';
       }
     },
-    [token, videoControls.isPlaying, isMobile],
-  );
-
-  const handleVideoFileChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) await uploadVideo(file);
-    },
-    [uploadVideo],
+    [token, fetchPromoVideo],
   );
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -278,318 +643,72 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       e.preventDefault();
       e.stopPropagation();
       setDragActive(false);
+
       const file = e.dataTransfer.files?.[0];
-      if (file) await uploadVideo(file);
+      if (file) {
+        await uploadContent(file);
+      }
     },
-    [uploadVideo],
+    [uploadContent],
   );
 
-  const handleDeletePromoVideo = useCallback(async () => {
-    if (!token) return;
-    if (!window.confirm('Remove the promo video? This cannot be undone.'))
+  const resetToDefaultVideo = useCallback(async () => {
+    if (!token) {
+      setUploadError('Authentication required');
       return;
+    }
+
     setVideoUploading(true);
     setUploadError(null);
+
     try {
-      const res = await fetch(`${API_BASE_URL}/upload/promo-video`, {
+      const response = await fetch(`${API_BASE_URL}/upload/promo-video/reset`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Delete failed');
-      setPromoVideoUrl('');
-      setShowAdminPanel(false);
+
+      if (!response.ok) {
+        throw new Error('Failed to reset video');
+      }
+
       setUploadSuccess(true);
-      setShowVideoElement(false);
-      setTimeout(() => setUploadSuccess(false), 3000);
+      setTimeout(() => setUploadSuccess(false), 5000);
+
+      setHasCustomVideo(false);
+      setPromoVideoUrl(DEFAULT_VIDEO_URL);
+      setVideoLoaded(false);
+      setShowVideoElement(true);
     } catch (err: any) {
-      setUploadError(`Failed to remove video: ${err.message}`);
+      console.error('Reset error:', err);
+      setUploadError(err.message || 'Failed to reset to default video');
     } finally {
       setVideoUploading(false);
     }
   }, [token]);
 
-  // Handle fullscreen change events - PAUSE BACKGROUND VIDEO
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      const isFullscreen = !!(
-        document.fullscreenElement ||
-        (document as any).webkitFullscreenElement ||
-        (document as any).mozFullScreenElement ||
-        (document as any).msFullscreenElement
-      );
-
-      setVideoControls((prev) => ({ ...prev, isFullscreen: isFullscreen }));
-
-      if (isFullscreen) {
-        // Pause background video when entering fullscreen
-        if (videoRef.current && !videoRef.current.paused) {
-          wasBackgroundPlaying.current = true;
-          backgroundVideoCurrentTime.current = videoRef.current.currentTime;
-          videoRef.current.pause();
-          setIsBackgroundVideoPaused(true);
-          setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-        }
-      } else {
-        // Resume background video when exiting fullscreen if it was playing before
-        if (
-          wasBackgroundPlaying.current &&
-          videoRef.current &&
-          isBackgroundVideoPaused
-        ) {
-          videoRef.current.currentTime = backgroundVideoCurrentTime.current;
-          videoRef.current
-            .play()
-            .then(() => {
-              setVideoControls((prev) => ({ ...prev, isPlaying: true }));
-              setIsBackgroundVideoPaused(false);
-              wasBackgroundPlaying.current = false;
-            })
-            .catch(() => {
-              setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-            });
-        }
-      }
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener(
-        'webkitfullscreenchange',
-        handleFullscreenChange,
-      );
-      document.removeEventListener(
-        'mozfullscreenchange',
-        handleFullscreenChange,
-      );
-      document.removeEventListener(
-        'MSFullscreenChange',
-        handleFullscreenChange,
-      );
-    };
-  }, [isBackgroundVideoPaused]);
-
-  // Handle popup video open/close - PAUSE BACKGROUND VIDEO
-  useEffect(() => {
-    if (showVideoPopup && !isMobile) {
-      // Pause background video when popup opens
-      if (videoRef.current && !videoRef.current.paused) {
-        wasBackgroundPlaying.current = true;
-        backgroundVideoCurrentTime.current = videoRef.current.currentTime;
-        videoRef.current.pause();
-        setIsBackgroundVideoPaused(true);
-        setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-      }
-    } else {
-      // Resume background video when popup closes if it was playing before
-      if (
-        wasBackgroundPlaying.current &&
-        videoRef.current &&
-        isBackgroundVideoPaused
-      ) {
-        videoRef.current.currentTime = backgroundVideoCurrentTime.current;
-        videoRef.current
-          .play()
-          .then(() => {
-            setVideoControls((prev) => ({ ...prev, isPlaying: true }));
-            setIsBackgroundVideoPaused(false);
-            wasBackgroundPlaying.current = false;
-          })
-          .catch(() => {
-            setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-          });
-      }
+  const handleVideoLoaded = useCallback(() => {
+    setVideoLoaded(true);
+    if (sectionVideoRef.current) {
+      sectionVideoRef.current.play().catch((err) => {
+        console.log('Auto-play prevented:', err);
+        setIsPlaying(false);
+      });
     }
-  }, [showVideoPopup, isBackgroundVideoPaused, isMobile]);
-
-  // Video handlers
-  const togglePlayPause = useCallback(() => {
-    if (!videoRef.current || isMobile) return;
-    if (videoRef.current.paused) {
-      videoRef.current
-        .play()
-        .then(() => setVideoControls((prev) => ({ ...prev, isPlaying: true })))
-        .catch((err) => console.log('Play failed:', err));
-    } else {
-      videoRef.current.pause();
-      setVideoControls((prev) => ({ ...prev, isPlaying: false }));
-    }
-  }, [isMobile]);
-
-  const toggleMute = useCallback(() => {
-    if (!videoRef.current || isMobile) return;
-    const newMuted = !videoControls.isMuted;
-    videoRef.current.muted = newMuted;
-    setVideoControls((prev) => ({ ...prev, isMuted: newMuted }));
-  }, [videoControls.isMuted, isMobile]);
-
-  const handleProgressChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (isMobile) return;
-      const progress = parseFloat(e.target.value);
-      const rounded = Math.round(progress);
-      setVideoProgress(rounded);
-      if (videoRef.current && videoDuration > 0) {
-        videoRef.current.currentTime = (rounded / 100) * videoDuration;
-        lastRoundedProgress.current = rounded;
-      }
-    },
-    [videoDuration, isMobile],
-  );
-
-  const handleTimeUpdate = useCallback(() => {
-    if (!videoRef.current || !videoDuration || isMobile) return;
-
-    const now = Date.now();
-    if (now - timeUpdateThrottle.current < 250) return;
-    timeUpdateThrottle.current = now;
-
-    if (animationFrameId.current) {
-      cancelAnimationFrame(animationFrameId.current);
-    }
-
-    animationFrameId.current = requestAnimationFrame(() => {
-      if (!videoRef.current) return;
-      const raw = (videoRef.current.currentTime / videoDuration) * 100;
-      const rounded = Math.round(raw);
-      if (Math.abs(rounded - lastRoundedProgress.current) >= 1) {
-        setVideoProgress(rounded);
-        lastRoundedProgress.current = rounded;
-      }
-    });
-  }, [videoDuration, isMobile]);
-
-  const handleLoadedMetadata = useCallback(() => {
-    if (videoRef.current && !isMobile) {
-      setVideoDuration(videoRef.current.duration);
-      setVideoLoaded(true);
-      setVideoError(false);
-    }
-  }, [isMobile]);
+  }, []);
 
   const handleVideoError = useCallback(() => {
     console.error('Video failed to load');
     setVideoError(true);
-    setShowVideoElement(false);
-  }, []);
-
-  const openControlsPanel = useCallback(() => {
-    if (!isMobile) setShowControlsPanel(true);
-  }, [isMobile]);
-
-  const closeControlsPanel = useCallback(() => {
-    setShowControlsPanel(false);
-  }, []);
-
-  const openVideoPopup = useCallback(() => {
-    setShowVideoPopup(true);
-    closeControlsPanel();
-  }, [closeControlsPanel]);
-
-  const closeVideoPopup = useCallback(() => {
-    setShowVideoPopup(false);
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
+    if (hasCustomVideo) {
+      console.log('Custom video failed, falling back to default');
+      setHasCustomVideo(false);
+      setPromoVideoUrl(DEFAULT_VIDEO_URL);
+      setVideoError(false);
+      setVideoLoaded(false);
     }
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!videoRef.current || isMobile) return;
-    const container = videoRef.current.parentElement;
-    if (!container) return;
-    if (!videoControls.isFullscreen) {
-      container.requestFullscreen?.();
-      setVideoControls((prev) => ({ ...prev, isFullscreen: true }));
-    } else {
-      document.exitFullscreen?.();
-      setVideoControls((prev) => ({ ...prev, isFullscreen: false }));
-    }
-  }, [videoControls.isFullscreen, isMobile]);
-
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.code === 'Escape') {
-        if (showVideoPopup) closeVideoPopup();
-        if (showControlsPanel) closeControlsPanel();
-      }
-    },
-    [showVideoPopup, closeVideoPopup, showControlsPanel, closeControlsPanel],
-  );
-
-  const formatTime = useCallback((seconds: number) => {
-    if (isNaN(seconds)) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  }, []);
-
-  const stableVideoProgress = useMemo(
-    () => Math.round(videoProgress),
-    [videoProgress],
-  );
-
-  // Force remove video on mobile - mutation observer for safety
-  useEffect(() => {
-    const forceRemoveVideoOnMobile = () => {
-      if (isMobile) {
-        const videos = document.querySelectorAll('.hp-stage__video');
-        videos.forEach((video) => {
-          if (video && video.parentNode) {
-            video.remove();
-          }
-        });
-      }
-    };
-
-    forceRemoveVideoOnMobile();
-
-    const observer = new MutationObserver(() => {
-      forceRemoveVideoOnMobile();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    return () => observer.disconnect();
-  }, [isMobile]);
-
-  // Clean up animation frame on unmount
-  useEffect(() => {
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
-    window.addEventListener('resize', checkIfMobile);
-    window.addEventListener('orientationchange', checkIfMobile);
-
-    // Initial check
-    checkIfMobile();
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-      window.removeEventListener('resize', checkIfMobile);
-      window.removeEventListener('orientationchange', checkIfMobile);
-    };
-  }, [handleKeyPress, checkIfMobile]);
-
-  useEffect(() => {
-    document.body.style.overflow = showVideoPopup ? 'hidden' : '';
-  }, [showVideoPopup]);
+  }, [hasCustomVideo]);
 
   if (isLoading) {
     return (
@@ -601,327 +720,907 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   }
 
   return (
-    <div className='hp-root'>
-      <div
-        className='hp-stage'
-        onDragEnter={isAdmin ? handleDrag : undefined}
-        onDragLeave={isAdmin ? handleDrag : undefined}
-        onDragOver={isAdmin ? handleDrag : undefined}
-        onDrop={isAdmin ? handleDrop : undefined}
-      >
-        {/* Background Image - ALWAYS RENDERED - never conditionally hidden */}
-        <div className='hp-stage__background-image' />
-
-        {/* Video - ONLY on desktop, NEVER on mobile */}
-        {!isMobile && promoVideoUrl && !videoError && showVideoElement && (
-          <video
-            ref={videoRef}
-            className='hp-stage__video'
-            src={promoVideoUrl}
-            autoPlay
-            muted={videoControls.isMuted}
-            loop
-            playsInline
-            preload='auto'
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onError={handleVideoError}
+    <div
+      className='hp-root'
+      onDragEnter={isAdmin ? handleDrag : undefined}
+      onDragLeave={isAdmin ? handleDrag : undefined}
+      onDragOver={isAdmin ? handleDrag : undefined}
+      onDrop={isAdmin ? handleDrop : undefined}
+    >
+      {/* HERO SECTION */}
+      <section className='hp-hero' ref={heroRef}>
+        <div className='hp-hero__bg-wrapper'>
+          <img
+            ref={bgRef}
+            src='/assets/img/theme/bg-court.png'
+            alt='Basketball court background'
+            className='hp-hero__bg'
           />
-        )}
-
-        <div className='hp-overlay'>
-          <HomeTileRenderer pageSlug='home' />
         </div>
-
-        {/* Video Controls - ONLY on desktop */}
-        {!isMobile && promoVideoUrl && !videoError && showVideoElement && (
-          <>
-            {!showControlsPanel && (
-              <>
-                <span className='hp-controls-open__label'>
-                  Click to enjoy the full video uninterrupted
-                </span>
-                <button
-                  className='hp-controls-open'
-                  onClick={openControlsPanel}
-                  aria-label='Open Video Controls'
-                  title='Video Controls'
-                >
-                  <svg
-                    width='20'
-                    height='20'
-                    viewBox='0 0 24 24'
-                    fill='currentColor'
+        <div className='hp-hero__overlay' />
+        <div className='hp-hero__inner'>
+          <div className='hp-hero__players-top'>
+            <div className='hp-hero__player-left'>
+              <div className='hp-hero__player-image-wrapper'>
+                <img
+                  src='/assets/img/theme/player1_1.png'
+                  alt='Partizan Player'
+                  className='hp-hero__player-img hp-hero__player-img-1'
+                />
+                <div className='hp-hero__player-glow' />
+              </div>
+            </div>
+            <div className='hp-hero__welcome-content'>
+              <span className='hp-hero__eyebrow'>
+                <span className='hp-hero__eyebrow-dot' />
+                Partizan Basketball Program
+              </span>
+              <h1 className='hp-hero__title'>
+                {HERO_TITLE.split(' ').map((word, i) => (
+                  <span
+                    key={i}
+                    className='hp-hero__word'
+                    style={{ animationDelay: `${0.1 + i * 0.08}s` }}
                   >
-                    <path d='M8 5v14l11-7z' />
+                    {word}
+                    {i < HERO_TITLE.split(' ').length - 1 ? '\u00A0' : ''}
+                  </span>
+                ))}
+              </h1>
+              <p className='hp-hero__body'>{HERO_BODY}</p>
+            </div>
+            <div className='hp-hero__player-right'>
+              <div className='hp-hero__player-image-wrapper'>
+                <img
+                  src='/assets/img/theme/player2_1.png'
+                  alt='Partizan Player'
+                  className='hp-hero__player-img hp-hero__player-img-2'
+                />
+                <div className='hp-hero__player-glow' />
+              </div>
+            </div>
+          </div>
+          <div className='hp-hero__particles'>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className='particle' />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MAIN CONTENT */}
+      <main className='hp-main'>
+        <div className='hp-cut' aria-hidden='true' />
+
+        <div className='hp-main__content'>
+          {/* Registration Section */}
+          {hasActiveRegistrationForms() && (
+            <section
+              className='hp-section hp-section--reg'
+              ref={setSectionRef(0)}
+            >
+              <div className='hp-section__inner'>
+                <header className='hp-section__head'>
+                  <span className='hp-section__label'>Open Now</span>
+                  <h2 className='hp-section__title'>Registration</h2>
+                  <p className='hp-section__sub'>
+                    Secure your spot in the program
+                  </p>
+                </header>
+                <RegistrationHub
+                  playerConfig={formConfigs.player}
+                  trainingConfig={formConfigs.training}
+                  tournamentConfig={formConfigs.tournament}
+                  tryoutConfig={formConfigs.tryout}
+                  seasonEvent={getDefaultSeasonEvent()}
+                  onRegistrationComplete={() => {
+                    fetchAllFormConfigs();
+                    if (isAuthenticated) checkAuth();
+                  }}
+                  hasEmbeddedForms={hasActiveEmbeddedForms()}
+                />
+              </div>
+            </section>
+          )}
+
+          {/* Video Section */}
+          {showVideoElement && !videoError && (
+            <section
+              className='hp-section hp-section--video'
+              ref={setSectionRef(1)}
+            >
+              <div className='hp-cut-light' aria-hidden='true' />
+              <div className='hp-section__inner'>
+                <header className='hp-section__head'>
+                  <span className='hp-section__label'>Watch</span>
+                  <h2 className='hp-section__title'>Program Highlights</h2>
+                  <p className='hp-section__sub'>
+                    Experience the energy and excellence of Partizan Basketball
+                  </p>
+                </header>
+                <div
+                  className='hp-video-wrapper'
+                  onMouseEnter={showControlsTemporarily}
+                  onMouseMove={showControlsTemporarily}
+                >
+                  <video
+                    ref={sectionVideoRef}
+                    className={`hp-video__player ${videoLoaded ? 'hp-video__player--loaded' : ''}`}
+                    src={promoVideoUrl}
+                    autoPlay
+                    muted={false}
+                    loop={false}
+                    playsInline
+                    preload='auto'
+                    onLoadedMetadata={handleLoadedMetadata}
+                    onTimeUpdate={handleTimeUpdate}
+                    onCanPlayThrough={handleVideoLoaded}
+                    onError={handleVideoError}
+                    onClick={showControlsTemporarily}
+                  />
+                  <div
+                    className={`hp-video-controls ${showControls ? 'hp-video-controls--visible' : ''}`}
+                  >
+                    <div className='hp-video-controls__progress'>
+                      <input
+                        type='range'
+                        className='hp-video-controls__slider'
+                        min={0}
+                        max={duration || 100}
+                        value={currentTime}
+                        onChange={handleSeek}
+                      />
+                    </div>
+                    <div className='hp-video-controls__buttons'>
+                      <button
+                        className='hp-video-controls__btn'
+                        onClick={handlePlayPause}
+                        aria-label={isPlaying ? 'Pause' : 'Play'}
+                      >
+                        {isPlaying ? (
+                          <svg
+                            width='20'
+                            height='20'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <rect x='6' y='4' width='4' height='16' />
+                            <rect x='14' y='4' width='4' height='16' />
+                          </svg>
+                        ) : (
+                          <svg
+                            width='20'
+                            height='20'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <polygon points='5 3 19 12 5 21 5 3' />
+                          </svg>
+                        )}
+                      </button>
+                      <button
+                        className='hp-video-controls__btn'
+                        onClick={handleVolumeToggle}
+                        aria-label='Toggle mute'
+                      >
+                        <svg
+                          width='18'
+                          height='18'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
+                          <path d='M15.54 8.46a5 5 0 0 1 0 7.07' />
+                          <path d='M19.07 4.93a10 10 0 0 1 0 14.14' />
+                        </svg>
+                      </button>
+                      <div className='hp-video-controls__time'>
+                        <span>{formatTime(currentTime)}</span>
+                        <span>/</span>
+                        <span>{formatTime(duration)}</span>
+                      </div>
+                      {hasCustomVideo && (
+                        <button
+                          className='hp-video-controls__btn hp-video-controls__btn--reset'
+                          onClick={resetToDefaultVideo}
+                          style={{ marginLeft: 'auto' }}
+                        >
+                          <svg
+                            width='16'
+                            height='16'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
+                            <circle cx='12' cy='12' r='3' />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {!videoLoaded && (
+                    <div className='hp-video__shimmer'>
+                      <div className='hp-video__shimmer-inner' />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Embedded Forms Section */}
+          {hasActiveEmbeddedForms() && (
+            <section
+              className='hp-section hp-section--forms'
+              ref={setSectionRef(2)}
+            >
+              <div className='hp-section__inner'>
+                <header className='hp-section__head'>
+                  <span className='hp-section__label'>Action Required</span>
+                  <h2 className='hp-section__title'>Active Forms</h2>
+                  <p className='hp-section__sub'>
+                    Click on any form to open in a modal window
+                  </p>
+                </header>
+                <div className='hp-forms-grid'>
+                  {Array.from(activeFormIds).map((formId) => (
+                    <div
+                      key={formId}
+                      className='hp-form-card'
+                      onClick={() => openFormModal(formId)}
+                    >
+                      <div className='hp-form-card__icon'>
+                        <svg
+                          width='32'
+                          height='32'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='1.5'
+                        >
+                          <path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z' />
+                          <polyline points='14 2 14 8 20 8' />
+                          <line x1='16' y1='13' x2='8' y2='13' />
+                          <line x1='16' y1='17' x2='8' y2='17' />
+                          <polyline points='10 9 9 9 8 9' />
+                        </svg>
+                      </div>
+                      <div className='hp-form-card__info'>
+                        <h4>Form #{formId.slice(-6)}</h4>
+                        <p>Click to fill out this form</p>
+                      </div>
+                      <div className='hp-form-card__arrow'>
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M5 12h14M12 5l7 7-7 7' />
+                        </svg>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Spotlight Section */}
+          <section
+            className='hp-section hp-section--spotlight'
+            ref={setSectionRef(3)}
+          >
+            <div className='hp-hero__particles'>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className='particle' />
+              ))}
+            </div>
+            <div className='hp-cut-mirror' aria-hidden='true' />
+            <div className='hp-hero__player-player4'>
+              <div className='hp-hero__player-image-wrapper-player4'>
+                <img
+                  ref={player4Ref}
+                  src='/assets/img/theme/player4_1.png'
+                  alt='Partizan Player Action'
+                  className='hp-hero__player-img hp-hero__player-img-4'
+                />
+              </div>
+            </div>
+            <div className='hp-section__inner'>
+              <header className='hp-section__head'>
+                <span className='hp-section__label'>Latest</span>
+                <h2 className='hp-section__title'>In the Spotlight</h2>
+                <p className='hp-section__sub'>
+                  Featured highlights from the program
+                </p>
+              </header>
+              <SpotlightContent
+                limit={3}
+                showTitle={false}
+                title='In The Spotlight'
+                showViewAll={true}
+                viewAllLink='/in-the-spotlight'
+                featuredOnly={false}
+                showImageModal={true}
+              />
+            </div>
+          </section>
+
+          {/* Events Section */}
+          <section
+            className='hp-section hp-section--events'
+            ref={setSectionRef(4)}
+          >
+            <div className='hp-cut-mirror-dark' aria-hidden='true' />
+            <div className='hp-hero__player-player3'>
+              <div className='hp-hero__player-image-wrapper-player3'>
+                <img
+                  ref={player3Ref}
+                  src='/assets/img/theme/player3_1.png'
+                  alt='Partizan Player Action'
+                  className='hp-hero__player-img hp-hero__player-img-3'
+                />
+              </div>
+            </div>
+            <div className='hp-section__inner'>
+              <header className='hp-section__head'>
+                <span className='hp-section__label'>Calendar</span>
+                <h2 className='hp-section__title'>Upcoming Events</h2>
+                <p className='hp-section__sub'>
+                  Don't miss out on what's coming
+                </p>
+              </header>
+              <div className='hp-events-empty'>
+                <svg
+                  className='hp-events-empty__icon'
+                  viewBox='0 0 48 48'
+                  fill='none'
+                >
+                  <rect
+                    x='6'
+                    y='10'
+                    width='36'
+                    height='32'
+                    rx='4'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                  />
+                  <line
+                    x1='6'
+                    y1='20'
+                    x2='42'
+                    y2='20'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                  />
+                  <line
+                    x1='16'
+                    y1='6'
+                    x2='16'
+                    y2='14'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                  />
+                  <line
+                    x1='32'
+                    y1='6'
+                    x2='32'
+                    y2='14'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                  />
+                </svg>
+                <p>Events and programs will be announced here.</p>
+                <button
+                  className='hp-btn-outline'
+                  onClick={() => navigate('/events')}
+                >
+                  View all events
+                  <svg
+                    width='14'
+                    height='14'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2.5'
+                  >
+                    <path d='M5 12h14M13 6l6 6-6 6' />
                   </svg>
                 </button>
-              </>
-            )}
+              </div>
+            </div>
+          </section>
 
-            <div
-              className={`hp-controls ${showControlsPanel ? 'hp-controls--visible' : ''}`}
-            >
-              <div className='hp-controls__panel'>
-                <div className='hp-controls__progress'>
-                  <input
-                    type='range'
-                    min='0'
-                    max='100'
-                    value={stableVideoProgress}
-                    onChange={handleProgressChange}
-                    className='hp-controls__slider'
-                    style={{
-                      background: `linear-gradient(to right, rgba(255,255,255,0.95) ${stableVideoProgress}%, rgba(255,255,255,0.2) ${stableVideoProgress}%)`,
-                    }}
+          {/* About Us Section */}
+          <section
+            className='hp-section hp-section--about'
+            ref={setSectionRef(5)}
+          >
+            <div className='hp-cut-reverse-light' aria-hidden='true' />
+            <div className='hp-section__inner'>
+              <div className='hp-about-wrapper'>
+                <div className=''>
+                  <img
+                    src='/assets/img/watermark-logo.png'
+                    alt='Partizan Basketball'
                   />
-                </div>
-                <div className='hp-controls__row'>
-                  <div className='hp-controls__left'>
-                    <button
-                      className='hp-ctrl-btn'
-                      onClick={togglePlayPause}
-                      aria-label={videoControls.isPlaying ? 'Pause' : 'Play'}
-                    >
-                      {videoControls.isPlaying ? (
-                        <svg
-                          width='16'
-                          height='16'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                        >
-                          <rect x='6' y='5' width='4' height='14' rx='1' />
-                          <rect x='14' y='5' width='4' height='14' rx='1' />
-                        </svg>
-                      ) : (
-                        <svg
-                          width='16'
-                          height='16'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                        >
-                          <path d='M8 5v14l11-7z' />
-                        </svg>
-                      )}
-                    </button>
-                    <button
-                      className='hp-ctrl-btn'
-                      onClick={toggleMute}
-                      aria-label={videoControls.isMuted ? 'Unmute' : 'Mute'}
-                    >
-                      {videoControls.isMuted ? (
-                        <svg
-                          width='16'
-                          height='16'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                        >
-                          <path d='M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z' />
-                        </svg>
-                      ) : (
-                        <svg
-                          width='16'
-                          height='16'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                        >
-                          <path d='M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z' />
-                        </svg>
-                      )}
-                    </button>
-                    <span className='hp-controls__time'>
-                      {formatTime((stableVideoProgress / 100) * videoDuration)}
-                      <span className='hp-controls__sep'>/</span>
-                      {formatTime(videoDuration)}
-                    </span>
+                  {/* <div className='hp-stat-card'>
+                    <div className='hp-stat-number'>10+</div>
+                    <div className='hp-stat-label'>Years of Excellence</div>
                   </div>
-                  <div className='hp-controls__right'>
-                    <button
-                      className='hp-ctrl-btn'
-                      onClick={openVideoPopup}
-                      aria-label='Open in popup'
-                      title='Expand'
-                    >
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='currentColor'
-                      >
-                        <path d='M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z' />
-                      </svg>
-                    </button>
-                    <button
-                      className='hp-ctrl-btn'
-                      onClick={toggleFullscreen}
-                      aria-label={
-                        videoControls.isFullscreen
-                          ? 'Exit fullscreen'
-                          : 'Fullscreen'
-                      }
-                      title={
-                        videoControls.isFullscreen
-                          ? 'Exit Fullscreen'
-                          : 'Fullscreen'
-                      }
-                    >
-                      {videoControls.isFullscreen ? (
+                  <div className='hp-stat-card'>
+                    <div className='hp-stat-number'>500+</div>
+                    <div className='hp-stat-label'>Active Players</div>
+                  </div>
+                  <div className='hp-stat-card'>
+                    <div className='hp-stat-number'>20+</div>
+                    <div className='hp-stat-label'>Expert Coaches</div>
+                  </div>
+                  <div className='hp-stat-card'>
+                    <div className='hp-stat-number'>15+</div>
+                    <div className='hp-stat-label'>Championships</div>
+                  </div> */}
+                </div>
+                <div className='hp-about-content'>
+                  <header className='hp-section__head'>
+                    <span className='hp-section__label'>
+                      Where Passion, Growth, and Basketball Come Together
+                    </span>
+                    <h2 className='hp-section__title'>About Partizan</h2>
+                    <p className='hp-section__sub'>
+                      Building Champions On and Off the Court
+                    </p>
+                  </header>
+                  <div className='hp-about-text'>
+                    <p className='hp-about-paragraph'>
+                      Join a thriving basketball community where passion,
+                      teamwork, and player development come together. Learn from
+                      experienced coaches, build lasting friendships, and
+                      elevate your game in a fun, competitive, and supportive
+                      environment.
+                    </p>
+                    <div className='hp-about-highlights'>
+                      <div className='hp-highlight-item'>
                         <svg
-                          width='16'
-                          height='16'
+                          width='24'
+                          height='24'
                           viewBox='0 0 24 24'
-                          fill='currentColor'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
                         >
-                          <path d='M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z' />
+                          <path d='M22 11.08V12a10 10 0 1 1-5.93-9.14' />
+                          <polyline points='22 4 12 14.01 9 11.01' />
                         </svg>
-                      ) : (
+                        <span>Elite Training Programs</span>
+                      </div>
+                      <div className='hp-highlight-item'>
                         <svg
-                          width='16'
-                          height='16'
+                          width='24'
+                          height='24'
                           viewBox='0 0 24 24'
-                          fill='currentColor'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
                         >
-                          <path d='M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z' />
+                          <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+                          <circle cx='12' cy='7' r='4' />
                         </svg>
-                      )}
-                    </button>
-                    <button
-                      className='hp-ctrl-btn hp-ctrl-btn--close'
-                      onClick={closeControlsPanel}
-                      aria-label='Close controls'
-                      title='Close'
-                    >
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='currentColor'
+                        <span>Expert Coaching Staff</span>
+                      </div>
+                      <div className='hp-highlight-item'>
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
+                          <circle cx='9' cy='7' r='4' />
+                          <path d='M23 21v-2a4 4 0 0 0-3-3.87' />
+                          <path d='M16 3.13a4 4 0 0 1 0 7.75' />
+                        </svg>
+                        <span>Youth Development Focus</span>
+                      </div>
+                    </div>
+                    <p className='hp-about-paragraph'>
+                      Whether you're looking for your young athlete to sharpen
+                      their skills, gain confidence on the court, or simply
+                      enjoy the game they love, our programs deliver an
+                      experience your kids will never forget.
+                    </p>
+                    <div className='hp-about-cta'>
+                      <button
+                        className='hp-btn-primary'
+                        onClick={() => navigate('/about-us')}
                       >
-                        <path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' />
-                      </svg>
-                    </button>
+                        Learn More About Us
+                        <svg
+                          width='18'
+                          height='18'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M5 12h14M12 5l7 7-7 7' />
+                        </svg>
+                      </button>
+                      <button
+                        className='hp-btn-secondary'
+                        onClick={() => navigate('/contact-us')}
+                      >
+                        Contact Us
+                      </button>
+                    </div>
+                    <p className='hp-about-footer-text'>
+                      Explore our website to learn more about our camps,
+                      coaching staff, registration opportunities, and upcoming
+                      sessions. If you have any questions, we're always happy to
+                      help.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-          </>
-        )}
+          </section>
 
-        {isAdmin && (
-          <>
-            <input
-              ref={videoFileInputRef}
-              type='file'
-              accept='video/mp4,video/webm,video/ogg,video/quicktime'
-              style={{ display: 'none' }}
-              onChange={handleVideoFileChange}
-            />
-            <button
-              className={`hp-admin-toggle ${showAdminPanel ? 'is-active' : ''}`}
-              onClick={() => setShowAdminPanel(!showAdminPanel)}
-              title='Video Management'
-            >
-              <i
-                className={`ti ${promoVideoUrl ? 'ti-video' : 'ti-video-plus'}`}
-              />
-            </button>
-            {showAdminPanel && (
-              <div className='hp-admin-panel'>
-                <div className='hp-admin-panel__header'>
-                  <h4>Video Management</h4>
-                </div>
-                <div className='hp-admin-panel__body'>
-                  <div className='hp-admin-panel__status'>
-                    <span>Status</span>
-                    <span
-                      className={promoVideoUrl ? 'is-active' : 'is-inactive'}
-                    >
-                      {promoVideoUrl ? 'Video Active' : 'No Video'}
+          {/* Contact Us Section */}
+          <section
+            className='hp-section hp-section--contact'
+            ref={setSectionRef(6)}
+          >
+            <div className='hp-cut-reverse-dark' aria-hidden='true' />
+            <div className='hp-section__inner'>
+              <div className='hp-contact-wrapper'>
+                {/* Right side - Contact Form & Info */}
+                <div className='hp-contact-content'>
+                  <header className='hp-section__head'>
+                    <span className='hp-section__label'>
+                      Get in Touch With Us
                     </span>
-                  </div>
-                  {uploadSuccess && (
-                    <div className='hp-admin-panel__success'>
-                      <i className='ti ti-check-circle' /> Operation completed!
-                    </div>
-                  )}
-                  <div
-                    className={`hp-admin-panel__dropzone ${dragActive ? 'is-drag-active' : ''}`}
-                    onClick={() => videoFileInputRef.current?.click()}
-                  >
-                    <i className='ti ti-upload' />
-                    <p>Click to upload or drag & drop</p>
-                    <small>MP4, WebM, OGG, MOV — max 200 MB</small>
-                  </div>
-                  {videoUploading && (
-                    <div className='hp-admin-panel__progress'>
-                      <div className='hp-admin-panel__progress-track'>
-                        <div
-                          className='hp-admin-panel__progress-fill'
-                          style={{ width: `${uploadProgress}%` }}
-                        />
+                    <h2 className='hp-section__title'>Contact Partizan</h2>
+                    <p className='hp-section__sub'>
+                      We're Here to Answer Your Questions
+                    </p>
+                  </header>
+
+                  <div className='hp-contact-text'>
+                    <p className='hp-contact-paragraph'>
+                      Have questions about our programs, registration, or
+                      upcoming events? Our team is ready to assist you. Reach
+                      out to us through any of the channels below or fill out
+                      the contact form.
+                    </p>
+
+                    {/* Contact Methods Grid */}
+                    <div className='hp-contact-methods'>
+                      <div className='hp-contact-item'>
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z' />
+                        </svg>
+                        <div>
+                          <h4>Phone</h4>
+                          <p>(425) 375-5235</p>
+                        </div>
                       </div>
-                      <span>
-                        {uploadProgress < 100
-                          ? `Uploading… ${uploadProgress}%`
-                          : 'Processing…'}
-                      </span>
+
+                      <div className='hp-contact-item'>
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z' />
+                          <polyline points='22,6 12,13 2,6' />
+                        </svg>
+                        <div>
+                          <h4>Email</h4>
+                          <p>partizanhoops@proton.me</p>
+                        </div>
+                      </div>
+
+                      <div className='hp-contact-item'>
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <rect x='2' y='4' width='20' height='16' rx='2' />
+                          <path d='M22 7l-10 7L2 7' />
+                        </svg>
+                        <div>
+                          <h4>Hours</h4>
+                          <p>
+                            Mon-Fri: 9am - 6pm
+                            <br />
+                            Sat: 10am - 4pm
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  {uploadError && (
-                    <div className='hp-admin-panel__error'>
-                      <i className='ti ti-alert-circle' />
-                      <span>{uploadError}</span>
-                      <button onClick={() => setUploadError(null)}>×</button>
-                    </div>
-                  )}
-                  {promoVideoUrl && (
-                    <div className='hp-admin-panel__actions'>
-                      <button
-                        className='hp-admin-btn hp-admin-btn--replace'
-                        onClick={() => videoFileInputRef.current?.click()}
-                        disabled={videoUploading}
+                  </div>
+                </div>
+
+                {/* Left side - Logo/Image */}
+                <div className='hp-contact-image'>
+                  <div className='hp-contact-logo-wrapper'>
+                    {/* Contact Form */}
+                    <div className='hp-contact-form'>
+                      <h3>Send Us a Message</h3>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault(); /* Handle form submission */
+                        }}
                       >
-                        <i className='ti ti-refresh' /> Replace
-                      </button>
-                      <button
-                        className='hp-admin-btn hp-admin-btn--delete'
-                        onClick={handleDeletePromoVideo}
-                        disabled={videoUploading}
-                      >
-                        <i className='ti ti-trash' /> Remove
-                      </button>
+                        <div className='hp-form-row'>
+                          <div className='hp-form-group'>
+                            <input
+                              type='text'
+                              placeholder='Your Name'
+                              required
+                            />
+                          </div>
+                          <div className='hp-form-group'>
+                            <input
+                              type='email'
+                              placeholder='Your Email'
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className='hp-form-group'>
+                          <input type='text' placeholder='Subject' />
+                        </div>
+                        <div className='hp-form-group'>
+                          <textarea
+                            rows={4}
+                            placeholder='Your Message'
+                            required
+                          ></textarea>
+                        </div>
+                        <button type='submit' className='hp-btn-primary'>
+                          Send Message
+                          <svg
+                            width='18'
+                            height='18'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <path d='M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' />
+                          </svg>
+                        </button>
+                      </form>
+                      <p className='hp-contact-footer-text'>
+                        We typically respond within 24-48 hours. For urgent
+                        matters, please call us directly.
+                      </p>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
-            )}
-            {dragActive && (
-              <div className='hp-drag-overlay'>
-                <i className='ti ti-cloud-upload' />
-                <p>Drop your video here</p>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+            </div>
+          </section>
+        </div>
 
-      {/* Video Popup - ONLY on desktop */}
-      {!isMobile && showVideoPopup && promoVideoUrl && (
-        <div className='hp-popup' onClick={closeVideoPopup}>
-          <div className='hp-popup__box' onClick={(e) => e.stopPropagation()}>
-            <video
-              ref={popupVideoRef}
-              src={promoVideoUrl}
-              autoPlay
-              controls
-              playsInline
-              className='hp-popup__video'
-            />
-            <button onClick={closeVideoPopup} className='hp-popup__close-btn'>
-              Close
-            </button>
+        <div className='hp-footer-band'>
+          <span>Partizan AAU</span>
+          <span className='hp-footer-band__sep'>·</span>
+          <span>Developing champions on and off the court</span>
+        </div>
+      </main>
+
+      {/* FORM MODAL */}
+      {isModalOpen && selectedFormId && (
+        <div className='hp-modal-overlay' onClick={closeFormModal}>
+          <div className='hp-modal' onClick={(e) => e.stopPropagation()}>
+            <div className='hp-modal__header'>
+              <h3>Complete Form</h3>
+              <button className='hp-modal__close' onClick={closeFormModal}>
+                <svg
+                  width='20'
+                  height='20'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                >
+                  <path d='M18 6L6 18M6 6l12 12' />
+                </svg>
+              </button>
+            </div>
+            <div className='hp-modal__body'>
+              <FormEmbed
+                formId={selectedFormId}
+                isActive={true}
+                wrapperClassName='hp-modal-form'
+              />
+            </div>
           </div>
         </div>
+      )}
+
+      {/* ADMIN PANEL */}
+      {isAdmin && (
+        <>
+          <button
+            className={`hp-admin-toggle ${showAdminPanel ? 'is-open' : ''}`}
+            onClick={() => setShowAdminPanel((v) => !v)}
+            title='Content management'
+          >
+            <svg
+              width='18'
+              height='18'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+            >
+              <circle cx='12' cy='12' r='3' />
+              <path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z' />
+            </svg>
+          </button>
+          {showAdminPanel && (
+            <div className='hp-admin'>
+              <div className='hp-admin__head'>
+                <span>Video Management</span>
+                <button onClick={() => setShowAdminPanel(false)}>
+                  <svg
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2.5'
+                  >
+                    <path d='M18 6 6 18M6 6l12 12' />
+                  </svg>
+                </button>
+              </div>
+              <div className='hp-admin__body'>
+                {uploadSuccess && (
+                  <div className='hp-admin__ok'>
+                    <svg
+                      width='14'
+                      height='14'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2.5'
+                    >
+                      <polyline points='20 6 9 17 4 12' />
+                    </svg>
+                    Video updated successfully!
+                  </div>
+                )}
+                <div
+                  className={`hp-admin__drop ${dragActive ? 'is-over' : ''}`}
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'video/*';
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) uploadContent(file);
+                    };
+                    input.click();
+                  }}
+                >
+                  <svg
+                    width='32'
+                    height='32'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='1.5'
+                  >
+                    <polyline points='16 16 12 12 8 16' />
+                    <line x1='12' y1='12' x2='12' y2='21' />
+                    <path d='M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3' />
+                  </svg>
+                  <p>Drop video or click to upload</p>
+                  <small>MP4, MOV, or WebM • Max 200MB</small>
+                </div>
+                {videoUploading && (
+                  <div className='hp-admin__prog'>
+                    <div className='hp-admin__prog-track'>
+                      <div
+                        className='hp-admin__prog-bar'
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                    <span>
+                      {uploadProgress < 100
+                        ? `Uploading: ${uploadProgress}%`
+                        : 'Processing video...'}
+                    </span>
+                  </div>
+                )}
+                {uploadError && (
+                  <div className='hp-admin__err'>
+                    <span>⚠️ {uploadError}</span>
+                    <button onClick={() => setUploadError(null)}>×</button>
+                  </div>
+                )}
+                <div className='hp-admin__status'>
+                  <span>Current video:</span>
+                  <span
+                    className={hasCustomVideo ? 'is-active' : 'is-inactive'}
+                  >
+                    {hasCustomVideo ? '✓ Custom Video' : 'Default Video'}
+                  </span>
+                </div>
+                {hasCustomVideo && (
+                  <button
+                    className='hp-admin__reset-btn'
+                    onClick={resetToDefaultVideo}
+                    disabled={videoUploading}
+                  >
+                    <svg
+                      width='14'
+                      height='14'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                    >
+                      <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
+                      <circle cx='12' cy='12' r='3' />
+                    </svg>
+                    Reset to Default Video
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          {dragActive && (
+            <div className='hp-drop-shield'>
+              <svg
+                width='48'
+                height='48'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='1.5'
+              >
+                <polyline points='16 16 12 12 8 16' />
+                <line x1='12' y1='12' x2='12' y2='21' />
+                <path d='M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3' />
+              </svg>
+              <p>Drop video file to upload</p>
+            </div>
+          )}
+        </>
       )}
 
       <HomeModals />

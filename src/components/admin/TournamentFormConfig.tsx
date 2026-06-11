@@ -477,7 +477,7 @@ const TournamentFormConfig: React.FC<TournamentFormConfigProps> = ({
                       displayName: e.target.value,
                     })
                   }
-                  placeholder='e.g., Bothell Select Spring Tournament'
+                  placeholder='e.g., Partizan Spring Tournament'
                 />
                 <small className='form-text text-muted'>
                   User-friendly name shown to registrants

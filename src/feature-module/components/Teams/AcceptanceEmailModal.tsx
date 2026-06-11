@@ -71,7 +71,7 @@ const AcceptanceEmailModal: React.FC<AcceptanceEmailModalProps> = ({
     if (paymentType === 'square' || paymentType === 'both') {
       html += `<tr><td style="padding:10px 0;border-bottom:1px solid #eee;">
         <strong>Square</strong><br/>
-        <a href="${squareLink || '#'}" style="color:#506ee4;word-break:break-all;">${squareLink || '[Square link]'}</a>
+        <a href="${squareLink || '#'}" style="color:#594230;word-break:break-all;">${squareLink || '[Square link]'}</a>
       </td></tr>`;
     }
     if (paymentType === 'zelle' || paymentType === 'both') {
@@ -90,11 +90,11 @@ const AcceptanceEmailModal: React.FC<AcceptanceEmailModalProps> = ({
 <body style="margin:0;padding:0;background:#f9fafb;font-family:Arial,sans-serif;">
   <div style="max-width:600px;margin:30px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
     <div style="background:#f3f4f6;padding:30px 20px;text-align:center;">
-      <img src="https://bothellselect.com/assets/img/logo.png" alt="Bothell Select Basketball"
+      <img src="https://partizanhoops.com/assets/img/logo.png" alt="Partizan Basketball"
            style="max-width:160px;height:auto;margin-bottom:16px;" />
       <h1 style="margin:0;color:#000;font-size:24px;">Congratulations!</h1>
             <p style="margin:8px 0 0;color:rgba(0,0,0,0.85);font-size:15px;">
-              Your child has been accepted to join the Bothell Select Family!
+              Your child has been accepted to join the Partizan Family!
             </p>
     </div>
     <div style="padding:30px 24px;">
@@ -110,32 +110,32 @@ const AcceptanceEmailModal: React.FC<AcceptanceEmailModalProps> = ({
           of receiving this email.
         </p>
       </div>
-      <h3 style="color:#506ee4;font-size:16px;margin-bottom:8px;">Payment Options</h3>
+      <h3 style="color:#594230;font-size:16px;margin-bottom:8px;">Payment Options</h3>
       <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;overflow:hidden;">
         <tbody>${buildPaymentRowsHtml()}</tbody>
       </table>
       ${
         additionalInfo.trim()
           ? `
-      <div style="background:#f0f4f8;padding:15px;border-radius:5px;margin:20px 0;border-left:4px solid #506ee4;">
-        <h3 style="margin-top:0;color:#506ee4;">Additional Information</h3>
+      <div style="background:#f0f4f8;padding:15px;border-radius:5px;margin:20px 0;border-left:4px solid #594230;">
+        <h3 style="margin-top:0;color:#594230;">Additional Information</h3>
         <p style="margin:0;white-space:pre-line;color:#333;">${additionalInfo.trim()}</p>
       </div>`
           : ''
       }
       <p style="font-size:14px;color:#555;margin-top:24px;">
         If you have any questions please reach out at
-        <a href="mailto:bothellselect@proton.me" style="color:#506ee4;">bothellselect@proton.me</a>.
+        <a href="mailto:partizanhoops@proton.me" style="color:#594230;">partizanhoops@proton.me</a>.
       </p>
       <p style="font-size:15px;font-weight:bold;color:#333;">We look forward to a great season ahead!</p>
       <p style="font-size:14px;color:#555;margin-bottom:0;">
         Best regards,<br/>
         <strong>${teamDisplayName} Coaching Staff</strong><br/>
-        Bothell Select Basketball
+        Partizan Basketball
       </p>
     </div>
     <div style="background:#f3f4f6;padding:16px 24px;text-align:center;font-size:12px;color:#6b7280;">
-      <p style="margin:0;">Bothell Select Basketball &nbsp;|&nbsp; bothellselect@proton.me</p>
+      <p style="margin:0;">Partizan Basketball &nbsp;|&nbsp; partizanhoops@proton.me</p>
     </div>
   </div>
 </body>

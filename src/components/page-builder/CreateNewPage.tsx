@@ -92,7 +92,7 @@ const CreateNewPage: React.FC = () => {
               defaultSectionSpacing: '3rem',
               backgroundColor: '#ffffff',
               textColor: '#333333',
-              accentColor: '#506ee4',
+              accentColor: '#594230',
               canonicalUrl: '',
               openGraphImage: '',
               headerScripts: '',

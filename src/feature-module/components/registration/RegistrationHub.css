@@ -9,7 +9,7 @@
 
 .reg-hub-single .reg-form-card,
 .reg-hub-embedded .reg-form-card {
-  width: 840px;
+  width: 100%;
 }
 
 /* Multiple Forms Grid Mode */
@@ -182,8 +182,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 70vh;
-  max-height: 70vh;
 }
 
 .reg-card-overlay {
@@ -202,10 +200,10 @@
   padding: 2rem;
   background: linear-gradient(
     180deg,
-    rgba(30, 50, 120, 0.95) 0%,
-    rgba(30, 50, 120, 0.8) 10%,
-    rgba(30, 50, 120, 0.5) 50%,
-    rgba(30, 50, 120, 0.3) 90%
+    rgba(89, 66, 48, 0.95) 0%,
+    rgba(89, 66, 48, 0.8) 10%,
+    rgba(89, 66, 48, 0.5) 50%,
+    rgba(89, 66, 48, 0.3) 90%
   );
   backdrop-filter: blur(2px);
   max-height: 100%;
@@ -414,7 +412,7 @@
 }
 
 .reg-form-wrapper .btn-primary:hover {
-  background: rgba(80, 100, 220, 1);
+  background: rgba(89, 66, 48, 1);
   transform: translateY(-2px);
 }
 
@@ -429,8 +427,8 @@
 }
 
 .reg-form-wrapper .form-content .form-check-input:checked {
-  background-color: rgba(80, 100, 220, 1);
-  border-color: rgba(80, 100, 220, 1);
+  background-color: rgba(89, 66, 48, 1);
+  border-color: rgba(89, 66, 48, 1);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
 }
 
@@ -587,10 +585,10 @@
 @keyframes subtlePulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(80, 100, 220, 0.4);
+    box-shadow: 0 0 0 0 rgba(89, 66, 48, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(80, 100, 220, 0);
+    box-shadow: 0 0 0 8px rgba(89, 66, 48, 0);
   }
 }
 
@@ -640,7 +638,7 @@
 }
 
 .reg-form-card .form-header h2 {
-  color: rgba(255, 255, 255, 1);
+  color: rgba(255, 255, 255, 1) !important;
   font-size: 2.5rem;
   text-transform: uppercase;
 }
@@ -848,7 +846,7 @@
 }
 
 .reg-form-card .form-container .tournament-info h4 svg {
-  stroke: rgba(80, 100, 220, 0.8);
+  stroke: rgba(89, 66, 48, 0.8);
 }
 
 /* Info rows */
@@ -875,7 +873,7 @@
 }
 
 .reg-form-card .form-container .tournament-info strong svg {
-  stroke: rgba(80, 100, 220, 0.7);
+  stroke: rgba(89, 66, 48, 0.7);
   width: 14px;
   height: 14px;
 }
@@ -935,9 +933,9 @@
 
 .reg-form-card .form-container .form-control:focus {
   outline: none !important;
-  border-color: rgba(80, 100, 220, 0.5) !important;
+  border-color: rgba(89, 66, 48, 0.5) !important;
   background: rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 0 0 3px rgba(80, 100, 220, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
 }
 
 .reg-form-card .form-container .form-control::placeholder {
@@ -953,8 +951,8 @@
 .reg-form-card .form-container .btn-primary {
   background: linear-gradient(
     135deg,
-    rgba(80, 100, 220, 0.9) 0%,
-    rgba(80, 100, 220, 0.9) 100%
+    rgba(89, 66, 48, 0.9) 0%,
+    rgba(89, 66, 48, 0.9) 100%
   ) !important;
   border: none !important;
   border-radius: 12px !important;
@@ -977,7 +975,7 @@
 .reg-form-card .form-container .btn-primary:hover {
   transform: translateY(-2px);
   filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(80, 100, 220, 0.3);
+  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3);
 }
 
 .reg-form-card .form-container .btn-primary:active {
@@ -1011,7 +1009,6 @@
 /* Embedded form mode specific */
 .reg-hub-embedded .reg-form-card {
   width: 100% !important;
-  max-width: 840px;
   margin: 0 auto;
 }
 
@@ -1143,9 +1140,9 @@
 }
 
 .reg-form-wrapper .input-group input.form-control:focus {
-  border-color: rgba(80, 100, 220, 1) !important;
+  border-color: rgba(89, 66, 48, 1) !important;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(80, 100, 220, 0.2);
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.2);
 }
 
 /* Position the flashing hand correctly */
@@ -1181,8 +1178,8 @@
 .reg-form-wrapper .input-group .btn-primary {
   background: linear-gradient(
     135deg,
-    rgba(80, 100, 220, 0.9) 0%,
-    rgba(80, 100, 220, 0.9) 100%
+    rgba(89, 66, 48, 0.9) 0%,
+    rgba(89, 66, 48, 0.9) 100%
   ) !important;
   border: none !important;
   border-radius: 12px !important;
@@ -1203,7 +1200,7 @@
 .reg-form-wrapper .input-group .btn-primary:not(:disabled):hover {
   transform: translateY(-2px);
   filter: brightness(1.05);
-  box-shadow: 0 2px 8px rgba(80, 100, 220, 0.3);
+  box-shadow: 0 2px 8px rgba(89, 66, 48, 0.3);
 }
 
 /* Disabled button style */
@@ -1217,7 +1214,7 @@
 /* Resend link styling */
 .reg-form-wrapper .text-muted a,
 .reg-form-wrapper a[href='#'] {
-  color: rgba(80, 100, 220, 1) !important;
+  color: rgba(89, 66, 48, 1) !important;
   text-decoration: none;
   font-weight: 500;
 }
@@ -1456,10 +1453,10 @@
   @keyframes mobileSubtlePulse {
     0%,
     100% {
-      box-shadow: 0 4px 12px rgba(80, 100, 220, 0.3);
+      box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3);
     }
     50% {
-      box-shadow: 0 4px 20px rgba(80, 100, 220, 0.5);
+      box-shadow: 0 4px 20px rgba(89, 66, 48, 0.5);
     }
   }
 
@@ -1568,12 +1565,12 @@
   .reg-toggle-btn {
     background: linear-gradient(
       135deg,
-      rgba(80, 100, 220, 0.95) 0%,
+      rgba(89, 66, 48, 0.95) 0%,
       rgba(60, 80, 200, 0.95) 100%
     ) !important;
     border: 1px solid rgba(120, 140, 255, 0.5) !important;
     color: white !important;
-    box-shadow: 0 4px 12px rgba(80, 100, 220, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3) !important;
   }
 
   .reg-toggle-back-btn {
@@ -1594,7 +1591,7 @@
     background: linear-gradient(
       135deg,
       rgba(100, 120, 240, 1) 0%,
-      rgba(80, 100, 220, 1) 100%
+      rgba(89, 66, 48, 1) 100%
     ) !important;
   }
 
@@ -1657,7 +1654,7 @@
   .htr-dock .dock-item.active,
   .htr-dock a.active,
   .htr-dock button.active {
-    color: rgba(80, 100, 220, 1) !important;
+    color: rgba(89, 66, 48, 1) !important;
   }
 
   .htr-dock .dock-item:hover,

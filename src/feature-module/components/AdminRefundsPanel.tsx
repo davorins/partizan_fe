@@ -761,7 +761,7 @@ const AdminRefundsPanel: React.FC = () => {
               </li>
               <li className='mb-2'>
                 <i className='ti ti-arrow-right text-primary me-2'></i>
-                Makes refunds processed in Square Dashboard visible on Bothell
+                Makes refunds processed in Square Dashboard visible on Partizan
                 Select website
               </li>
               <li>

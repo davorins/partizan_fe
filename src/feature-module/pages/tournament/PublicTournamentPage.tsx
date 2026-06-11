@@ -1044,7 +1044,7 @@ const PublicTournamentPage: React.FC = () => {
                                     <CalendarOutlined
                                       style={{
                                         fontSize: '18px',
-                                        color: '#506ee4',
+                                        color: '#594230',
                                       }}
                                     />
                                     <Title
@@ -2269,15 +2269,15 @@ const PublicTournamentPage: React.FC = () => {
         }
 
         .glass-tabs .ant-tabs-tab-active {
-          color: #506ee4;
+          color: #594230;
         }
 
         .glass-tabs .ant-tabs-tab:hover {
-          color: #506ee4;
+          color: #594230;
         }
 
         .glass-tabs .ant-tabs-ink-bar {
-          background: linear-gradient(90deg, #506ee4, #7a94ff);
+          background: linear-gradient(90deg, #594230, #7a94ff);
           height: 3px;
           border-radius: 3px;
         }
@@ -2391,11 +2391,11 @@ const PublicTournamentPage: React.FC = () => {
         .glass-btn-outline:hover {
           background: rgba(255, 255, 255, 0.15);
           border-color: rgba(80, 110, 228, 0.3);
-          color: #506ee4;
+          color: #594230;
         }
 
         .glass-btn-primary {
-          background: linear-gradient(135deg, #506ee4, #3f5cd6);
+          background: linear-gradient(135deg, #594230, #3f5cd6);
           border: none;
           color: white;
         }
@@ -2428,7 +2428,7 @@ const PublicTournamentPage: React.FC = () => {
         .glass-input:focus,
         .glass-input:hover {
           background: rgba(255, 255, 255, 0.12);
-          border-color: #506ee4;
+          border-color: #594230;
         }
 
         .glass-input input {
@@ -2470,8 +2470,8 @@ const PublicTournamentPage: React.FC = () => {
         }
 
         .glass-radio-group .ant-radio-checked .ant-radio-inner {
-          background-color: #506ee4;
-          border-color: #506ee4;
+          background-color: #594230;
+          border-color: #594230;
         }
 
         .glass-radio-group .ant-radio-button-wrapper {
@@ -2481,8 +2481,8 @@ const PublicTournamentPage: React.FC = () => {
         }
 
         .glass-radio-group .ant-radio-button-wrapper-checked {
-          background: #506ee4;
-          border-color: #506ee4;
+          background: #594230;
+          border-color: #594230;
           color: white;
         }
 
@@ -2545,8 +2545,8 @@ const PublicTournamentPage: React.FC = () => {
         }
 
         .glass-tabs .ant-pagination-item-active {
-          background: #506ee4;
-          border-color: #506ee4;
+          background: #594230;
+          border-color: #594230;
         }
 
         .glass-tabs .ant-pagination-item-active a {
@@ -2713,7 +2713,7 @@ const PublicTournamentPage: React.FC = () => {
 
         /* ── Glass Link ─────────────────────────────────────────── */
         .glass-link {
-          color: #506ee4;
+          color: #594230;
         }
 
         .glass-link:hover {

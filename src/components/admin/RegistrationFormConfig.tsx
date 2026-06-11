@@ -911,7 +911,7 @@ const RegistrationFormConfig: React.FC<RegistrationFormConfigProps> = ({
                 <input
                   type='email'
                   className='form-control'
-                  placeholder='e.g., bothellselect@proton.me'
+                  placeholder='e.g., partizanhoops@proton.me'
                   value={config.trainingDetails?.contactEmail || ''}
                   onChange={(e) =>
                     updateTrainingDetails({ contactEmail: e.target.value })

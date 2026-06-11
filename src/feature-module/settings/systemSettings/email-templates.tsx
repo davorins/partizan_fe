@@ -36,7 +36,7 @@ QuillEditor.displayName = 'QuillEditor';
 // R2 Logo URL
 const R2_LOGO_URL = process.env.REACT_APP_R2_PUBLIC_URL
   ? `${process.env.REACT_APP_R2_PUBLIC_URL}/logo/logo.png`
-  : 'https://bothellselect.com/assets/img/logo.png';
+  : 'https://partizanhoops.com/assets/img/logo.png';
 
 interface AvailableVariable {
   label: string;
@@ -539,7 +539,7 @@ const EmailTemplates = () => {
     // Style links
     styledHtml = styledHtml.replace(
       /<a(\s[^>]*)?>/g,
-      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;"$1>',
+      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;"$1>',
     );
 
     // Style bold and italic
@@ -556,7 +556,7 @@ const EmailTemplates = () => {
     // Style blockquotes
     styledHtml = styledHtml.replace(
       /<blockquote(\s[^>]*)?>/g,
-      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #506ee4; color: #555; font-style: italic;"$1>',
+      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #594230; color: #555; font-style: italic;"$1>',
     );
 
     return styledHtml;
@@ -670,8 +670,8 @@ const EmailTemplates = () => {
             <tr>
               <td style="padding: 30px 30px 0;">
                 <div style="text-align: left; border-bottom: 1px solid #eaeaea; padding-bottom: 20px;">
-                  <img src="${R2_LOGO_URL}" alt="Bothell Select Logo" height="30" style="display: block; margin: 0; height: 30px;" 
-                       onerror="this.onerror=null; this.src='https://bothellselect.com/assets/img/logo.png';" />
+                  <img src="${R2_LOGO_URL}" alt="Partizan Logo" height="30" style="display: block; margin: 0; height: 30px;" 
+                       onerror="this.onerror=null; this.src='https://partizanhoops.com/assets/img/logo.png';" />
                 </div>
               </td>
             </tr>
@@ -689,15 +689,15 @@ const EmailTemplates = () => {
             <tr>
               <td style="padding: 0 30px;">
                 <div style="text-align: center; font-size: 13px; color: #666; padding: 30px 0 20px; margin-top: 40px; border-top: 1px solid #eaeaea;">
-                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Bothell Select</strong>.</p>
+                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Partizan</strong>.</p>
                   <p style="margin: 0;">
-                    <a href="https://bothellselect.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
                       Unsubscribe
                     </a> • 
-                    <a href="https://bothellselect.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
                       Contact Us
                     </a> • 
-                    <a href="https://bothellselect.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
                       Website
                     </a>
                   </p>
@@ -711,7 +711,7 @@ const EmailTemplates = () => {
             <tr>
               <td align="center" style="padding: 20px 0;">
                 <p style="margin: 0; font-size: 12px; color: #999;">
-                  &copy; ${new Date().getFullYear()} Bothell Select. All rights reserved.
+                  &copy; ${new Date().getFullYear()} Partizan. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -757,7 +757,7 @@ const EmailTemplates = () => {
     const attachmentItems = attachments
       .map(
         (att) => `
-      <div style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #506ee4;">
+      <div style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #594230;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="font-size: 24px; line-height: 1;">${getFileIcon(
             att.mimeType,
@@ -776,7 +776,7 @@ const EmailTemplates = () => {
             ? `
           <div style="margin-top: 8px; font-size: 13px;">
             <a href="${att.url}" 
-               style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;"
+               style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;"
                target="_blank" rel="noopener noreferrer">
               🔗 Direct download link
             </a>
@@ -1337,7 +1337,7 @@ const EmailTemplates = () => {
     // Check if this is a full email template or just content
     const hasEmailWrapper =
       storedHtml.includes('email-body') ||
-      storedHtml.includes('Bothell Select Logo') ||
+      storedHtml.includes('Partizan Logo') ||
       storedHtml.includes("You're receiving this email");
 
     if (!hasEmailWrapper) {

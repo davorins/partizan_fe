@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { PageLayout, PageSection } from '../../types/page-builder-types';
@@ -116,6 +116,9 @@ const HomeTileRenderer: React.FC<Props> = ({ pageSlug }) => {
   }>({ player: null, training: null, tournament: null, tryout: null });
   const [activeFormIds, setActiveFormIds] = useState<Set<string>>(new Set());
 
+  // Refs for animation
+  const circlesSectionRef = useRef<HTMLDivElement>(null);
+
   // ── fetch page ─────────────────────────────────────────────────────────────
   const fetchPage = useCallback(async () => {
     try {
@@ -164,9 +167,9 @@ const HomeTileRenderer: React.FC<Props> = ({ pageSlug }) => {
           {
             id: 'default-welcome-section',
             type: 'welcome',
-            title: 'Welcome to Bothell Select',
+            title: 'Welcome to Partizan',
             content:
-              '<h2>Welcome to Bothell Select Basketball</h2><p>Join our community and be part of something great.</p>',
+              '<h2>Welcome to Partizan Basketball</h2><p>Join our community and be part of something great.</p>',
             position: 0,
             isActive: true,
             config: {},
@@ -228,7 +231,7 @@ const HomeTileRenderer: React.FC<Props> = ({ pageSlug }) => {
           defaultSectionSpacing: '2rem',
           backgroundColor: 'transparent',
           textColor: '#ffffff',
-          accentColor: '#506ee4',
+          accentColor: '#594230',
           canonicalUrl: '/',
           openGraphImage: '',
           headerScripts: '',
@@ -721,6 +724,56 @@ const HomeTileRenderer: React.FC<Props> = ({ pageSlug }) => {
 
   return (
     <>
+      {/* Circular Tiles */}
+      {!activeTileId && (
+        <div className='htr-circles-section' ref={circlesSectionRef}>
+          <div className='htr-circles-container'>
+            {sections.map((section, idx) => {
+              const meta = sectionToTileMeta(section);
+              const backgroundImage = getTileBackgroundImage(idx, section.type);
+              const sectionType = section.type as string;
+
+              let shouldHide = false;
+              if (section.type === 'form' && !hasActiveEmbeddedForms()) {
+                shouldHide = true;
+              }
+              if (
+                section.type === 'registration' &&
+                !hasActiveRegistrationForms()
+              ) {
+                shouldHide = true;
+              }
+
+              if (shouldHide) {
+                return null;
+              }
+
+              return (
+                <button
+                  key={section.id}
+                  className='htr-circle-tile'
+                  style={{
+                    backgroundImage: `url(${backgroundImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    animationDelay: `${idx * 0.1}s`,
+                  }}
+                  onClick={() => handleTileClick(section)}
+                >
+                  <div className='htr-circle-overlay'></div>
+                  <div className='htr-circle-icon'>
+                    <i className={`ti ${meta.icon}`} />
+                  </div>
+                  <div className='htr-circle-content'>
+                    <span className='htr-circle-title'>{meta.label}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {activeTileId && expandedSection && (
         <div className='htr-dock-overlay'>
           <div className='htr-expanded-container'>
@@ -780,60 +833,6 @@ const HomeTileRenderer: React.FC<Props> = ({ pageSlug }) => {
                 </svg>
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {!activeTileId && (
-        <div className='htr-tiles-wrapper'>
-          <div className='htr-tiles-grid'>
-            {sections.map((section, idx) => {
-              const meta = sectionToTileMeta(section);
-              const backgroundImage = getTileBackgroundImage(idx, section.type);
-              const sectionType = section.type as string;
-
-              let shouldHide = false;
-              if (section.type === 'form' && !hasActiveEmbeddedForms()) {
-                shouldHide = true;
-              }
-              if (
-                section.type === 'registration' &&
-                !hasActiveRegistrationForms()
-              ) {
-                shouldHide = true;
-              }
-
-              if (shouldHide) {
-                return null;
-              }
-
-              return (
-                <button
-                  key={section.id}
-                  className='htr-tile'
-                  style={{
-                    backgroundImage: `url(${backgroundImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                  onClick={() => handleTileClick(section)}
-                >
-                  {backgroundImage && <div className='htr-tile-overlay'></div>}
-                  <div className='htr-tile-icon'>
-                    <i className={`ti ${meta.icon}`} />
-                  </div>
-                  <div className='htr-tile-content'>
-                    <span className='htr-tile-title'>{meta.label}</span>
-                    <span className='htr-tile-subtitle'>{meta.sublabel}</span>
-                    <span className='htr-tile-cta'>
-                      {sectionType === 'events'
-                        ? 'Go to Events'
-                        : 'Click to open'}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
           </div>
         </div>
       )}

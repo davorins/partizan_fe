@@ -294,7 +294,7 @@ const TournamentHeader: React.FC<TournamentHeaderProps> = ({
           marginTop: 54,
           marginBottom: 24,
           background:
-            'linear-gradient(135deg, #506ee4 0%, #5096e4 50%, #6FCCD8 100%)',
+            'linear-gradient(135deg, #594230 0%, #5096e4 50%, #6FCCD8 100%)',
           color: 'white',
           position: 'relative',
           overflow: 'hidden',

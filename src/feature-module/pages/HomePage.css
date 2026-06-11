@@ -2350,6 +2350,66 @@
     grid-template-columns: 1fr;
     gap: 0;
   }
+  .hp-contact-success-message {
+    text-align: center;
+    padding: 30px 20px;
+    animation: hp-successZoomIn 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
+
+  @keyframes hp-successZoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hp-contact-success-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(
+      135deg,
+      var(--gold) 0%,
+      var(--gold-bright) 100%
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: hp-successScale 0.4s ease-out 0.2s both;
+  }
+
+  @keyframes hp-successScale {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  .hp-contact-success-icon svg {
+    color: white;
+  }
+
+  .hp-contact-success-message h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 10px;
+  }
+
+  .hp-contact-success-message p {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 
   /* ── Forms grid ── */
   .hp-forms-grid {

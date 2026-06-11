@@ -81,6 +81,51 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     sectionsRef.current[index] = el;
   };
 
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleContactChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setContactFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmittingContact(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactFormData),
+      });
+
+      if (response.ok) {
+        alert('Message sent successfully!');
+        setContactFormData({
+          fullName: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Something went wrong. Please try again later.');
+    } finally {
+      setIsSubmittingContact(false);
+    }
+  };
+
   // Video control handlers
   const handlePlayPause = useCallback(() => {
     if (sectionVideoRef.current) {
@@ -1376,15 +1421,14 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     {/* Contact Form */}
                     <div className='hp-contact-form'>
                       <h3>Send Us a Message</h3>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault(); /* Handle form submission */
-                        }}
-                      >
+                      <form onSubmit={handleContactSubmit}>
                         <div className='hp-form-row'>
                           <div className='hp-form-group'>
                             <input
                               type='text'
+                              name='fullName'
+                              value={contactFormData.fullName}
+                              onChange={handleContactChange}
                               placeholder='Your Name'
                               required
                             />
@@ -1392,23 +1436,39 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                           <div className='hp-form-group'>
                             <input
                               type='email'
+                              name='email'
+                              value={contactFormData.email}
+                              onChange={handleContactChange}
                               placeholder='Your Email'
                               required
                             />
                           </div>
                         </div>
                         <div className='hp-form-group'>
-                          <input type='text' placeholder='Subject' />
+                          <input
+                            type='text'
+                            name='subject'
+                            value={contactFormData.subject}
+                            onChange={handleContactChange}
+                            placeholder='Subject'
+                          />
                         </div>
                         <div className='hp-form-group'>
                           <textarea
+                            name='message'
+                            value={contactFormData.message}
+                            onChange={handleContactChange}
                             rows={4}
                             placeholder='Your Message'
                             required
                           ></textarea>
                         </div>
-                        <button type='submit' className='hp-btn-primary'>
-                          Send Message
+                        <button
+                          type='submit'
+                          className='hp-btn-primary'
+                          disabled={isSubmittingContact}
+                        >
+                          {isSubmittingContact ? 'Sending...' : 'Send Message'}
                           <svg
                             width='18'
                             height='18'

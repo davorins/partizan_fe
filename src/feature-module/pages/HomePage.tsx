@@ -40,6 +40,16 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   const [videoUploading, setVideoUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  // Contact form states
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [showContactSuccess, setShowContactSuccess] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
   // Video player controls state
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
@@ -72,8 +82,12 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const heroRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLImageElement>(null);
+  const player1Ref = useRef<HTMLImageElement>(null);
+  const player2Ref = useRef<HTMLImageElement>(null);
   const player3Ref = useRef<HTMLImageElement>(null);
   const player4Ref = useRef<HTMLImageElement>(null);
+  const [player3Active, setPlayer3Active] = useState(false);
+  const [player4Active, setPlayer4Active] = useState(false);
   const scrollYRef = useRef(0);
   const rafRef = useRef<number | null>(null);
 
@@ -81,15 +95,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     sectionsRef.current[index] = el;
   };
 
-  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
-  const [showContactSuccess, setShowContactSuccess] = useState(false);
-  const [contactFormData, setContactFormData] = useState({
-    fullName: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
-
+  // Contact form handlers
   const handleContactChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -187,8 +193,107 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     setControlsTimeout(timeout);
   }, [controlsTimeout]);
 
+  // Modal handlers
+  const openFormModal = (formId: string) => {
+    setSelectedFormId(formId);
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  };
+
+  const closeFormModal = () => {
+    setIsModalOpen(false);
+    setSelectedFormId(null);
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+  };
+
+  // Scroll activity detection
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
+
+    // Preload both images for smooth transition
+    const img3_2 = new Image();
+    const img4_2 = new Image();
+    img3_2.src = '/assets/img/theme/player3_2.png';
+    img4_2.src = '/assets/img/theme/player4_2.png';
+
+    const handleScrollActivity = () => {
+      setPlayer3Active(true);
+      setPlayer4Active(true);
+
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(() => {
+        setPlayer3Active(false);
+        setPlayer4Active(false);
+      }, 1500);
+    };
+
+    window.addEventListener('scroll', handleScrollActivity);
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollActivity);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, []);
+
+  // Scroll animations for player images and headlines
+  useEffect(() => {
+    const handleScrollAnimations = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      // Animate player images based on scroll position
+      const players = [
+        { ref: player1Ref, start: 0, end: 500, range: [-80, 80] },
+        { ref: player2Ref, start: 0, end: 500, range: [80, -80] },
+      ];
+
+      players.forEach((player) => {
+        if (player.ref.current) {
+          const progress = Math.max(
+            0,
+            Math.min(1, (scrollY - player.start) / (player.end - player.start)),
+          );
+          const translateX =
+            player.range[0] + (player.range[1] - player.range[0]) * progress;
+          player.ref.current.style.transform = `translateX(${translateX}px) translateY(${translateX * 0.3}px)`;
+          player.ref.current.style.opacity = `${1 - Math.abs(progress - 0.5) * 1.5}`;
+        }
+      });
+
+      // Animate headlines in each section
+      const sections = document.querySelectorAll('.hp-section');
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const isVisible = rect.top < windowHeight - 100 && rect.bottom > 100;
+
+        const headline = section.querySelector('.hp-section__head');
+        if (headline && isVisible) {
+          headline.classList.add('hp-headline-visible');
+        } else if (headline) {
+          if (rect.top > windowHeight || rect.bottom < 0) {
+            headline.classList.remove('hp-headline-visible');
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScrollAnimations);
+    handleScrollAnimations();
+
+    return () => window.removeEventListener('scroll', handleScrollAnimations);
+  }, []);
+
   // Parallax scroll
   useEffect(() => {
+    // Store the current parallax offset for each container
+    let currentPlayer3Offset = 0;
+    let currentPlayer4Offset = 0;
+
     const handleScroll = () => {
       scrollYRef.current = window.scrollY;
       if (rafRef.current) return;
@@ -208,14 +313,51 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
           bgRef.current.style.opacity = opacity.toString();
         }
 
-        if (player3Ref.current) {
-          const yOffset = y * 0.15;
-          player3Ref.current.style.transform = `translateY(${yOffset}px)`;
+        // Player image parallax effects
+        if (player1Ref.current) {
+          const yOffset = y * 0.1;
+          player1Ref.current.style.transform = `translateX(${yOffset * 0.3}px) translateY(${yOffset * 0.2}px)`;
         }
 
+        if (player2Ref.current) {
+          const yOffset = y * 0.1;
+          player2Ref.current.style.transform = `translateX(${-yOffset * 0.3}px) translateY(${yOffset * 0.2}px)`;
+        }
+
+        // Player3 - store the offset and always apply with current scale
+        if (player3Ref.current) {
+          const yOffset = y * 0.15;
+          currentPlayer3Offset = yOffset;
+          const container = player3Ref.current.closest(
+            '.hp-player3-container',
+          ) as HTMLElement;
+          if (container) {
+            const scale = player3Active ? 1.02 : 1;
+            container.style.transform = `translateY(${currentPlayer3Offset}px) scale(${scale})`;
+
+            const images = container.querySelectorAll('.hp-hero__player-img-3');
+            images.forEach((img) => {
+              const image = img as HTMLElement;
+            });
+          }
+        }
+
+        // Player4 - store the offset and always apply with current scale
         if (player4Ref.current) {
           const yOffset = y * 0.15;
-          player4Ref.current.style.transform = `translateY(${yOffset}px)`;
+          currentPlayer4Offset = yOffset;
+          const container = player4Ref.current.closest(
+            '.hp-player4-container',
+          ) as HTMLElement;
+          if (container) {
+            const scale = player4Active ? 1.02 : 1;
+            container.style.transform = `translateY(${currentPlayer4Offset}px) scale(${scale})`;
+
+            const images = container.querySelectorAll('.hp-hero__player-img-4');
+            images.forEach((img) => {
+              const image = img as HTMLElement;
+            });
+          }
         }
 
         const regSection = document.querySelector('.hp-section--reg');
@@ -240,9 +382,9 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       window.removeEventListener('scroll', handleScroll);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [player3Active, player4Active]);
 
-  // Intersection observer
+  // Intersection observer for section visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -518,6 +660,14 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     fetchPromoVideo();
   }, [fetchActiveForms, fetchAllFormConfigs, fetchPromoVideo]);
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isModalOpen) closeFormModal();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isModalOpen]);
+
   const getDefaultSeasonEvent = (): SeasonEvent => {
     if (formConfigs.tournament?.isActive)
       return {
@@ -569,27 +719,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       ),
     [formConfigs],
   );
-
-  // Modal handlers
-  const openFormModal = (formId: string) => {
-    setSelectedFormId(formId);
-    setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeFormModal = () => {
-    setIsModalOpen(false);
-    setSelectedFormId(null);
-    document.body.style.overflow = '';
-  };
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isModalOpen) closeFormModal();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [isModalOpen]);
 
   // Admin upload
   const uploadContent = useCallback(
@@ -795,11 +924,11 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             <div className='hp-hero__player-left'>
               <div className='hp-hero__player-image-wrapper'>
                 <img
+                  ref={player1Ref}
                   src='/assets/img/theme/player1_1.png'
                   alt='Partizan Player'
                   className='hp-hero__player-img hp-hero__player-img-1'
                 />
-                <div className='hp-hero__player-glow' />
               </div>
             </div>
             <div className='hp-hero__welcome-content'>
@@ -824,11 +953,11 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             <div className='hp-hero__player-right'>
               <div className='hp-hero__player-image-wrapper'>
                 <img
+                  ref={player2Ref}
                   src='/assets/img/theme/player2_1.png'
                   alt='Partizan Player'
                   className='hp-hero__player-img hp-hero__player-img-2'
                 />
-                <div className='hp-hero__player-glow' />
               </div>
             </div>
           </div>
@@ -1081,12 +1210,19 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             <div className='hp-cut-mirror' aria-hidden='true' />
             <div className='hp-hero__player-player4'>
               <div className='hp-hero__player-image-wrapper-player4'>
-                <img
-                  ref={player4Ref}
-                  src='/assets/img/theme/player4_1.png'
-                  alt='Partizan Player Action'
-                  className='hp-hero__player-img hp-hero__player-img-4'
-                />
+                <div className='hp-player-image-container hp-player4-container'>
+                  <img
+                    ref={player4Ref}
+                    src='/assets/img/theme/player4_1.png'
+                    alt='Partizan Player Action'
+                    className={`hp-hero__player-img hp-hero__player-img-4 ${!player4Active ? 'hp-player-visible' : 'hp-player-hidden'}`}
+                  />
+                  <img
+                    src='/assets/img/theme/player4_2.png'
+                    alt='Partizan Player Action'
+                    className={`hp-hero__player-img hp-hero__player-img-4 hp-player-overlay ${player4Active ? 'hp-player-visible' : 'hp-player-hidden'}`}
+                  />
+                </div>
               </div>
             </div>
             <div className='hp-section__inner'>
@@ -1117,12 +1253,19 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             <div className='hp-cut-mirror-dark' aria-hidden='true' />
             <div className='hp-hero__player-player3'>
               <div className='hp-hero__player-image-wrapper-player3'>
-                <img
-                  ref={player3Ref}
-                  src='/assets/img/theme/player3_1.png'
-                  alt='Partizan Player Action'
-                  className='hp-hero__player-img hp-hero__player-img-3'
-                />
+                <div className='hp-player-image-container hp-player3-container'>
+                  <img
+                    ref={player3Ref}
+                    src='/assets/img/theme/player3_1.png'
+                    alt='Partizan Player Action'
+                    className={`hp-hero__player-img hp-hero__player-img-3 ${!player3Active ? 'hp-player-visible' : 'hp-player-hidden'}`}
+                  />
+                  <img
+                    src='/assets/img/theme/player3_2.png'
+                    alt='Partizan Player Action'
+                    className={`hp-hero__player-img hp-hero__player-img-3 hp-player-overlay ${player3Active ? 'hp-player-visible' : 'hp-player-hidden'}`}
+                  />
+                </div>
               </div>
             </div>
             <div className='hp-section__inner'>
@@ -1209,22 +1352,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     src='/assets/img/watermark-logo.png'
                     alt='Partizan Basketball'
                   />
-                  {/* <div className='hp-stat-card'>
-                    <div className='hp-stat-number'>10+</div>
-                    <div className='hp-stat-label'>Years of Excellence</div>
-                  </div>
-                  <div className='hp-stat-card'>
-                    <div className='hp-stat-number'>500+</div>
-                    <div className='hp-stat-label'>Active Players</div>
-                  </div>
-                  <div className='hp-stat-card'>
-                    <div className='hp-stat-number'>20+</div>
-                    <div className='hp-stat-label'>Expert Coaches</div>
-                  </div>
-                  <div className='hp-stat-card'>
-                    <div className='hp-stat-number'>15+</div>
-                    <div className='hp-stat-label'>Championships</div>
-                  </div> */}
                 </div>
                 <div className='hp-about-content'>
                   <header className='hp-section__head'>
@@ -1340,7 +1467,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             <div className='hp-cut-reverse-dark' aria-hidden='true' />
             <div className='hp-section__inner'>
               <div className='hp-contact-wrapper'>
-                {/* Right side - Contact Form & Info */}
                 <div className='hp-contact-content'>
                   <header className='hp-section__head'>
                     <span className='hp-section__label'>
@@ -1360,7 +1486,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                       the contact form.
                     </p>
 
-                    {/* Contact Methods Grid */}
                     <div className='hp-contact-methods'>
                       <div className='hp-contact-item'>
                         <svg
@@ -1422,10 +1547,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   </div>
                 </div>
 
-                {/* Left side - Logo/Image */}
                 <div className='hp-contact-image'>
                   <div className='hp-contact-logo-wrapper'>
-                    {/* Contact Form */}
                     <div className='hp-contact-form'>
                       {showContactSuccess ? (
                         <div className='hp-contact-success-message'>
@@ -1481,6 +1604,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                                 value={contactFormData.subject}
                                 onChange={handleContactChange}
                                 placeholder='Subject'
+                                required
                               />
                             </div>
                             <div className='hp-form-group'>
@@ -1513,12 +1637,12 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                               </svg>
                             </button>
                           </form>
+                          <p className='hp-contact-footer-text'>
+                            We typically respond within 24-48 hours. For urgent
+                            matters, please call us directly.
+                          </p>
                         </>
                       )}
-                      <p className='hp-contact-footer-text'>
-                        We typically respond within 24-48 hours. For urgent
-                        matters, please call us directly.
-                      </p>
                     </div>
                   </div>
                 </div>

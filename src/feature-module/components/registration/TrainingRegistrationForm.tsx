@@ -47,6 +47,7 @@ type RegistrationStep =
   | 'user'
   | 'playerSelect'
   | 'payment'
+  | 'autopay'
   | 'success';
 
 const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
@@ -184,6 +185,10 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
   const [registrationTimestamp, setRegistrationTimestamp] =
     useState<string>('');
   const hasCalledPlayerCompleteRef = useRef(false);
+
+  const [lastPaymentToken, setLastPaymentToken] = useState<string | null>(null);
+  const [autoPayEnabled, setAutoPayEnabled] = useState(false);
+  const [isCloverPayment, setIsCloverPayment] = useState(false);
 
   // Player selection state
   const [players, setPlayers] = useState<Player[]>(() => {
@@ -715,11 +720,21 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     setPaymentSuccessData(successData);
     setRegistrationTimestamp(new Date().toLocaleString());
 
-    // Refresh parent data to show updated player list
-    if (refreshParentData) {
-      await refreshParentData();
-    }
+    if (refreshParentData) await refreshParentData();
 
+    // If Clover was used, offer auto-pay before showing success
+    if (successData.paymentSystem === 'clover' && successData.token) {
+      setLastPaymentToken(successData.token);
+      setIsCloverPayment(true);
+      setCurrentStep('autopay');
+    } else {
+      setCurrentStep('success');
+    }
+  };
+
+  // Handler for auto-pay prompt completion:
+  const handleAutoPayDecision = (enabled: boolean) => {
+    setAutoPayEnabled(enabled);
     setCurrentStep('success');
   };
 
@@ -986,6 +1001,21 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
             </button>
           </div>
         </div>
+
+        {autoPayEnabled && (
+          <div className='alert alert-success'>
+            <i className='ti ti-check me-2'></i>
+            <strong>Auto-pay is active.</strong> Your card will be charged
+            automatically each month. Cancel anytime from your account.
+          </div>
+        )}
+        {!autoPayEnabled && isCloverPayment && (
+          <div className='alert alert-info'>
+            <i className='ti ti-info-circle me-2'></i>
+            Manual payment selected. You'll need to register and pay again next
+            month.
+          </div>
+        )}
       </div>
     );
   };

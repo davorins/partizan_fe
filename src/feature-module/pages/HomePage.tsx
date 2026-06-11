@@ -82,6 +82,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   };
 
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [showContactSuccess, setShowContactSuccess] = useState(false);
   const [contactFormData, setContactFormData] = useState({
     fullName: '',
     email: '',
@@ -108,14 +109,20 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       });
 
       if (response.ok) {
-        alert('Message sent successfully!');
+        setShowContactSuccess(true);
         setContactFormData({
           fullName: '',
           email: '',
           subject: '',
           message: '',
         });
+
+        setTimeout(() => {
+          setShowContactSuccess(false);
+        }, 5000);
       } else {
+        const errorData = await response.json();
+        console.error('Error sending message:', errorData);
         alert('Failed to send message. Please try again.');
       }
     } catch (error) {
@@ -1420,67 +1427,94 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   <div className='hp-contact-logo-wrapper'>
                     {/* Contact Form */}
                     <div className='hp-contact-form'>
-                      <h3>Send Us a Message</h3>
-                      <form onSubmit={handleContactSubmit}>
-                        <div className='hp-form-row'>
-                          <div className='hp-form-group'>
-                            <input
-                              type='text'
-                              name='fullName'
-                              value={contactFormData.fullName}
-                              onChange={handleContactChange}
-                              placeholder='Your Name'
-                              required
-                            />
+                      {showContactSuccess ? (
+                        <div className='hp-contact-success-message'>
+                          <div className='hp-contact-success-icon'>
+                            <svg
+                              width='48'
+                              height='48'
+                              viewBox='0 0 24 24'
+                              fill='none'
+                              stroke='currentColor'
+                              strokeWidth='2'
+                            >
+                              <circle cx='12' cy='12' r='10' />
+                              <path d='M8 12l3 3 6-6' />
+                            </svg>
                           </div>
-                          <div className='hp-form-group'>
-                            <input
-                              type='email'
-                              name='email'
-                              value={contactFormData.email}
-                              onChange={handleContactChange}
-                              placeholder='Your Email'
-                              required
-                            />
-                          </div>
+                          <h3>Message Sent Successfully!</h3>
+                          <p>
+                            Thank you for reaching out. We've received your
+                            message and will get back to you shortly!
+                          </p>
                         </div>
-                        <div className='hp-form-group'>
-                          <input
-                            type='text'
-                            name='subject'
-                            value={contactFormData.subject}
-                            onChange={handleContactChange}
-                            placeholder='Subject'
-                          />
-                        </div>
-                        <div className='hp-form-group'>
-                          <textarea
-                            name='message'
-                            value={contactFormData.message}
-                            onChange={handleContactChange}
-                            rows={4}
-                            placeholder='Your Message'
-                            required
-                          ></textarea>
-                        </div>
-                        <button
-                          type='submit'
-                          className='hp-btn-primary'
-                          disabled={isSubmittingContact}
-                        >
-                          {isSubmittingContact ? 'Sending...' : 'Send Message'}
-                          <svg
-                            width='18'
-                            height='18'
-                            viewBox='0 0 24 24'
-                            fill='none'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                          >
-                            <path d='M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' />
-                          </svg>
-                        </button>
-                      </form>
+                      ) : (
+                        <>
+                          <h3>Send Us a Message</h3>
+                          <form onSubmit={handleContactSubmit}>
+                            <div className='hp-form-row'>
+                              <div className='hp-form-group'>
+                                <input
+                                  type='text'
+                                  name='fullName'
+                                  value={contactFormData.fullName}
+                                  onChange={handleContactChange}
+                                  placeholder='Your Name'
+                                  required
+                                />
+                              </div>
+                              <div className='hp-form-group'>
+                                <input
+                                  type='email'
+                                  name='email'
+                                  value={contactFormData.email}
+                                  onChange={handleContactChange}
+                                  placeholder='Your Email'
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div className='hp-form-group'>
+                              <input
+                                type='text'
+                                name='subject'
+                                value={contactFormData.subject}
+                                onChange={handleContactChange}
+                                placeholder='Subject'
+                              />
+                            </div>
+                            <div className='hp-form-group'>
+                              <textarea
+                                name='message'
+                                value={contactFormData.message}
+                                onChange={handleContactChange}
+                                rows={4}
+                                placeholder='Your Message'
+                                required
+                              ></textarea>
+                            </div>
+                            <button
+                              type='submit'
+                              className='hp-btn-primary'
+                              disabled={isSubmittingContact}
+                            >
+                              {isSubmittingContact
+                                ? 'Sending...'
+                                : 'Send Message'}
+                              <svg
+                                width='18'
+                                height='18'
+                                viewBox='0 0 24 24'
+                                fill='none'
+                                stroke='currentColor'
+                                strokeWidth='2'
+                              >
+                                <path d='M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' />
+                              </svg>
+                            </button>
+                          </form>
+                        </>
+                      )}
                       <p className='hp-contact-footer-text'>
                         We typically respond within 24-48 hours. For urgent
                         matters, please call us directly.

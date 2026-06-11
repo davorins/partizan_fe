@@ -58,7 +58,7 @@ const swalToast = (
     timer: 3000,
     showConfirmButton: false,
     background:
-      icon === 'success' ? '#10b981' : icon === 'error' ? '#ef4444' : '#3b82f6',
+      icon === 'success' ? '#10b981' : icon === 'error' ? '#ef4444' : '#594230',
     color: '#fff',
     iconColor: '#fff',
   });

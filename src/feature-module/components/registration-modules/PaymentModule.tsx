@@ -984,15 +984,19 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
 
         <div className='row'>
           <div className='col-12 mb-4'>
-            <h5 className='mb-3'>Payment Summary</h5>
+            <h5 className='text-primary mb-3'>Payment Summary</h5>
             <div className='card bg-light'>
               <div className='card-body'>
                 <p className='h5 mb-1'>
-                  <strong>Description:</strong> {description}
+                  <strong>Description:</strong>{' '}
+                  <span className='text-white'>{description}</span>
                 </p>
                 <p className='h4 mb-1'>
-                  <strong>Total Amount:</strong> ${getTotalAmount().toFixed(2)}{' '}
-                  {paymentConfig?.settings?.currency || 'USD'}
+                  <strong>Total Amount:</strong>{' '}
+                  <span className='text-white'>
+                    ${getTotalAmount().toFixed(2)}{' '}
+                    {paymentConfig?.settings?.currency || 'USD'}
+                  </span>
                 </p>
                 {registrationType === 'tournament' ? (
                   <p className='text-muted mb-0'>
@@ -1045,23 +1049,25 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
 
         <div className='mt-4 p-3 bg-light rounded small'>
           <i className='ti ti-shield-check me-2 text-success'></i>
-          <strong>Secure Payment:</strong> Your payment information is encrypted
-          and processed securely by{' '}
-          {paymentSystem.charAt(0).toUpperCase() + paymentSystem.slice(1)}.
-          {paymentSystem === 'square' &&
-            paymentConfig?.squareConfig?.environment === 'sandbox' && (
-              <span className='text-warning ms-1'>
-                <i className='ti ti-test-pipe me-1'></i>
-                <strong>Sandbox Mode:</strong> Using test credentials.
-              </span>
-            )}
-          {paymentSystem === 'clover' &&
-            paymentConfig?.cloverConfig?.environment === 'sandbox' && (
-              <span className='text-warning ms-1'>
-                <i className='ti ti-test-pipe me-1'></i>
-                <strong>Sandbox Mode:</strong> Using test credentials.
-              </span>
-            )}
+          <strong>Secure Payment:</strong>{' '}
+          <span className='text-white'>
+            Your payment information is encrypted and processed securely by{' '}
+            {paymentSystem.charAt(0).toUpperCase() + paymentSystem.slice(1)}.
+            {paymentSystem === 'square' &&
+              paymentConfig?.squareConfig?.environment === 'sandbox' && (
+                <span className='text-warning ms-1'>
+                  <i className='ti ti-test-pipe me-1'></i>
+                  <strong>Sandbox Mode:</strong> Using test credentials.
+                </span>
+              )}
+            {paymentSystem === 'clover' &&
+              paymentConfig?.cloverConfig?.environment === 'sandbox' && (
+                <span className='text-warning ms-1'>
+                  <i className='ti ti-test-pipe me-1'></i>
+                  <strong>Sandbox Mode:</strong> Using test credentials.
+                </span>
+              )}
+          </span>
         </div>
       </div>
     </div>

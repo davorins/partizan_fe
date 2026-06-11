@@ -55,7 +55,7 @@ const FAQUserView = () => {
 
     // Preload image
     const img = new Image();
-    img.src = '/assets/img/theme/player6_1.png';
+    img.src = '/assets/img/theme/player6_2.png';
     img.onload = () => setImageLoaded(true);
   }, [fetchFaqs]);
 
@@ -126,7 +126,7 @@ const FAQUserView = () => {
         <div className='faq-player-image-wrapper'>
           <img
             ref={player5Ref}
-            src='/assets/img/theme/player6_1.png'
+            src='/assets/img/theme/player6_2.png'
             alt='Partizan Player'
             className='faq-player-img'
           />
@@ -302,7 +302,7 @@ const getCategoryColor = (category: string): string => {
     'summer camp': '#8b5cf6',
     'training programs': '#10b981',
     'registration & payments': '#594230',
-    'facilities & equipment': '#3b82f6',
+    'facilities & equipment': '#594230',
     'health & safety': '#ef4444',
     'coaching staff': '#06b6d4',
     'tournaments & competitions': '#f59e0b',

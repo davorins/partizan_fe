@@ -821,9 +821,9 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
               />
             </div>
             <h5 className='text-primary'>{pkg.name}</h5>
-            <h4 className='my-2'>${pkg.price}</h4>
+            <h4 className='text-white my-2'>${pkg.price}</h4>
             {pkg.description && (
-              <p className='text-muted small mb-0 mt-2'>{pkg.description}</p>
+              <p className='text-white small mb-0 mt-2'>{pkg.description}</p>
             )}
             {playerCount > 0 && (
               <div className='mt-auto pt-3'>
@@ -832,7 +832,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
                   For {playerCount} player
                   {playerCount !== 1 ? 's' : ''}:
                 </div>
-                <div className='fw-bold'>${totalPrice} total</div>
+                <div className='text-white fw-bold'>${totalPrice} total</div>
               </div>
             )}
           </div>

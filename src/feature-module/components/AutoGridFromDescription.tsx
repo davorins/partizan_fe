@@ -348,7 +348,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       (trainingDetails.trainingSessions?.length || 0) > 0;
 
     if (!hasValidTrainingDetails) {
-      const accent = '#3b82f6';
+      const accent = '#594230';
       return (
         <div className='agd-root'>
           <div className='agd-event'>
@@ -403,7 +403,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       );
     }
 
-    const accent = '#3b82f6';
+    const accent = '#594230';
     const sortAgeGroups = (groups: string[]): string[] => {
       return [...groups].sort((a, b) => {
         // Define custom order: everything except College first, then College last
@@ -1049,14 +1049,14 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       <div className='agd-event'>
         <div
           className='agd-tile agd-tile--hdr'
-          style={{ borderTop: `3px solid #3b82f6` }}
+          style={{ borderTop: `3px solid #594230` }}
         >
           <div
             className='agd-hdr-icon'
             style={{
-              color: '#3b82f6',
-              background: `#3b82f618`,
-              borderColor: `#3b82f644`,
+              color: '#594230',
+              background: `#59423018`,
+              borderColor: `#59423044`,
             }}
           >
             <i className='ti ti-ball-basketball' />
@@ -1076,7 +1076,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
         <div className='agd-tile agd-tile--cta'>
           <button
             className='agd-cta'
-            style={{ background: '#3b82f6', boxShadow: `0 6px 20px #3b82f644` }}
+            style={{ background: '#594230', boxShadow: `0 6px 20px #59423044` }}
             onClick={() => onRegister?.()}
           >
             <i className='ti ti-user-plus' /> Register Now{' '}

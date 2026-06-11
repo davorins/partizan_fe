@@ -2188,6 +2188,10 @@
     padding-bottom: 3rem;
   }
 
+  .hp-hero__bg-wrapper {
+    display: none;
+  }
+
   .hp-hero__inner {
     padding: 0 20px;
   }

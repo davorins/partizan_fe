@@ -91,7 +91,7 @@ const Register = () => {
   useEffect(() => {
     // Preload image and trigger entrance animation
     const img = new Image();
-    img.src = 'assets/img/theme/player8_1.png';
+    img.src = 'assets/img/theme/player10_1.png';
     img.onload = () => {
       setIsImageLoaded(true);
     };
@@ -800,7 +800,7 @@ const Register = () => {
           }}
         >
           <ImageWithBasePath
-            src='assets/img/theme/player8_1.png'
+            src='assets/img/theme/player10_1.png'
             alt='Background'
             className='register-bg-img'
           />

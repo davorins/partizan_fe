@@ -555,7 +555,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
     { path: '/events', label: 'Schedule' },
     { path: '/contact-us', label: 'Contact' },
     { path: '/faq', label: 'FAQ' },
-    { path: '/about-us', label: 'About Us' },
+    // { path: '/about-us', label: 'About Us' },
   ];
 
   const mobilePublicItems = [
@@ -568,16 +568,16 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
   ];
 
   const dropdownItems = [
-    // {
-    //   name: 'about',
-    //   icon: 'ti ti-chess-knight',
-    //   label: 'About Us',
-    //   paths: ['/about-us', '/program-leadership'],
-    //   items: [
-    //     { path: '/about-us', label: 'Our Mission' },
-    //     { path: '/program-leadership', label: 'Program Leadership' },
-    //   ],
-    // },
+    {
+      name: 'about',
+      icon: 'ti ti-chess-knight',
+      label: 'About Us',
+      paths: ['/about-us', '/program-leadership'],
+      items: [
+        { path: '/about-us', label: 'Our Mission' },
+        { path: '/program-leadership', label: 'Program Leadership' },
+      ],
+    },
     {
       name: 'team',
       icon: 'ti ti-ball-basketball',
@@ -621,7 +621,11 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
           onMouseLeave={onMouseLeave}
         >
           <Link to={getDashboardRoute()} style={S.logo()}>
-            <img src='assets/img/logo.png' alt='Partizan' style={S.logoImg()} />
+            <img
+              src='assets/img/logo-light.png'
+              alt='Partizan'
+              style={S.logoImg()}
+            />
           </Link>
         </div>
 
@@ -642,7 +646,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
             ))}
 
             {/* About Dropdown */}
-            {/* <li ref={aboutRef} style={{ position: 'relative' }}>
+            <li ref={aboutRef} style={{ position: 'relative' }}>
               <button
                 style={{
                   ...S.dropdownTrigger(
@@ -676,7 +680,7 @@ const Header: React.FC<HeaderProps> = ({ showSponsorLogo }) => {
                   </DropdownLink>
                 ))}
               </div>
-            </li> */}
+            </li>
 
             {/* Team Dropdown */}
             <li ref={teamRef} style={{ position: 'relative' }}>

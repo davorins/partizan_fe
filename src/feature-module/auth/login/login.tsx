@@ -97,7 +97,7 @@ const Login = () => {
           }}
         >
           <ImageWithBasePath
-            src='assets/img/theme/player5_1.png'
+            src='assets/img/theme/player7_1.png'
             alt='Background'
             className='login-bg-img'
           />

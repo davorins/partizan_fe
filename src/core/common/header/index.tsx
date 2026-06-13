@@ -110,7 +110,7 @@ const Header = () => {
         onMouseLeave={onMouseLeave}
       >
         <Link to={dashboardRoute} className='logo logo-normal'>
-          <ImageWithBasePath src='assets/img/logo.png' alt='Logo' />
+          <ImageWithBasePath src='assets/img/logo-light.png' alt='Logo' />
         </Link>
         <Link to={dashboardRoute} className='logo-small'>
           <ImageWithBasePath src='assets/img/logo-small.png' alt='Logo' />

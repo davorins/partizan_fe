@@ -11,6 +11,7 @@ import {
   TryoutSpecificConfig,
   SeasonEvent,
 } from '../../types/registration-types';
+import TodayEvents from '../components/TodayEvents/TodayEvents';
 import VideoGallery from '../components/VideoGallery/VideoGallery';
 import './HomePage.css';
 
@@ -1278,7 +1279,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   Don't miss out on what's coming
                 </p>
               </header>
-              <div className='hp-events-empty'>
+              {/* <div className='hp-events-empty'>
                 <svg
                   className='hp-events-empty__icon'
                   viewBox='0 0 48 48'
@@ -1337,7 +1338,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     <path d='M5 12h14M13 6l6 6-6 6' />
                   </svg>
                 </button>
-              </div>
+              </div> */}
+              <TodayEvents />
             </div>
           </section>
 

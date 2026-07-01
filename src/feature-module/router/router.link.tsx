@@ -41,7 +41,9 @@ import Prefixes from '../settings/websiteSettings/prefixes';
 import Socialauthentication from '../settings/websiteSettings/socialAuthentication';
 import Languagesettings from '../settings/websiteSettings/language';
 import EmailSettings from '../settings/systemSettings/emailSettings';
-import Emailtemplates from '../settings/systemSettings/email-templates';
+import EmailTemplatesPage from '../settings/systemSettings/email-templates';
+import { EmailTemplateSelector } from '../../components/EmailTemplateSelector';
+import EmailTemplateBuilder from '../../components/EmailTemplateBuilder';
 import SmsSettings from '../settings/systemSettings/smsSettings';
 import OtpSettings from '../settings/systemSettings/otp-settings';
 import GdprCookies from '../settings/systemSettings/gdprCookies';
@@ -56,7 +58,6 @@ import Profile from '../pages/profile';
 import LockScreen from '../auth/lockScreen';
 import NotificationActivities from '../pages/profile/activities';
 import ProtectedRoute from '../components/ProtectedRoute';
-import { EmailTemplateSelector } from '../../components/EmailTemplateSelector';
 import Events from '../announcements/events';
 import FormBuilder from '../../components/admin/FormBuilder';
 import TournamentAdminPage from '../pages/tournament/index';
@@ -88,6 +89,19 @@ const routes = all_routes;
 const PageRendererWrapper: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   return <PageRenderer pageSlug={slug || ''} isEditing={false} />;
+};
+
+// ─── Email Template Builder Wrapper ──────────────────────────────────────
+// This handles the /builder and /builder/:id routes
+const EmailTemplateBuilderWrapper: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  return <EmailTemplateBuilder templateId={id || null} />;
+};
+
+// ─── Email Templates Page Wrapper ───────────────────────────────────────
+// This handles the main email templates listing page
+const EmailTemplatesPageWrapper: React.FC = () => {
+  return <EmailTemplatesPage />;
 };
 
 // Home page component (optional)
@@ -365,9 +379,35 @@ export const publicRoutes = [
     path: routes.emailSettings,
     element: <EmailSettings />,
   },
+  // ✅ EMAIL TEMPLATES ROUTE - Main list page
   {
     path: routes.emailTemplates,
-    element: <Emailtemplates />,
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <EmailTemplatesPageWrapper />
+      </ProtectedRoute>
+    ),
+    route: Route,
+  },
+  // ✅ EMAIL TEMPLATES BUILDER - Create new (no ID)
+  {
+    path: routes.emailTemplatesBuilder,
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <EmailTemplateBuilderWrapper />
+      </ProtectedRoute>
+    ),
+    route: Route,
+  },
+  // ✅ EMAIL TEMPLATES BUILDER - Edit existing (with ID)
+  {
+    path: routes.emailTemplatesEdit,
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <EmailTemplateBuilderWrapper />
+      </ProtectedRoute>
+    ),
+    route: Route,
   },
   {
     path: routes.formBuilder,

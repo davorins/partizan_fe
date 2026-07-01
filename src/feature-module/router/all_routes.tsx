@@ -135,6 +135,8 @@ export const all_routes = {
 
   emailSettings: '/system-settings/email-settings',
   emailTemplates: '/system-settings/email-templates',
+  emailTemplatesBuilder: '/system-settings/email-templates/builder',
+  emailTemplatesEdit: '/system-settings/email-templates/builder/:id',
   EmailTemplateSelector: '/system-settings/email-campaigns',
   emailCampaignRoutes: '/system-settings/email-campaign',
   gdprCookies: '/system-settings/gdpr-cookies',

@@ -11,6 +11,7 @@ import {
   TryoutSpecificConfig,
   SeasonEvent,
 } from '../../types/registration-types';
+import VideoGallery from '../components/VideoGallery/VideoGallery';
 import './HomePage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -1135,6 +1136,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                 </div>
               </div>
             </section>
+            // <VideoGallery initialLimit={4} />
           )}
 
           {/* Embedded Forms Section */}

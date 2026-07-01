@@ -132,7 +132,7 @@ export const EmailTemplateSelector: React.FC = () => {
     // Style links
     styledHtml = styledHtml.replace(
       /<a(\s[^>]*)?>/g,
-      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;"$1>',
+      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;"$1>',
     );
 
     // Style bold and italic
@@ -149,7 +149,7 @@ export const EmailTemplateSelector: React.FC = () => {
     // Style blockquotes
     styledHtml = styledHtml.replace(
       /<blockquote(\s[^>]*)?>/g,
-      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #594230; color: #555; font-style: italic;"$1>',
+      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #506ee4; color: #555; font-style: italic;"$1>',
     );
 
     return styledHtml;
@@ -218,7 +218,7 @@ export const EmailTemplateSelector: React.FC = () => {
             <tr>
               <td style="padding: 30px 30px 0;">
                 <div style="text-align: left; border-bottom: 1px solid #eaeaea; padding-bottom: 20px;">
-                  <img src="https://pub-eab2790b2e94418f896b048a8e6658d0.r2.dev/logo/logo.png" alt="Partizan Logo" height="30" style="display: block; margin: 0; height: 30px;" />
+                  <img src="https://pub-eab2790b2e94418f896b048a8e6658d0.r2.dev/logo/logo.png" alt="Partizan AAU Logo" height="30" style="display: block; margin: 0; height: 30px;" />
                 </div>
               </td>
             </tr>
@@ -236,15 +236,15 @@ export const EmailTemplateSelector: React.FC = () => {
             <tr>
               <td style="padding: 0 30px;">
                 <div style="text-align: center; font-size: 13px; color: #666; padding: 30px 0 20px; margin-top: 40px; border-top: 1px solid #eaeaea;">
-                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Partizan</strong>.</p>
+                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Partizan AAU</strong>.</p>
                   <p style="margin: 0;">
-                    <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
                       Unsubscribe
                     </a> • 
-                    <a href="https://partizanhoops.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
                       Contact Us
                     </a> • 
-                    <a href="https://partizanhoops.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #594230; padding-bottom: 1px;">
+                    <a href="https://partizanhoops.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">
                       Website
                     </a>
                   </p>
@@ -258,7 +258,7 @@ export const EmailTemplateSelector: React.FC = () => {
             <tr>
               <td align="center" style="padding: 20px 0;">
                 <p style="margin: 0; font-size: 12px; color: #999;">
-                  &copy; ${new Date().getFullYear()} Partizan. All rights reserved.
+                  &copy; ${new Date().getFullYear()} Partizan AAU. All rights reserved.
                 </p>
               </td>
             </tr>
@@ -389,10 +389,15 @@ export const EmailTemplateSelector: React.FC = () => {
   useEffect(() => {
     const loadTemplates = async () => {
       try {
-        const response = await emailTemplateService.getAll();
+        const response: any = await emailTemplateService.getAll();
+        const responseData = response?.data;
         const data = Array.isArray(response)
           ? response
-          : response?.data?.data || response?.data || [];
+          : Array.isArray(responseData?.data)
+            ? responseData.data
+            : Array.isArray(responseData)
+              ? responseData
+              : [];
         if (!Array.isArray(data)) throw new Error('Invalid data format');
 
         // Filter out disabled templates (status === false)
@@ -907,7 +912,7 @@ export const EmailTemplateSelector: React.FC = () => {
 
     try {
       const campaignData: EmailCampaignData = {
-        templateId: selectedTemplate._id,
+        templateId: selectedTemplate._id!,
         ...(selectedUsers.length > 0 && { parentIds: selectedUsers }),
         ...(selectedSeason &&
           selectedYear && {

@@ -18,7 +18,8 @@ import { getPlayerTableColumns } from '../Tables/PlayerTableColumns';
 import { PlayerTableData } from '../../../types/playerTypes';
 import axios from 'axios';
 import AcceptanceEmailModal, { EmailPayload } from './AcceptanceEmailModal';
-import './TeamDetail.scss';
+import './TeamDetail.css';
+import './teams-mobile.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -1231,7 +1232,7 @@ const TeamDetail: React.FC = () => {
   if (loading) return <LoadingSpinner />;
   if (error)
     return (
-      <div className='page-wrapper'>
+      <div className='page-wrapper team-detail-page'>
         <div className='content'>
           <Alert message='Error' description={error} type='error' showIcon />
         </div>
@@ -1240,7 +1241,7 @@ const TeamDetail: React.FC = () => {
   if (!team) return <Alert message='Team not found' type='error' showIcon />;
 
   return (
-    <div className='page-wrapper'>
+    <div className='page-wrapper team-detail-page'>
       <div className='content'>
         <TeamListHeader teamData={[team]} onRefresh={handleRefresh} />
 

@@ -37,8 +37,8 @@ export function generateSignatureHTML(
   ${title ? `<div style="font-size:12px;color:#666;margin-bottom:8px;">${title}</div>` : ''}
   <div style="font-size:13px;color:#555;">
     ${phone ? `<div style="margin-bottom:3px;">📞 ${phone}</div>` : ''}
-    ${email ? `<div style="margin-bottom:3px;">✉️ <a href="mailto:${email}" style="color:#506ee4;">${email}</a></div>` : ''}
-    ${website ? `<div style="margin-bottom:3px;">🌐 <a href="${website}" style="color:#506ee4;">${website}</a></div>` : ''}
+    ${email ? `<div style="margin-bottom:3px;">✉️ <a href="mailto:${email}" style="color:#000000;">${email}</a></div>` : ''}
+    ${website ? `<div style="margin-bottom:3px;">🌐 <a href="${website}" style="color:#000000;">${website}</a></div>` : ''}
     ${additionalInfo ? `<div style="margin-top:6px;color:#888;font-size:12px;">${additionalInfo}</div>` : ''}
   </div>
 </div>`;
@@ -64,11 +64,11 @@ export function generateAttachmentsHTML(
               : '📎';
       const size = a.size ? `${(a.size / 1024).toFixed(1)} KB` : '';
       return `
-        <div style="margin:10px 0;padding:12px;background:#f8f9fa;border-radius:6px;border-left:4px solid #506ee4;">
+        <div style="margin:10px 0;padding:12px;background:#f8f9fa;border-radius:6px;border-left:4px solid #000000;">
           <span style="font-size:20px;">${icon}</span>
           <strong style="display:block;font-size:13px;color:#333;margin-top:4px;">${a.filename}</strong>
           ${size ? `<span style="font-size:11px;color:#888;">${size}</span>` : ''}
-          ${a.url ? `<div style="margin-top:6px;"><a href="${a.url}" style="color:#506ee4;font-size:12px;" target="_blank">Download</a></div>` : ''}
+          ${a.url ? `<div style="margin-top:6px;"><a href="${a.url}" style="color:#000000;font-size:12px;" target="_blank">Download</a></div>` : ''}
         </div>`;
     })
     .filter(Boolean)
@@ -88,10 +88,10 @@ export function buildCompleteHTML(template: any): string {
 
   const effectiveCfg: BuilderConfig = cfg || {
     layout: 'minimal',
-    primaryColor: '#506ee4',
+    primaryColor: '#000000',
     backgroundColor: '#f0f4ff',
     headerBg: '#1e3a8a',
-    ctaColor: '#506ee4',
+    ctaColor: '#000000',
     fontFamily: 'system',
     headerTitle: '',
     headerSubtitle: '',

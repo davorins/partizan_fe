@@ -40,10 +40,10 @@ const R2_LOGO_URL = process.env.REACT_APP_R2_PUBLIC_URL
 // Default builder config
 const DEFAULT_BUILDER_CONFIG = {
   layout: 'minimal',
-  primaryColor: '#506ee4',
+  primaryColor: '#000000',
   backgroundColor: '#f0f4ff',
   headerBg: '#1e3a8a',
-  ctaColor: '#506ee4',
+  ctaColor: '#000000',
   fontFamily: 'system',
   headerTitle: '',
   headerSubtitle: '',
@@ -504,7 +504,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     );
     styledHtml = styledHtml.replace(
       /<a(\s[^>]*)?>/g,
-      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;"$1>',
+      '<a style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;"$1>',
     );
     styledHtml = styledHtml.replace(
       /<strong(\s[^>]*)?>/g,
@@ -516,7 +516,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     );
     styledHtml = styledHtml.replace(
       /<blockquote(\s[^>]*)?>/g,
-      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #506ee4; color: #555; font-style: italic;"$1>',
+      '<blockquote style="margin: 20px 0; padding: 15px 20px; background-color: #f8f9fa; border-left: 4px solid #000000; color: #555; font-style: italic;"$1>',
     );
     return styledHtml;
   }
@@ -580,7 +580,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     const attachmentItems = attachments
       .map(
         (att) => `
-      <div style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #506ee4;">
+      <div style="margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #000000;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="font-size: 24px; line-height: 1;">${getFileIconEmoji(att.mimeType)}</div>
           <div style="flex: 1;">
@@ -591,7 +591,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
         ${
           att.url
             ? `<div style="margin-top: 8px; font-size: 13px;">
-          <a href="${att.url}" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;" target="_blank" rel="noopener noreferrer">🔗 Direct download link</a>
+          <a href="${att.url}" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;" target="_blank" rel="noopener noreferrer">🔗 Direct download link</a>
         </div>`
             : ''
         }
@@ -655,9 +655,9 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
                 <div style="text-align: center; font-size: 13px; color: #666; padding: 30px 0 20px; margin-top: 40px; border-top: 1px solid #eaeaea;">
                   <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Bothell Select</strong>.</p>
                   <p style="margin: 0;">
-                    <a href="https://bothellselect.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">Unsubscribe</a> • 
-                    <a href="https://bothellselect.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">Contact Us</a> • 
-                    <a href="https://bothellselect.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #506ee4; padding-bottom: 1px;">Website</a>
+                    <a href="https://bothellselect.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Unsubscribe</a> • 
+                    <a href="https://bothellselect.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Contact Us</a> • 
+                    <a href="https://bothellselect.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Website</a>
                   </p>
                 </div>
               </td>

@@ -27,7 +27,7 @@
       }
 
       .ant-tabs-ink-bar {
-        background: #506ee4 !important;
+        background: #000000 !important;
       }
     }
   }
@@ -118,7 +118,7 @@
   .btn-outline-primary {
     &:hover {
       color: #ffffff !important;
-      background: #506ee4 !important;
+      background: #000000 !important;
     }
 
     &.active {
@@ -149,7 +149,7 @@
 
       &:hover {
         color: #ffffff !important;
-        background: #506ee4 !important;
+        background: #000000 !important;
       }
 
       &.active {
@@ -269,23 +269,23 @@
     transition: all 0.2s;
 
     &.btn-outline-primary {
-      border: 1px solid #506ee4 !important;
+      border: 1px solid #000000 !important;
       color: rgba(0, 0, 0, 0.7) !important;
       background: transparent;
 
       &:hover {
-        background: #506ee4 !important;
+        background: #000000 !important;
         color: white;
       }
     }
 
     &.btn-primary {
-      background: #506ee4 !important;
-      border: 1px solid #506ee4 !important;
+      background: #000000 !important;
+      border: 1px solid #000000 !important;
       color: white;
 
       &:hover {
-        background: #506ee4 !important;
+        background: #000000 !important;
         border-color: rgba(0, 0, 0, 0.7) !important;
       }
     }

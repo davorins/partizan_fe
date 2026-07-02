@@ -165,7 +165,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
             }}
             onClick={() => setShowModal(true)}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#506ee4';
+              e.currentTarget.style.borderColor = '#000000';
               e.currentTarget.style.background = '#f0f4ff';
             }}
             onMouseLeave={(e) => {
@@ -312,7 +312,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
               >
                 <i
                   className='ti ti-cloud-upload'
-                  style={{ fontSize: '3rem', color: '#506ee4' }}
+                  style={{ fontSize: '3rem', color: '#000000' }}
                 ></i>
                 <p className='mt-3'>
                   Drag & drop an image here, or click to browse

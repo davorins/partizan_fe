@@ -71,10 +71,10 @@ export const COLOR_PRESETS: EmailColorPreset[] = [
   },
   {
     name: 'Clean White',
-    primaryColor: '#506EE4',
+    primaryColor: '#000000',
     backgroundColor: '#FFFFFF',
     headerBg: '#F8F9FA',
-    ctaColor: '#506EE4',
+    ctaColor: '#000000',
     textColor: '#1A2332',
     accentColor: '#8A9AAA',
   },

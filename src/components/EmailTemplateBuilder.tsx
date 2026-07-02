@@ -172,11 +172,11 @@ const DEFAULT_STATE: EmailBuilderState = {
   },
   globalStyles: {
     fontFamily: 'system',
-    primaryColor: '#506ee4',
+    primaryColor: '#000000',
     backgroundColor: '#f6f6f6',
     textColor: '#333333',
-    linkColor: '#506ee4',
-    buttonBg: '#506ee4',
+    linkColor: '#000000',
+    buttonBg: '#000000',
     buttonText: '#ffffff',
   },
   attachments: [],
@@ -266,7 +266,7 @@ const createListElement = (): EmailElement => {
     ],
     listLayout: {
       bulletType: 'circle',
-      bulletColor: '#506ee4',
+      bulletColor: '#000000',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -335,7 +335,7 @@ const createElement = (
         content: 'Click Me',
         href: '#',
         style: {
-          backgroundColor: '#506ee4',
+          backgroundColor: '#000000',
           color: '#ffffff',
           padding: '12px 32px',
           borderRadius: '8px',
@@ -587,7 +587,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           items: items,
           listLayout: {
             bulletType: 'disc',
-            bulletColor: '#506ee4',
+            bulletColor: '#000000',
             bulletSize: 'medium',
             showBullets: true,
             iconSize: 'medium',
@@ -829,7 +829,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
       const layout = el.listLayout || {
         bulletType: 'circle',
-        bulletColor: '#506ee4',
+        bulletColor: '#000000',
         bulletSize: 'medium',
         showBullets: true,
         iconSize: 'medium',
@@ -837,7 +837,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       };
 
       const bulletType = layout.bulletType;
-      const bulletColor = layout.bulletColor || '#506ee4';
+      const bulletColor = layout.bulletColor || '#000000';
       const bulletSize = layout.bulletSize || 'medium';
       const showBullets = layout.showBullets !== false;
       const iconSize = layout.iconSize || 'medium';
@@ -1046,7 +1046,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
   <title>${subject || 'Email'}</title>
   <style>
     body { font-family: ${globalStyles.fontFamily || 'system'}, -apple-system, sans-serif; margin: 0; padding: 0; background: ${globalStyles.backgroundColor || '#f6f6f6'}; color: ${globalStyles.textColor || '#333'}; }
-    a { color: ${globalStyles.linkColor || '#506ee4'}; text-decoration: none; }
+    a { color: ${globalStyles.linkColor || '#000000'}; text-decoration: none; }
     img { max-width: 100%; height: auto; }
     @media only screen and (max-width: 600px) {
       .container { width: 100% !important; padding: 10px !important; }
@@ -1070,9 +1070,9 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           <tr><td style="padding:20px 30px;border-top:1px solid #eaeaea;text-align:center;font-size:12px;color:#999;">
             <p style="margin:0 0 8px;">You're receiving this because you're part of <strong>Partizan AAU</strong>.</p>
             <p style="margin:0;">
-              <a href="https://partizanhoops.com/unsubscribe" style="color:${globalStyles.linkColor || '#506ee4'};">Unsubscribe</a> •
-              <a href="https://partizanhoops.com/contact" style="color:${globalStyles.linkColor || '#506ee4'};">Contact Us</a> •
-              <a href="https://partizanhoops.com" style="color:${globalStyles.linkColor || '#506ee4'};">Website</a>
+              <a href="https://partizanhoops.com/unsubscribe" style="color:${globalStyles.linkColor || '#000000'};">Unsubscribe</a> •
+              <a href="https://partizanhoops.com/contact" style="color:${globalStyles.linkColor || '#000000'};">Contact Us</a> •
+              <a href="https://partizanhoops.com" style="color:${globalStyles.linkColor || '#000000'};">Website</a>
             </p>
           </td></tr>
         </table>
@@ -1247,7 +1247,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
     const layout = el.listLayout || {
       bulletType: 'circle',
-      bulletColor: '#506ee4',
+      bulletColor: '#000000',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -1307,7 +1307,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           <div className='d-flex gap-2'>
             <input
               type='color'
-              value={layout.bulletColor || '#506ee4'}
+              value={layout.bulletColor || '#000000'}
               onChange={(e) =>
                 updateElement(el.id, {
                   listLayout: { ...layout, bulletColor: e.target.value },
@@ -1330,7 +1330,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                   listLayout: { ...layout, bulletColor: e.target.value },
                 })
               }
-              placeholder='#506ee4'
+              placeholder='#000000'
             />
           </div>
         </Form.Group>
@@ -2667,7 +2667,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                     style={{
                       display: 'inline-block',
                       margin: '0 8px',
-                      color: '#506ee4',
+                      color: '#000000',
                       textDecoration: 'none',
                       fontSize: '20px',
                     }}
@@ -2718,7 +2718,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
               position: 'relative',
               padding: '4px',
               border: isSelected
-                ? '2px solid #506ee4'
+                ? '2px solid #000000'
                 : '2px solid transparent',
               borderRadius: '4px',
               cursor: 'move',
@@ -2788,7 +2788,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
     const layout = el.listLayout || {
       bulletType: 'circle',
-      bulletColor: '#506ee4',
+      bulletColor: '#000000',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -2796,7 +2796,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
     };
 
     const bulletType = layout.bulletType;
-    const bulletColor = layout.bulletColor || '#506ee4';
+    const bulletColor = layout.bulletColor || '#000000';
     const bulletSize = layout.bulletSize || 'medium';
     const showBullets = layout.showBullets !== false;
     const iconSize = layout.iconSize || 'medium';
@@ -3180,7 +3180,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                     <span
                       style={{
                         display: 'inline-block',
-                        background: '#506ee4',
+                        background: '#000000',
                         color: '#fff',
                         fontSize: '10px',
                         fontWeight: 600,
@@ -3234,7 +3234,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                       style={{
                         display: 'inline-block',
                         marginTop: '8px',
-                        color: '#506ee4',
+                        color: '#000000',
                         fontWeight: 600,
                         textDecoration: 'none',
                         fontSize: '13px',

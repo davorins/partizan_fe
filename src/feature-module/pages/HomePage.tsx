@@ -931,7 +931,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               className='hp-intro-video__player'
               src='/assets/videos/intro.mp4'
               autoPlay
-              muted
+              // muted
               playsInline
               preload='auto'
               disablePictureInPicture

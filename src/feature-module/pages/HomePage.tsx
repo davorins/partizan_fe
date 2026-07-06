@@ -84,10 +84,10 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   const introVideoRef = useRef<HTMLVideoElement>(null);
   const [introVideoActive, setIntroVideoActive] = useState(true);
   const [introVideoFading, setIntroVideoFading] = useState(false);
+  const [needsUnmutePrompt, setNeedsUnmutePrompt] = useState(false);
 
   const handleIntroVideoEnd = useCallback(() => {
     setIntroVideoFading(true);
-    // give the fade transition time to finish before unmounting
     setTimeout(() => setIntroVideoActive(false), 700);
   }, []);
 
@@ -221,6 +221,26 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     document.body.style.position = '';
     document.body.style.width = '';
   };
+
+  useEffect(() => {
+    const video = introVideoRef.current;
+    if (!video) return;
+
+    video.play().catch(() => {
+      // Sound blocked — play muted, but offer a tap-to-unmute prompt
+      video.muted = true;
+      setNeedsUnmutePrompt(true);
+      video.play().catch(() => handleIntroVideoEnd());
+    });
+  }, [handleIntroVideoEnd]);
+
+  const handleUnmuteTap = useCallback(() => {
+    const video = introVideoRef.current;
+    if (video) {
+      video.muted = false;
+    }
+    setNeedsUnmutePrompt(false);
+  }, []);
 
   // Scroll activity detection
   useEffect(() => {
@@ -925,13 +945,16 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
         {introVideoActive && (
           <div
             className={`hp-intro-video ${introVideoFading ? 'hp-intro-video--fade-out' : ''}`}
+            onClick={needsUnmutePrompt ? handleUnmuteTap : undefined}
+            style={{
+              pointerEvents: needsUnmutePrompt ? 'auto' : 'none',
+              cursor: needsUnmutePrompt ? 'pointer' : 'default',
+            }}
           >
             <video
               ref={introVideoRef}
               className='hp-intro-video__player'
               src='/assets/videos/intro.mp4'
-              autoPlay
-              // muted
               playsInline
               preload='auto'
               disablePictureInPicture
@@ -939,6 +962,14 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               onEnded={handleIntroVideoEnd}
               onContextMenu={(e) => e.preventDefault()}
             />
+            {needsUnmutePrompt && (
+              <button
+                className='hp-intro-video__unmute'
+                onClick={handleUnmuteTap}
+              >
+                🔊 Tap for sound
+              </button>
+            )}
           </div>
         )}
         <div className='hp-hero__bg-wrapper'>

@@ -43,6 +43,7 @@ node_modules/.cache/
 
 # Ignore everything in videos by default
 public/assets/videos/*
+!public/assets/videos/intro.mp4
 
 # Allow mp4 files (handled by Git LFS)
 #!public/assets/videos/*.mp4

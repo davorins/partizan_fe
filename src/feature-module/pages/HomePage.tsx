@@ -81,6 +81,16 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   }>({ player: null, training: null, tournament: null, tryout: null });
   const [activeFormIds, setActiveFormIds] = useState<Set<string>>(new Set());
 
+  const introVideoRef = useRef<HTMLVideoElement>(null);
+  const [introVideoActive, setIntroVideoActive] = useState(true);
+  const [introVideoFading, setIntroVideoFading] = useState(false);
+
+  const handleIntroVideoEnd = useCallback(() => {
+    setIntroVideoFading(true);
+    // give the fade transition time to finish before unmounting
+    setTimeout(() => setIntroVideoActive(false), 700);
+  }, []);
+
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const heroRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLImageElement>(null);
@@ -912,6 +922,25 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     >
       {/* HERO SECTION */}
       <section className='hp-hero' ref={heroRef}>
+        {introVideoActive && (
+          <div
+            className={`hp-intro-video ${introVideoFading ? 'hp-intro-video--fade-out' : ''}`}
+          >
+            <video
+              ref={introVideoRef}
+              className='hp-intro-video__player'
+              src='/assets/videos/intro.mp4'
+              autoPlay
+              muted
+              playsInline
+              preload='auto'
+              disablePictureInPicture
+              controlsList='nodownload noplaybackrate nofullscreen'
+              onEnded={handleIntroVideoEnd}
+              onContextMenu={(e) => e.preventDefault()}
+            />
+          </div>
+        )}
         <div className='hp-hero__bg-wrapper'>
           <img
             ref={bgRef}

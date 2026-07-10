@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
+import ReactDOM from 'react-dom';
 import {
   UserRegistrationData,
   Guardian,
@@ -16,6 +17,8 @@ import {
 import GuardianRegistrationModule from './GuardianRegistrationModule';
 import { formatPhoneNumber, validatePhoneNumber } from '../../../utils/phone';
 import { useDynamicFormFields } from '../../hooks/useDynamicFormFields';
+import TermsAndConditionsModule from './TermsAndConditionsModule';
+import HomeModals from '../../pages/homeModals';
 
 interface Props extends WizardStepCommonProps {
   isExistingUser?: boolean;
@@ -662,181 +665,162 @@ const UserRegistrationModule: React.FC<Props> = ({
   }
 
   return (
-    <div className='card'>
-      <div className='card-header bg-light'>
-        <div className='d-flex align-items-center'>
-          <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
-            <i className='ti ti-user-shield fs-16' />
-          </span>
-          <h4 className='text-dark'>Parent/Guardian Information</h4>
-        </div>
-      </div>
-      <div className='card-body'>
-        {errors.submit && (
-          <div className='alert alert-danger mb-4'>
-            <i className='ti ti-alert-circle me-2'></i>
-            {errors.submit}
+    <>
+      <div className='card'>
+        <div className='card-header bg-light'>
+          <div className='d-flex align-items-center'>
+            <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
+              <i className='ti ti-user-shield fs-16' />
+            </span>
+            <h4 className='text-dark'>Parent/Guardian Information</h4>
           </div>
-        )}
-
-        <GuardianRegistrationModule
-          guardian={{
-            fullName: localData.fullName,
-            relationship: localData.relationship,
-            phone: localData.phone,
-            email: localData.email,
-            address: localData.address,
-            isCoach: localData.isCoach,
-            aauNumber: localData.aauNumber,
-          }}
-          onGuardianChange={handleGuardianChange}
-          isAdditional={false}
-          errors={errors}
-          registrationYear={registrationYear}
-          onValidationChange={() => {}}
-        />
-
-        {/* Additional Guardians Section */}
-        <div className='mt-4 mb-2'>
-          <h5>Additional Guardians (Optional)</h5>
-          <p className='text-muted'>
-            Add other parents or guardians who should have access to this
-            account.
-          </p>
         </div>
+        <div className='card-body'>
+          {errors.submit && (
+            <div className='alert alert-danger mb-4'>
+              <i className='ti ti-alert-circle me-2'></i>
+              {errors.submit}
+            </div>
+          )}
 
-        {localData.additionalGuardians.map((g, i) => (
-          <div key={i} className='card mb-2'>
-            <div className='card-body'>
-              <div className='d-flex justify-content-between align-items-start'>
-                <div>
-                  <h6>{g.fullName}</h6>
-                  <p className='mb-1'>
-                    <strong>Email:</strong> {g.email}
-                  </p>
-                  <p className='mb-1'>
-                    <strong>Relationship:</strong> {g.relationship}
-                  </p>
-                  {g.usePrimaryAddress && (
-                    <p className='mb-1 text-success'>
-                      <i className='ti ti-check me-1'></i>Same address as
-                      primary guardian
+          <GuardianRegistrationModule
+            guardian={{
+              fullName: localData.fullName,
+              relationship: localData.relationship,
+              phone: localData.phone,
+              email: localData.email,
+              address: localData.address,
+              isCoach: localData.isCoach,
+              aauNumber: localData.aauNumber,
+            }}
+            onGuardianChange={handleGuardianChange}
+            isAdditional={false}
+            errors={errors}
+            registrationYear={registrationYear}
+            onValidationChange={() => {}}
+          />
+
+          {/* Additional Guardians Section */}
+          <div className='mt-4 mb-2'>
+            <h5>Additional Guardians (Optional)</h5>
+            <p className='text-muted'>
+              Add other parents or guardians who should have access to this
+              account.
+            </p>
+          </div>
+
+          {localData.additionalGuardians.map((g, i) => (
+            <div key={i} className='card mb-2'>
+              <div className='card-body'>
+                <div className='d-flex justify-content-between align-items-start'>
+                  <div>
+                    <h6>{g.fullName}</h6>
+                    <p className='mb-1'>
+                      <strong>Email:</strong> {g.email}
                     </p>
-                  )}
+                    <p className='mb-1'>
+                      <strong>Relationship:</strong> {g.relationship}
+                    </p>
+                    {g.usePrimaryAddress && (
+                      <p className='mb-1 text-success'>
+                        <i className='ti ti-check me-1'></i>Same address as
+                        primary guardian
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type='button'
+                    className='btn btn-sm btn-danger'
+                    onClick={() => removeGuardian(i)}
+                  >
+                    Remove
+                  </button>
                 </div>
+              </div>
+            </div>
+          ))}
+
+          {!showAdditionalGuardian ? (
+            <div className='mt-3 mb-5'>
+              <button
+                type='button'
+                className='btn btn-outline-primary'
+                onClick={() => setShowAdditionalGuardian(true)}
+              >
+                + Add Another Guardian
+              </button>
+            </div>
+          ) : (
+            <div id='additional-guardian-form' className='mb-3'>
+              {errors.additionalGuardian && (
+                <div className='alert alert-danger mb-3'>
+                  <i className='ti ti-alert-circle me-2'></i>
+                  {errors.additionalGuardian}
+                </div>
+              )}
+              <GuardianRegistrationModule
+                guardian={additionalGuardian}
+                onGuardianChange={handleAdditionalGuardianChange}
+                isAdditional={true}
+                parentAddress={localData.address}
+                showUsePrimaryAddress={isAddressSectionVisible()}
+                errors={additionalGuardianErrors}
+                registrationYear={registrationYear}
+              />
+              <div className='mt-3'>
                 <button
                   type='button'
-                  className='btn btn-sm btn-danger'
-                  onClick={() => removeGuardian(i)}
+                  className='btn btn-secondary'
+                  onClick={handleCancelAdditionalGuardian}
                 >
-                  Remove
+                  Cancel
                 </button>
               </div>
             </div>
-          </div>
-        ))}
+          )}
 
-        {!showAdditionalGuardian ? (
-          <div className='mt-3 mb-5'>
+          {/* Terms and Conditions */}
+          <TermsAndConditionsModule
+            agreeToTerms={localData.agreeToTerms}
+            onAgreeToTermsChange={(agree) => {
+              setLocalData((prev) => ({ ...prev, agreeToTerms: agree }));
+            }}
+            validationError={errors.agreeToTerms}
+            waiverModalId='waiver'
+          />
+
+          {/* SINGLE BUTTON */}
+          <div className='d-flex justify-content-end mt-4'>
             <button
               type='button'
-              className='btn btn-outline-primary'
-              onClick={() => setShowAdditionalGuardian(true)}
+              className='btn btn-primary btn-lg'
+              onClick={handleMainButtonClick}
+              disabled={isMainCTADisabled}
             >
-              + Add Another Guardian
+              {isSubmitting ? (
+                <>
+                  <span className='spinner-border spinner-border-sm me-2'></span>
+                  Processing...
+                </>
+              ) : (
+                'Continue to Player Registration'
+              )}
             </button>
           </div>
-        ) : (
-          <div id='additional-guardian-form' className='mb-3'>
-            {errors.additionalGuardian && (
-              <div className='alert alert-danger mb-3'>
-                <i className='ti ti-alert-circle me-2'></i>
-                {errors.additionalGuardian}
-              </div>
-            )}
-            <GuardianRegistrationModule
-              guardian={additionalGuardian}
-              onGuardianChange={handleAdditionalGuardianChange}
-              isAdditional={true}
-              parentAddress={localData.address}
-              showUsePrimaryAddress={isAddressSectionVisible()}
-              errors={additionalGuardianErrors}
-              registrationYear={registrationYear}
-            />
-            <div className='mt-3'>
-              <button
-                type='button'
-                className='btn btn-secondary'
-                onClick={handleCancelAdditionalGuardian}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
 
-        {/* Terms and Conditions Section */}
-        <div className='card mt-4'>
-          <div className='card-header bg-light'>
-            <div className='d-flex align-items-center'>
-              <span className='bg-white avatar avatar-sm me-2 text-gray-7 flex-shrink-0'>
-                <i className='ti ti-file-text fs-16' />
-              </span>
-              <h4 className='text-dark'>Terms and Conditions</h4>
+          {showAdditionalGuardian && (
+            <div className='alert alert-info mt-3'>
+              <i className='ti ti-info-circle me-2'></i>
+              Fill in the additional guardian details above, then click
+              "Continue to Player Registration" to save and proceed.
             </div>
-          </div>
-          <div className='card-body'>
-            <div className='mb-3'>
-              <label className='form-label'>
-                <input
-                  type='checkbox'
-                  name='agreeToTerms'
-                  checked={localData.agreeToTerms}
-                  onChange={handleChange}
-                />{' '}
-                By checking this box, you agree to the terms and conditions
-                outlined in the{' '}
-                <a href='#' data-bs-toggle='modal' data-bs-target='#waiver'>
-                  Waiver
-                </a>
-              </label>
-              {errors.agreeToTerms && (
-                <div className='invalid-feedback d-block'>
-                  {errors.agreeToTerms}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
-
-        {/* SINGLE BUTTON */}
-        <div className='d-flex justify-content-end mt-4'>
-          <button
-            type='button'
-            className='btn btn-primary btn-lg'
-            onClick={handleMainButtonClick}
-            disabled={isMainCTADisabled}
-          >
-            {isSubmitting ? (
-              <>
-                <span className='spinner-border spinner-border-sm me-2'></span>
-                Processing...
-              </>
-            ) : (
-              'Continue to Player Registration'
-            )}
-          </button>
-        </div>
-
-        {showAdditionalGuardian && (
-          <div className='alert alert-info mt-3'>
-            <i className='ti ti-info-circle me-2'></i>
-            Fill in the additional guardian details above, then click "Continue
-            to Player Registration" to save and proceed.
-          </div>
-        )}
       </div>
-    </div>
+
+      {/* ✅ Render HomeModals at root level using React Portal */}
+      {ReactDOM.createPortal(<HomeModals />, document.body)}
+    </>
   );
 };
 

@@ -41,6 +41,10 @@ const TermsAndConditionsModule: React.FC<TermsAndConditionsModuleProps> = ({
                   to='#'
                   data-bs-toggle='modal'
                   data-bs-target={`#${waiverModalId}`}
+                  style={{
+                    textDecoration: 'underline',
+                    color: 'rgb(80, 110, 228)',
+                  }}
                 >
                   Waiver
                 </Link>

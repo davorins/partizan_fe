@@ -1214,7 +1214,7 @@
 /* Resend link styling */
 .reg-form-wrapper .text-muted a,
 .reg-form-wrapper a[href='#'] {
-  color: rgba(255, 255, 255, 1) !important;
+  color: rgba(89, 66, 48, 1) !important;
   text-decoration: none;
   font-weight: 500;
 }

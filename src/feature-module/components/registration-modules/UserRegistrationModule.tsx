@@ -818,7 +818,6 @@ const UserRegistrationModule: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* ✅ Render HomeModals at root level using React Portal */}
       {ReactDOM.createPortal(<HomeModals />, document.body)}
     </>
   );

@@ -707,7 +707,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     }
 
     return (
-      <div className='card border-0 shadow-sm'>
+      <div className='card border-0'>
         <div className='card-header'>
           <h4 className='mb-0'>🎉 Tryout Registration Complete!</h4>
         </div>
@@ -730,16 +730,16 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
               <div className='card-body'>
                 <div className='row mb-3'>
                   <div className='col-md-6'>
-                    <p className='mb-1'>
+                    <p className='text-white mb-1'>
                       <strong>Registration Date:</strong>
                     </p>
-                    <p>{registrationTimestamp}</p>
+                    <p className='text-white'>{registrationTimestamp}</p>
                   </div>
                   <div className='col-md-6'>
-                    <p className='mb-1'>
+                    <p className='text-white mb-1'>
                       <strong>Tryout:</strong>
                     </p>
-                    <p>
+                    <p className='text-white'>
                       {effectiveTryoutConfig.tryoutName}{' '}
                       {effectiveTryoutConfig.tryoutYear}
                     </p>
@@ -748,13 +748,15 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
                 <div className='row mb-3'>
                   <div className='col-md-6'>
-                    <p className='mb-1'>
+                    <p className='text-white mb-1'>
                       <strong>Tryout Fee per Player:</strong>
                     </p>
-                    <p>${effectiveTryoutConfig.tryoutFee}</p>
+                    <p className='text-white'>
+                      ${effectiveTryoutConfig.tryoutFee}
+                    </p>
                   </div>
                   <div className='col-md-6'>
-                    <p className='mb-1'>
+                    <p className='text-white mb-1'>
                       <strong>Amount Paid:</strong>
                     </p>
                     <p className='h5 text-success'>
@@ -764,10 +766,10 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 </div>
 
                 <div className='mb-3'>
-                  <p className='mb-1'>
+                  <p className='text-white mb-1'>
                     <strong>Parent/Guardian:</strong>
                   </p>
-                  <p>
+                  <p className='text-white'>
                     {savedUserDataState?.fullName ||
                       currentUser?.fullName ||
                       'Not specified'}
@@ -775,7 +777,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 </div>
 
                 <div className='mb-3'>
-                  <p className='mb-1'>
+                  <p className='text-white mb-1'>
                     <strong>Players Registered for Tryout:</strong>
                   </p>
 
@@ -803,13 +805,13 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 </div>
 
                 <div className='mb-3'>
-                  <p className='mb-1'>
+                  <p className='text-white mb-1'>
                     <strong>Next Steps:</strong>
                   </p>
                   <div className='alert alert-info'>
                     <ul className='mb-0'>
                       <li>
-                        <i className='ti ti-calendar text-primary me-2'></i>
+                        <i className='ti ti-calendar text-white me-2'></i>
                         <strong>Tryout schedule:</strong>{' '}
                         {effectiveTryoutConfig.tryoutDates
                           .map((date: string) =>
@@ -818,7 +820,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                           .join(', ') || 'To be announced'}
                       </li>
                       <li className='mt-2'>
-                        <i className='ti ti-map-pin text-primary me-2'></i>
+                        <i className='ti ti-map-pin text-white me-2'></i>
                         <strong>Location:</strong>{' '}
                         {effectiveTryoutConfig.locations &&
                         effectiveTryoutConfig.locations.length > 0
@@ -826,7 +828,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                           : 'To be announced'}
                       </li>
                       <li className='mt-2'>
-                        <i className='ti ti-bell-ringing text-primary me-2'></i>
+                        <i className='ti ti-bell-ringing text-white me-2'></i>
                         <strong>Get notifications</strong> - You'll receive
                         tryout updates
                       </li>

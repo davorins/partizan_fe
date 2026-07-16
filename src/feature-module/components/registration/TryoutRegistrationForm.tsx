@@ -731,13 +731,13 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 <div className='row mb-3'>
                   <div className='col-md-6'>
                     <p className='text-white mb-1'>
-                      <strong>Registration Date:</strong>
+                      <strong className='text-white'>Registration Date:</strong>
                     </p>
                     <p className='text-white'>{registrationTimestamp}</p>
                   </div>
                   <div className='col-md-6'>
                     <p className='text-white mb-1'>
-                      <strong>Tryout:</strong>
+                      <strong className='text-white'>Tryout:</strong>
                     </p>
                     <p className='text-white'>
                       {effectiveTryoutConfig.tryoutName}{' '}
@@ -749,7 +749,9 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                 <div className='row mb-3'>
                   <div className='col-md-6'>
                     <p className='text-white mb-1'>
-                      <strong>Tryout Fee per Player:</strong>
+                      <strong className='text-white'>
+                        Tryout Fee per Player:
+                      </strong>
                     </p>
                     <p className='text-white'>
                       ${effectiveTryoutConfig.tryoutFee}
@@ -757,7 +759,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                   </div>
                   <div className='col-md-6'>
                     <p className='text-white mb-1'>
-                      <strong>Amount Paid:</strong>
+                      <strong className='text-white'>Amount Paid:</strong>
                     </p>
                     <p className='h5 text-success'>
                       ${(calculatePaymentAmount() / 100).toFixed(2)}
@@ -767,7 +769,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
                 <div className='mb-3'>
                   <p className='text-white mb-1'>
-                    <strong>Parent/Guardian:</strong>
+                    <strong className='text-white'>Parent/Guardian:</strong>
                   </p>
                   <p className='text-white'>
                     {savedUserDataState?.fullName ||
@@ -806,13 +808,15 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
                 <div className='mb-3'>
                   <p className='text-white mb-1'>
-                    <strong>Next Steps:</strong>
+                    <strong className='text-white'>Next Steps:</strong>
                   </p>
                   <div className='alert alert-info'>
                     <ul className='mb-0'>
                       <li>
                         <i className='ti ti-calendar text-white me-2'></i>
-                        <strong>Tryout schedule:</strong>{' '}
+                        <strong className='text-white'>
+                          Tryout schedule:
+                        </strong>{' '}
                         {effectiveTryoutConfig.tryoutDates
                           .map((date: string) =>
                             new Date(date).toLocaleDateString(),
@@ -821,7 +825,7 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                       </li>
                       <li className='mt-2'>
                         <i className='ti ti-map-pin text-white me-2'></i>
-                        <strong>Location:</strong>{' '}
+                        <strong className='text-white'>Location:</strong>{' '}
                         {effectiveTryoutConfig.locations &&
                         effectiveTryoutConfig.locations.length > 0
                           ? effectiveTryoutConfig.locations.join(', ')
@@ -829,8 +833,10 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
                       </li>
                       <li className='mt-2'>
                         <i className='ti ti-bell-ringing text-white me-2'></i>
-                        <strong>Get notifications</strong> - You'll receive
-                        tryout updates
+                        <strong className='text-white'>
+                          Get notifications
+                        </strong>{' '}
+                        - You'll receive tryout updates
                       </li>
                     </ul>
                   </div>

@@ -275,6 +275,10 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
       registrationType,
       playersPropCount: players?.length || 0,
       formDataPlayersCount: formData?.players?.length || 0,
+      savedPlayersCount: savedPlayers?.length || 0,
+      playersProp: players,
+      formDataPlayers: formData?.players,
+      savedPlayers: savedPlayers,
       eventData,
     });
 
@@ -282,25 +286,69 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
       return [];
     }
 
+    let playersToReturn: any[] = [];
+
+    // For tryout, check all possible sources
+    if (registrationType === 'tryout') {
+      // 1. Check players prop (from parent)
+      if (players && players.length > 0) {
+        console.log('✅ Using players prop for tryout:', players);
+        playersToReturn = players;
+      }
+      // 2. Check formData.players
+      else if (formData?.players && formData.players.length > 0) {
+        console.log('✅ Using formData.players for tryout:', formData.players);
+        playersToReturn = formData.players;
+      }
+      // 3. Check savedPlayers prop
+      else if (savedPlayers && savedPlayers.length > 0) {
+        console.log('✅ Using savedPlayers for tryout:', savedPlayers);
+        playersToReturn = savedPlayers;
+      }
+      // 4. Check formData.formData?.players (nested)
+      else if (
+        formData?.formData?.players &&
+        formData.formData.players.length > 0
+      ) {
+        console.log(
+          '✅ Using nested formData.formData.players:',
+          formData.formData.players,
+        );
+        playersToReturn = formData.formData.players;
+      }
+      // 5. Check if players are in the user object
+      else if (user?.players && user.players.length > 0) {
+        console.log('✅ Using user.players:', user.players);
+        playersToReturn = user.players;
+      }
+
+      // For tryout, return ALL players (don't filter by payment status)
+      return playersToReturn;
+    }
+
+    // For other registration types, filter for unpaid players
     if (players && players.length > 0) {
-      console.log(
-        '✅ Using direct players prop:',
-        players.map((p: Player) => ({ id: p._id, name: p.fullName })),
-      );
-      return players;
+      playersToReturn = players;
+    } else if (formData?.players && formData.players.length > 0) {
+      playersToReturn = formData.players;
+    } else if (savedPlayers && savedPlayers.length > 0) {
+      playersToReturn = savedPlayers;
     }
 
-    if (formData?.players && formData.players.length > 0) {
-      console.log(
-        '✅ Using formData players:',
-        formData.players.map((p: Player) => ({ id: p._id, name: p.fullName })),
-      );
-      return formData.players;
-    }
+    // Filter for unpaid players
+    const unpaidPlayers = playersToReturn.filter(
+      (player: Player) =>
+        !player.paymentComplete || player.paymentStatus !== 'paid',
+    );
 
-    console.log('⚠️ No players found for registration');
-    return [];
-  }, [players, formData, registrationType, eventData]);
+    console.log('Filtered players:', {
+      total: playersToReturn.length,
+      unpaid: unpaidPlayers.length,
+      players: unpaidPlayers.map((p: any) => ({ id: p._id, name: p.fullName })),
+    });
+
+    return unpaidPlayers;
+  }, [players, formData, registrationType, eventData, savedPlayers, user]);
 
   // Handle teams for tournament registration
   const effectiveTeam = team || formData?.team || null;
@@ -322,6 +370,10 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
       registrationType,
       effectivePlayersCount: effectivePlayers.length,
       effectiveTeamsCount: effectiveTeams.length,
+      effectivePlayers: effectivePlayers.map((p) => ({
+        id: p._id,
+        name: p.fullName,
+      })),
     });
 
     if (registrationType === 'tournament') {
@@ -333,35 +385,47 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     }
 
     if (registrationType === 'tryout') {
-      const tryoutEventId = eventData?.eventId;
-      const tryoutYear = eventData?.year;
+      // For tryout, count all players that haven't paid for THIS tryout
+      const tryoutEventId = eventData?.eventId || formData?.eventData?.eventId;
+      const tryoutYear =
+        eventData?.year ||
+        formData?.eventData?.year ||
+        new Date().getFullYear();
 
       if (!tryoutEventId) {
-        const unpaidTryoutPlayers = effectivePlayers.filter(
-          (player: Player) =>
-            !player.paymentComplete || player.paymentStatus !== 'paid',
-        );
-        return unpaidTryoutPlayers.length;
+        console.warn('No tryout event ID found, counting all players');
+        return effectivePlayers.length;
       }
 
       const unpaidTryoutPlayers = effectivePlayers.filter((player: Player) => {
+        // If player has no seasons, they need to pay
         if (!player.seasons || player.seasons.length === 0) {
-          return !player.paymentComplete || player.paymentStatus !== 'paid';
+          return true;
         }
 
-        const hasPaidForThisTryout = player.seasons?.some(
+        // Check if already paid for this specific tryout
+        const hasPaidForThisTryout = player.seasons.some(
           (s: SeasonRegistration) =>
             s.tryoutId === tryoutEventId &&
             s.year === tryoutYear &&
             s.paymentStatus === 'paid',
         );
 
+        // If not paid for this tryout, they need to pay
         return !hasPaidForThisTryout;
+      });
+
+      console.log('Tryout players needing payment:', {
+        total: effectivePlayers.length,
+        needingPayment: unpaidTryoutPlayers.length,
+        tryoutEventId,
+        tryoutYear,
       });
 
       return unpaidTryoutPlayers.length;
     }
 
+    // Default player registration
     const unpaidPlayers = effectivePlayers.filter(
       (player: Player) =>
         !player.paymentComplete || player.paymentStatus !== 'paid',
@@ -374,6 +438,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     effectivePlayers,
     eventData,
     effectiveEventData,
+    formData,
   ]);
 
   // Calculate amount

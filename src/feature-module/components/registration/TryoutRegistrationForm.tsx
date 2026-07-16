@@ -1094,6 +1094,15 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
               formConfig={defaultFormConfig}
               playerCount={getEffectivePlayerCount()}
               players={playersForTryout}
+              formData={{
+                ...formData,
+                players: playersForTryout,
+                eventData: {
+                  season: defaultSeasonEvent.season,
+                  year: defaultSeasonEvent.year,
+                  eventId: defaultSeasonEvent.eventId,
+                },
+              }}
               eventData={{
                 season: defaultSeasonEvent.season,
                 year: defaultSeasonEvent.year,

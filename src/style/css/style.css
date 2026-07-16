@@ -15051,6 +15051,10 @@ aside {
   color: #6f6f6f;
 }
 
+.text-white {
+  color: #fff !important;
+}
+
 .icons-list {
   padding: 0;
   display: -webkit-box;

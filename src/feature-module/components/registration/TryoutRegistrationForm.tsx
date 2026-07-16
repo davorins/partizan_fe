@@ -894,7 +894,9 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
               <div className='col-md-6'>
                 <p className='mb-2'>
                   <strong>Tryout Fee:</strong> $
-                  {effectiveTryoutConfig.tryoutFee} per player
+                  <span className='text-white'>
+                    {effectiveTryoutConfig.tryoutFee} per player
+                  </span>
                 </p>
                 {effectiveTryoutConfig.registrationDeadline && (
                   <p className='mb-2'>
@@ -934,9 +936,11 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
             {effectiveTryoutConfig.refundPolicy && (
               <div className='alert alert-light mt-3'>
-                <i className='ti ti-info-circle me-2'></i>
+                <i className='ti ti-info-circle text-white me-2'></i>
                 <strong>Refund Policy:</strong>{' '}
-                {effectiveTryoutConfig.refundPolicy}
+                <span className='text-white'>
+                  {effectiveTryoutConfig.refundPolicy}
+                </span>
               </div>
             )}
           </div>

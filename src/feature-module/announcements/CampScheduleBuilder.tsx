@@ -3,7 +3,15 @@ import { Modal } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAYS = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
 
 const COLOR_MAP: Record<string, string> = {
   camp: '#ff00d2',

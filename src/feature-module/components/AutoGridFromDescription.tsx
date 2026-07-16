@@ -132,13 +132,13 @@ const formatDateRange = (startDate: string, endDate: string): string => {
 
 const formatDays = (days: string[]): string => {
   const dayAbbr: { [key: string]: string } = {
-    Monday: 'Mon',
-    Tuesday: 'Tue',
-    Wednesday: 'Wed',
-    Thursday: 'Thu',
-    Friday: 'Fri',
-    Saturday: 'Sat',
-    Sunday: 'Sun',
+    Monday: 'Monday',
+    Tuesday: 'Tuesday',
+    Wednesday: 'Wednesday',
+    Thursday: 'Thursday',
+    Friday: 'Friday',
+    Saturday: 'Saturday',
+    Sunday: 'Sunday',
   };
   return days.map((day) => dayAbbr[day] || day.slice(0, 3)).join(' · ');
 };

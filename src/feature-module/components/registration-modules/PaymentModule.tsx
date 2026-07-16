@@ -288,7 +288,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
 
     let playersToReturn: any[] = [];
 
-    // For tryout, check all possible sources
+    // For tryout, check all possible sources and DON'T filter by payment status
     if (registrationType === 'tryout') {
       // 1. Check players prop (from parent)
       if (players && players.length > 0) {
@@ -316,13 +316,15 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
         );
         playersToReturn = formData.formData.players;
       }
-      // 5. Check if players are in the user object
-      else if (user?.players && user.players.length > 0) {
-        console.log('✅ Using user.players:', user.players);
-        playersToReturn = user.players;
-      }
 
-      // For tryout, return ALL players (don't filter by payment status)
+      // For tryout, return ALL players - don't filter by payment status
+      console.log('Tryout - returning all players:', {
+        count: playersToReturn.length,
+        players: playersToReturn.map((p: any) => ({
+          id: p._id,
+          name: p.fullName,
+        })),
+      });
       return playersToReturn;
     }
 
@@ -373,6 +375,14 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
       effectivePlayers: effectivePlayers.map((p) => ({
         id: p._id,
         name: p.fullName,
+        paymentStatus: p.paymentStatus,
+        paymentComplete: p.paymentComplete,
+        seasons: p.seasons?.map((s: any) => ({
+          season: s.season,
+          year: s.year,
+          tryoutId: s.tryoutId,
+          paymentStatus: s.paymentStatus,
+        })),
       })),
     });
 
@@ -385,51 +395,22 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     }
 
     if (registrationType === 'tryout') {
-      // For tryout, count all players that haven't paid for THIS tryout
-      const tryoutEventId = eventData?.eventId || formData?.eventData?.eventId;
-      const tryoutYear =
-        eventData?.year ||
-        formData?.eventData?.year ||
-        new Date().getFullYear();
-
-      if (!tryoutEventId) {
-        console.warn('No tryout event ID found, counting all players');
-        return effectivePlayers.length;
-      }
-
-      const unpaidTryoutPlayers = effectivePlayers.filter((player: Player) => {
-        // If player has no seasons, they need to pay
-        if (!player.seasons || player.seasons.length === 0) {
-          return true;
-        }
-
-        // Check if already paid for this specific tryout
-        const hasPaidForThisTryout = player.seasons.some(
-          (s: SeasonRegistration) =>
-            s.tryoutId === tryoutEventId &&
-            s.year === tryoutYear &&
-            s.paymentStatus === 'paid',
-        );
-
-        // If not paid for this tryout, they need to pay
-        return !hasPaidForThisTryout;
-      });
-
-      console.log('Tryout players needing payment:', {
-        total: effectivePlayers.length,
-        needingPayment: unpaidTryoutPlayers.length,
-        tryoutEventId,
-        tryoutYear,
-      });
-
-      return unpaidTryoutPlayers.length;
+      // For tryout, count ALL players regardless of payment status
+      // This allows parents to pay for tryouts even if they were previously marked as paid
+      console.log('Tryout - counting all players:', effectivePlayers.length);
+      return effectivePlayers.length;
     }
 
-    // Default player registration
+    // Default player registration - filter for unpaid players
     const unpaidPlayers = effectivePlayers.filter(
       (player: Player) =>
         !player.paymentComplete || player.paymentStatus !== 'paid',
     );
+
+    console.log('Filtered players:', {
+      total: effectivePlayers.length,
+      unpaid: unpaidPlayers.length,
+    });
 
     return unpaidPlayers.length;
   }, [
@@ -478,6 +459,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
     calculatedAmount,
     registrationType,
     tournamentConfig,
+    eventData,
   ]);
 
   // Unified payment processing function

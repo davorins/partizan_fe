@@ -35,7 +35,7 @@ QuillEditor.displayName = 'QuillEditor';
 // R2 Logo URL
 const R2_LOGO_URL = process.env.REACT_APP_R2_PUBLIC_URL
   ? `${process.env.REACT_APP_R2_PUBLIC_URL}/logo/logo.png`
-  : 'https://bothellselect.com/assets/img/logo.png';
+  : 'https://partizanhoops.com/assets/img/logo.png';
 
 // Default builder config
 const DEFAULT_BUILDER_CONFIG = {
@@ -56,9 +56,9 @@ const DEFAULT_BUILDER_CONFIG = {
   imagePosition: 'center',
   imageCaption: '',
   ctaText: '',
-  ctaUrl: 'https://bothellselect.com/dashboard',
+  ctaUrl: 'https://partizanhoops.com/dashboard',
   footerText:
-    "You're receiving this because you're part of <strong>Bothell Select</strong>.",
+    "You're receiving this because you're part of <strong>Partizan AAU</strong>.",
 };
 
 interface AvailableVariable {
@@ -641,7 +641,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
             <tr>
               <td style="padding: 30px 30px 0;">
                 <div style="text-align: left; border-bottom: 1px solid #eaeaea; padding-bottom: 20px;">
-                  <img src="${R2_LOGO_URL}" alt="Bothell Select Logo" height="30" style="display: block; margin: 0; height: 30px;" onerror="this.onerror=null; this.src='https://bothellselect.com/assets/img/logo.png';" />
+                  <img src="${R2_LOGO_URL}" alt="Partizan AAU Logo" height="30" style="display: block; margin: 0; height: 30px;" onerror="this.onerror=null; this.src='https://partizanhoops.com/assets/img/logo.png';" />
                 </div>
               </td>
             </tr>
@@ -653,11 +653,11 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
             <tr>
               <td style="padding: 0 30px;">
                 <div style="text-align: center; font-size: 13px; color: #666; padding: 30px 0 20px; margin-top: 40px; border-top: 1px solid #eaeaea;">
-                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Bothell Select</strong>.</p>
+                  <p style="margin: 0 0 8px;">You're receiving this email because you're part of <strong style="color: #333;">Partizan AAU</strong>.</p>
                   <p style="margin: 0;">
-                    <a href="https://bothellselect.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Unsubscribe</a> • 
-                    <a href="https://bothellselect.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Contact Us</a> • 
-                    <a href="https://bothellselect.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Website</a>
+                    <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Unsubscribe</a> • 
+                    <a href="https://partizanhoops.com/contact-us" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Contact Us</a> • 
+                    <a href="https://partizanhoops.com" style="color: rgba(0, 0, 0, .7); text-decoration: none; border-bottom: 1px solid #000000; padding-bottom: 1px;">Website</a>
                   </p>
                 </div>
               </td>
@@ -666,7 +666,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
             <tr>
               <td align="center" style="padding: 20px 0;">
-                <p style="margin: 0; font-size: 12px; color: #999;">&copy; ${new Date().getFullYear()} Bothell Select. All rights reserved.</p>
+                <p style="margin: 0; font-size: 12px; color: #999;">&copy; ${new Date().getFullYear()} Partizan AAU. All rights reserved.</p>
               </td>
             </tr>
           </table>

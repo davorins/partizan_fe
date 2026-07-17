@@ -724,13 +724,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
   };
 
   const handleEditClick = (template: EmailTemplateWithConfig) => {
-    // This will call the parent's handleEditTemplate which navigates to the builder route
-    if (onEditTemplate) {
-      onEditTemplate(template);
-    } else {
-      // Fallback: navigate directly
-      navigate(`/system-settings/email-templates/builder/${template._id}`);
-    }
+    navigate(`/system-settings/email-templates/builder/${template._id}`);
   };
 
   const TemplateList = ({

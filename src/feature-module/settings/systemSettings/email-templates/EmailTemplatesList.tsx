@@ -724,7 +724,11 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
   };
 
   const handleEditClick = (template: EmailTemplateWithConfig) => {
-    navigate(`/system-settings/email-templates/builder/${template._id}`);
+    if (onEditTemplate) {
+      onEditTemplate(template);
+    } else {
+      navigate(`/system-settings/email-templates/builder/${template._id}`);
+    }
   };
 
   const TemplateList = ({

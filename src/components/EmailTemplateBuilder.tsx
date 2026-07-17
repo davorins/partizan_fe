@@ -171,12 +171,13 @@ const DEFAULT_STATE: EmailBuilderState = {
     additionalInfo: '',
   },
   globalStyles: {
-    fontFamily: 'system, -apple-system, sans-serif',
-    primaryColor: '#000000',
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    primaryColor: '#506ee4',
     backgroundColor: '#f6f6f6',
     textColor: '#333333',
-    linkColor: '#000000',
-    buttonBg: '#000000',
+    linkColor: '#506ee4',
+    buttonBg: '#506ee4',
     buttonText: '#ffffff',
   },
   attachments: [],
@@ -266,7 +267,7 @@ const createListElement = (): EmailElement => {
     ],
     listLayout: {
       bulletType: 'circle',
-      bulletColor: '#000000',
+      bulletColor: '#506ee4',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -335,7 +336,7 @@ const createElement = (
         content: 'Click Me',
         href: '#',
         style: {
-          backgroundColor: '#000000',
+          backgroundColor: '#506ee4',
           color: '#ffffff',
           padding: '12px 32px',
           borderRadius: '8px',
@@ -587,7 +588,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           items: items,
           listLayout: {
             bulletType: 'disc',
-            bulletColor: '#000000',
+            bulletColor: '#506ee4',
             bulletSize: 'medium',
             showBullets: true,
             iconSize: 'medium',
@@ -683,78 +684,65 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       try {
         const template = await emailTemplateService.getById(templateId);
 
-        console.log('📄 Loading template data:', {
-          title: template.title,
-          subject: template.subject,
-          category: template.category,
-          tags: template.tags,
-          status: template.status,
-          includeSignature: template.includeSignature,
-          hasBuilderConfig: !!template.builderConfig,
-          elementsCount: template.builderConfig?.elements?.length || 0,
-          attachmentsCount: template.attachments?.length || 0,
-        });
-
-        // ✅ FIX: Load ALL template data, not just elements
-        // Start with the base template data
-        const loadedState: Partial<EmailBuilderState> = {
-          title: template.title || '',
-          subject: template.subject || '',
-          category: template.category || 'transactional',
-          tags: template.tags || [],
-          status: template.status !== false,
-          includeSignature: template.includeSignature || false,
-          signatureConfig:
-            template.signatureConfig || DEFAULT_STATE.signatureConfig,
-          attachments: template.attachments || [],
-          globalStyles:
-            template.builderConfig?.globalStyles || DEFAULT_STATE.globalStyles,
-        };
-
-        // Then handle elements
         if (
           template.builderConfig?.elements &&
           template.builderConfig.elements.length > 0
         ) {
           // Template was created with the new builder - use stored elements
-          loadedState.elements = template.builderConfig.elements;
+          setState((prev) => ({
+            ...prev,
+            elements: template.builderConfig.elements,
+            title: template.title,
+            subject: template.subject,
+            category: template.category || 'transactional',
+            tags: template.tags || [],
+            status: template.status !== false,
+            includeSignature: template.includeSignature || false,
+            signatureConfig:
+              template.signatureConfig || DEFAULT_STATE.signatureConfig,
+            globalStyles:
+              template.builderConfig?.globalStyles ||
+              DEFAULT_STATE.globalStyles,
+          }));
         } else {
           // Template was created with the old system - parse HTML to elements
           const content = template.content || '';
           const parsedElements = parseHtmlToElements(content);
 
-          loadedState.elements =
-            parsedElements.length > 0
-              ? parsedElements
-              : [
-                  {
-                    id: generateId(),
-                    type: 'paragraph',
-                    content: content,
-                    style: {
-                      fontSize: '16px',
-                      lineHeight: 1.6,
-                      color: '#333333',
-                      padding: '8px 0',
+          setState((prev) => ({
+            ...prev,
+            elements:
+              parsedElements.length > 0
+                ? parsedElements
+                : [
+                    {
+                      id: generateId(),
+                      type: 'paragraph',
+                      content: content,
+                      style: {
+                        fontSize: '16px',
+                        lineHeight: 1.6,
+                        color: '#333333',
+                        padding: '8px 0',
+                      },
                     },
-                  },
-                ];
+                  ],
+            title: template.title,
+            subject: template.subject,
+            category: template.category || 'transactional',
+            tags: template.tags || [],
+            status: template.status !== false,
+            includeSignature: template.includeSignature || false,
+            signatureConfig:
+              template.signatureConfig || DEFAULT_STATE.signatureConfig,
+            globalStyles:
+              template.builderConfig?.globalStyles ||
+              DEFAULT_STATE.globalStyles,
+          }));
         }
-
-        // Update state with all loaded data
-        setState((prev) => ({
-          ...prev,
-          ...loadedState,
-        }));
-
-        console.log('✅ Template loaded successfully:', {
-          title: loadedState.title,
-          elementsCount: loadedState.elements?.length || 0,
-          hasAttachments: (loadedState.attachments?.length || 0) > 0,
-        });
       } catch (err) {
-        console.error('❌ Failed to load template:', err);
         setError('Failed to load template');
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -842,7 +830,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
       const layout = el.listLayout || {
         bulletType: 'circle',
-        bulletColor: '#000000',
+        bulletColor: '#506ee4',
         bulletSize: 'medium',
         showBullets: true,
         iconSize: 'medium',
@@ -850,7 +838,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       };
 
       const bulletType = layout.bulletType;
-      const bulletColor = layout.bulletColor || '#000000';
+      const bulletColor = layout.bulletColor || '#506ee4';
       const bulletSize = layout.bulletSize || 'medium';
       const showBullets = layout.showBullets !== false;
       const iconSize = layout.iconSize || 'medium';
@@ -1059,7 +1047,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
   <title>${subject || 'Email'}</title>
   <style>
     body { font-family: ${globalStyles.fontFamily || 'system'}, -apple-system, sans-serif; margin: 0; padding: 0; background: ${globalStyles.backgroundColor || '#f6f6f6'}; color: ${globalStyles.textColor || '#333'}; }
-    a { color: ${globalStyles.linkColor || '#000000'}; text-decoration: none; }
+    a { color: ${globalStyles.linkColor || '#506ee4'}; text-decoration: none; }
     img { max-width: 100%; height: auto; }
     @media only screen and (max-width: 600px) {
       .container { width: 100% !important; padding: 10px !important; }
@@ -1083,9 +1071,9 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           <tr><td style="padding:20px 30px;border-top:1px solid #eaeaea;text-align:center;font-size:12px;color:#999;">
             <p style="margin:0 0 8px;">You're receiving this because you're part of <strong>Partizan AAU</strong>.</p>
             <p style="margin:0;">
-              <a href="https://partizanhoops.com/unsubscribe" style="color:${globalStyles.linkColor || '#000000'};">Unsubscribe</a> •
-              <a href="https://partizanhoops.com/contact" style="color:${globalStyles.linkColor || '#000000'};">Contact Us</a> •
-              <a href="https://partizanhoops.com" style="color:${globalStyles.linkColor || '#000000'};">Website</a>
+              <a href="https://partizanhoops.com/unsubscribe" style="color:${globalStyles.linkColor || '#506ee4'};">Unsubscribe</a> •
+              <a href="https://partizanhoops.com/contact" style="color:${globalStyles.linkColor || '#506ee4'};">Contact Us</a> •
+              <a href="https://partizanhoops.com" style="color:${globalStyles.linkColor || '#506ee4'};">Website</a>
             </p>
           </td></tr>
         </table>
@@ -1260,7 +1248,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
     const layout = el.listLayout || {
       bulletType: 'circle',
-      bulletColor: '#000000',
+      bulletColor: '#506ee4',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -1320,7 +1308,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
           <div className='d-flex gap-2'>
             <input
               type='color'
-              value={layout.bulletColor || '#000000'}
+              value={layout.bulletColor || '#506ee4'}
               onChange={(e) =>
                 updateElement(el.id, {
                   listLayout: { ...layout, bulletColor: e.target.value },
@@ -1343,7 +1331,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                   listLayout: { ...layout, bulletColor: e.target.value },
                 })
               }
-              placeholder='#000000'
+              placeholder='#506ee4'
             />
           </div>
         </Form.Group>
@@ -2670,7 +2658,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                     style={{
                       display: 'inline-block',
                       margin: '0 8px',
-                      color: '#000000',
+                      color: '#506ee4',
                       textDecoration: 'none',
                       fontSize: '20px',
                     }}
@@ -2721,7 +2709,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
               position: 'relative',
               padding: '4px',
               border: isSelected
-                ? '2px solid #000000'
+                ? '2px solid #506ee4'
                 : '2px solid transparent',
               borderRadius: '4px',
               cursor: 'move',
@@ -2791,7 +2779,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
 
     const layout = el.listLayout || {
       bulletType: 'circle',
-      bulletColor: '#000000',
+      bulletColor: '#506ee4',
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
@@ -2799,7 +2787,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
     };
 
     const bulletType = layout.bulletType;
-    const bulletColor = layout.bulletColor || '#000000';
+    const bulletColor = layout.bulletColor || '#506ee4';
     const bulletSize = layout.bulletSize || 'medium';
     const showBullets = layout.showBullets !== false;
     const iconSize = layout.iconSize || 'medium';
@@ -3183,7 +3171,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                     <span
                       style={{
                         display: 'inline-block',
-                        background: '#000000',
+                        background: '#506ee4',
                         color: '#fff',
                         fontSize: '10px',
                         fontWeight: 600,
@@ -3237,7 +3225,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
                       style={{
                         display: 'inline-block',
                         marginTop: '8px',
-                        color: '#000000',
+                        color: '#506ee4',
                         fontWeight: 600,
                         textDecoration: 'none',
                         fontSize: '13px',
@@ -3620,7 +3608,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
         >
           <Modal.Header closeButton>
             <Modal.Title>Email Preview</Modal.Title>
-            <div className='d-flex gap-2 me-5'>
+            <div className='d-flex gap-2'>
               <Button
                 size='sm'
                 variant='outline-secondary'

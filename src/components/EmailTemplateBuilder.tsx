@@ -1252,7 +1252,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
-      gap: 8,
+      gap: 2,
     };
 
     const bulletTypeOptions: {
@@ -2800,13 +2800,13 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
     };
 
     const iconSizeMap: Record<string, string> = {
-      small: '16px',
-      medium: '24px',
-      large: '32px',
+      small: '12px',
+      medium: '16px',
+      large: '20px',
     };
 
-    const bulletSizeStr = sizeMap[bulletSize] || '16px';
-    const iconSizeStr = iconSizeMap[iconSize] || '24px';
+    const bulletSizeStr = sizeMap[bulletSize] || '12px';
+    const iconSizeStr = iconSizeMap[iconSize] || '20px';
 
     const getBulletElement = (item: ListItem, index: number) => {
       if (!showBullets) return null;

@@ -172,7 +172,7 @@ export const getGenderFromItem = (item: any): 'Male' | 'Female' | undefined => {
 export const getR2PublicUrl = (): string => {
   return (
     process.env.REACT_APP_R2_PUBLIC_URL ||
-    'https://https://pub-3eb0901007e24e51b6ed1bde149cb0bb.r2.dev'
+    'https://pub-3eb0901007e24e51b6ed1bde149cb0bb.r2.dev'
   );
 };
 

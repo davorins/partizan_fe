@@ -171,7 +171,7 @@ const DEFAULT_STATE: EmailBuilderState = {
     additionalInfo: '',
   },
   globalStyles: {
-    fontFamily: 'system',
+    fontFamily: 'system, -apple-system, sans-serif',
     primaryColor: '#000000',
     backgroundColor: '#f6f6f6',
     textColor: '#333333',
@@ -3607,7 +3607,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
         >
           <Modal.Header closeButton>
             <Modal.Title>Email Preview</Modal.Title>
-            <div className='d-flex gap-2'>
+            <div className='d-flex gap-2 me-5'>
               <Button
                 size='sm'
                 variant='outline-secondary'

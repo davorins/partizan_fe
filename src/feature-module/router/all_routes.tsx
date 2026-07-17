@@ -1,4 +1,5 @@
-//all_routes.tsx
+// all_routes.tsx
+
 import AdminRefundsPanel from '../components/AdminRefundsPanel';
 
 export const all_routes = {

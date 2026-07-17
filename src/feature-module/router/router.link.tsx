@@ -1,4 +1,5 @@
 // router.link.tsx
+
 import React from 'react';
 import { Route, Navigate, useParams } from 'react-router-dom';
 import { all_routes } from './all_routes';
@@ -104,18 +105,7 @@ const EmailTemplatesPageWrapper: React.FC = () => {
   return <EmailTemplatesPage />;
 };
 
-// Home page component (optional)
-const HomePage: React.FC = () => {
-  return <PageRenderer pageSlug='home' isEditing={false} />;
-};
-
 export const publicRoutes = [
-  // {
-  //   path: "/",
-  //   name: "Root",
-  //   element: <Navigate to="/login" />,
-  //   route: Route,
-  // },
   {
     path: routes.adminDashboard,
     element: (
@@ -172,7 +162,7 @@ export const publicRoutes = [
   },
   // Page Management - Admin Routes
   {
-    path: routes.pageList, // '/admin/pages' - Make sure this matches your all_routes
+    path: routes.pageList,
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <PageList />
@@ -181,7 +171,7 @@ export const publicRoutes = [
     route: Route,
   },
   {
-    path: routes.pageBuilderNew, // '/admin/page-builder/new'
+    path: routes.pageBuilderNew,
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <CreateNewPage />
@@ -190,7 +180,7 @@ export const publicRoutes = [
     route: Route,
   },
   {
-    path: routes.pageBuilderEdit, // '/admin/page-builder/edit/:id'
+    path: routes.pageBuilderEdit,
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <PageBuilder />
@@ -199,7 +189,7 @@ export const publicRoutes = [
     route: Route,
   },
   {
-    path: routes.pageBuilder, // '/admin/page-builder' - Main page builder
+    path: routes.pageBuilder,
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <Navigate to={routes.pageBuilderNew} replace />
@@ -338,7 +328,6 @@ export const publicRoutes = [
   },
 
   //Settings
-
   {
     path: routes.profilesettings,
     element: <Profilesettings />,
@@ -465,7 +454,7 @@ export const publicRoutes = [
     path: routes.activity,
     element: <NotificationActivities />,
   },
-  // Team Management Routes - ADD THESE
+  // Team Management Routes
   {
     path: routes.teams,
     element: (
@@ -555,8 +544,8 @@ export const authRoutes = [
     route: Route,
   },
   {
-    path: all_routes.dynamicPage, // '/page/:slug'
-    element: <PageRenderer pageSlug='' />,
+    path: all_routes.dynamicPage,
+    element: <PageRendererWrapper />,
     route: Route,
   },
 ];
@@ -639,7 +628,6 @@ export const protectedRoutes = [
     ),
     route: Route,
   },
-
   // Admin Registration Management
   {
     path: routes.adminRegistrationManager,

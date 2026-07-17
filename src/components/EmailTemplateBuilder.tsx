@@ -683,65 +683,78 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       try {
         const template = await emailTemplateService.getById(templateId);
 
+        console.log('📄 Loading template data:', {
+          title: template.title,
+          subject: template.subject,
+          category: template.category,
+          tags: template.tags,
+          status: template.status,
+          includeSignature: template.includeSignature,
+          hasBuilderConfig: !!template.builderConfig,
+          elementsCount: template.builderConfig?.elements?.length || 0,
+          attachmentsCount: template.attachments?.length || 0,
+        });
+
+        // ✅ FIX: Load ALL template data, not just elements
+        // Start with the base template data
+        const loadedState: Partial<EmailBuilderState> = {
+          title: template.title || '',
+          subject: template.subject || '',
+          category: template.category || 'transactional',
+          tags: template.tags || [],
+          status: template.status !== false,
+          includeSignature: template.includeSignature || false,
+          signatureConfig:
+            template.signatureConfig || DEFAULT_STATE.signatureConfig,
+          attachments: template.attachments || [],
+          globalStyles:
+            template.builderConfig?.globalStyles || DEFAULT_STATE.globalStyles,
+        };
+
+        // Then handle elements
         if (
           template.builderConfig?.elements &&
           template.builderConfig.elements.length > 0
         ) {
           // Template was created with the new builder - use stored elements
-          setState((prev) => ({
-            ...prev,
-            elements: template.builderConfig.elements,
-            title: template.title,
-            subject: template.subject,
-            category: template.category || 'transactional',
-            tags: template.tags || [],
-            status: template.status !== false,
-            includeSignature: template.includeSignature || false,
-            signatureConfig:
-              template.signatureConfig || DEFAULT_STATE.signatureConfig,
-            globalStyles:
-              template.builderConfig?.globalStyles ||
-              DEFAULT_STATE.globalStyles,
-          }));
+          loadedState.elements = template.builderConfig.elements;
         } else {
           // Template was created with the old system - parse HTML to elements
           const content = template.content || '';
           const parsedElements = parseHtmlToElements(content);
 
-          setState((prev) => ({
-            ...prev,
-            elements:
-              parsedElements.length > 0
-                ? parsedElements
-                : [
-                    {
-                      id: generateId(),
-                      type: 'paragraph',
-                      content: content,
-                      style: {
-                        fontSize: '16px',
-                        lineHeight: 1.6,
-                        color: '#333333',
-                        padding: '8px 0',
-                      },
+          loadedState.elements =
+            parsedElements.length > 0
+              ? parsedElements
+              : [
+                  {
+                    id: generateId(),
+                    type: 'paragraph',
+                    content: content,
+                    style: {
+                      fontSize: '16px',
+                      lineHeight: 1.6,
+                      color: '#333333',
+                      padding: '8px 0',
                     },
-                  ],
-            title: template.title,
-            subject: template.subject,
-            category: template.category || 'transactional',
-            tags: template.tags || [],
-            status: template.status !== false,
-            includeSignature: template.includeSignature || false,
-            signatureConfig:
-              template.signatureConfig || DEFAULT_STATE.signatureConfig,
-            globalStyles:
-              template.builderConfig?.globalStyles ||
-              DEFAULT_STATE.globalStyles,
-          }));
+                  },
+                ];
         }
+
+        // Update state with all loaded data
+        setState((prev) => ({
+          ...prev,
+          ...loadedState,
+        }));
+
+        console.log('✅ Template loaded successfully:', {
+          title: loadedState.title,
+          elementsCount: loadedState.elements?.length || 0,
+          hasAttachments: (loadedState.attachments?.length || 0) > 0,
+        });
       } catch (err) {
+        console.error('❌ Failed to load template:', err);
         setError('Failed to load template');
-        console.error(err);
       } finally {
         setIsLoading(false);
       }

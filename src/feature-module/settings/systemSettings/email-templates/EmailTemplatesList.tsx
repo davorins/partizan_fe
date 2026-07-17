@@ -124,19 +124,15 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     builderConfig: DEFAULT_BUILDER_CONFIG,
   });
 
-  const [editingTemplate, setEditingTemplate] =
-    useState<EmailTemplateWithConfig | null>(null);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('active');
   const quillRef = useRef<ReactQuill>(null);
-  const editQuillRef = useRef<ReactQuill>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [uploadingFiles, setUploadingFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<{
@@ -338,8 +334,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
         const formData = new FormData();
         formData.append('attachment', file);
 
-        const templateId =
-          isEditModal && editingTemplate ? editingTemplate._id : null;
+        const templateId = null; // We're not using edit modal anymore
 
         if (!templateId) {
           const reader = new FileReader();
@@ -387,17 +382,10 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
           const uploadedAttachment = normalizeAttachment(
             response.data.data.attachment,
           );
-          if (isEditModal && editingTemplate) {
-            setEditingTemplate((prev) => ({
-              ...prev!,
-              attachments: [...(prev!.attachments || []), uploadedAttachment],
-            }));
-          } else {
-            setNewTemplate((prev: any) => ({
-              ...prev,
-              attachments: [...prev.attachments, uploadedAttachment],
-            }));
-          }
+          setNewTemplate((prev: any) => ({
+            ...prev,
+            attachments: [...prev.attachments, uploadedAttachment],
+          }));
         }
       } catch (err) {
         const error = err as AxiosError<ApiErrorResponse>;
@@ -420,7 +408,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     try {
       const token = localStorage.getItem('token');
 
-      if (!isEditModal && !editingTemplate) {
+      if (!isEditModal) {
         setNewTemplate((prev: any) => ({
           ...prev,
           attachments: prev.attachments.filter((att: any) => {
@@ -431,24 +419,13 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
         return;
       }
 
-      const templateId =
-        isEditModal && editingTemplate ? editingTemplate._id : null;
+      const templateId = null; // We're not using edit modal anymore
 
       if (templateId && !attachmentId.startsWith('temp_')) {
         await axios.delete(
           `${process.env.REACT_APP_API_BASE_URL}/email-templates/${templateId}/attachments/${attachmentId}`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
-      }
-
-      if (isEditModal && editingTemplate) {
-        setEditingTemplate((prev) => ({
-          ...prev!,
-          attachments: (prev!.attachments || []).filter((att: any) => {
-            if ('content' in att) return true;
-            return att._id !== attachmentId;
-          }),
-        }));
       } else {
         setNewTemplate((prev: any) => ({
           ...prev,
@@ -723,12 +700,10 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
     );
   };
 
+  // ✅ FIXED: Edit button now ONLY navigates to builder
   const handleEditClick = (template: EmailTemplateWithConfig) => {
-    if (onEditTemplate) {
-      onEditTemplate(template);
-    } else {
-      navigate(`/system-settings/email-templates/builder/${template._id}`);
-    }
+    // Navigate directly to the builder with the template ID
+    navigate(`/system-settings/email-templates/builder/${template._id}`);
   };
 
   const TemplateList = ({
@@ -772,7 +747,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
                   </div>
                 </div>
                 <div className='d-flex align-items-center'>
-                  {/* ✅ UPDATED EDIT BUTTON */}
+                  {/* ✅ EDIT BUTTON - Navigates to builder */}
                   <Button
                     variant='outline-light'
                     className='bg-white btn-icon me-2'
@@ -888,47 +863,9 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
 
   const handleContentChange = (content: string) =>
     setNewTemplate((prev: any) => ({ ...prev, content }));
-  const handleEditContentChange = (content: string) => {
-    if (editingTemplate) setEditingTemplate({ ...editingTemplate, content });
-  };
 
-  const handleEditInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
-    if (editingTemplate) {
-      setEditingTemplate({
-        ...editingTemplate,
-        [name]: type === 'checkbox' ? checked : value,
-      });
-    }
-  };
-
-  const handleEditSignatureChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    if (editingTemplate) {
-      setEditingTemplate({
-        ...editingTemplate,
-        signatureConfig: { ...editingTemplate.signatureConfig, [name]: value },
-      });
-    }
-  };
-
-  const handleEditTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tags = e.target.value.split(',').map((tag) => tag.trim());
-    if (editingTemplate)
-      setEditingTemplate({ ...editingTemplate, tags: tags || [] });
-  };
-
-  const insertVariable = (variable: string, isEditModal: boolean = false) => {
-    const editor = isEditModal
-      ? editQuillRef.current?.getEditor()
-      : quillRef.current?.getEditor();
+  const insertVariable = (variable: string) => {
+    const editor = quillRef.current?.getEditor();
     if (editor) {
       const range = editor.getSelection();
       if (range) {
@@ -964,29 +901,6 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
       attachments: [],
       builderConfig: DEFAULT_BUILDER_CONFIG,
     });
-  };
-
-  const startEditingTemplate = (template: EmailTemplateWithConfig) => {
-    setEditingTemplate({
-      ...template,
-      variables: template.variables || [],
-      tags: template.tags || [],
-      includeSignature: template.includeSignature || false,
-      signatureConfig: template.signatureConfig || {
-        organizationName: '',
-        title: '',
-        fullName: '',
-        phone: '',
-        email: '',
-        website: '',
-        additionalInfo: '',
-      },
-      attachments: (template.attachments || []).map((att: any) =>
-        normalizeAttachment(att),
-      ),
-      builderConfig: template.builderConfig || DEFAULT_BUILDER_CONFIG,
-    });
-    setShowEditModal(true);
   };
 
   const addTemplate = async (e: React.FormEvent) => {
@@ -1100,80 +1014,6 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
         error.response?.data?.message ||
           error.message ||
           'Failed to create template',
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const saveEditedTemplate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTemplate) return;
-
-    setIsSaving(true);
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const validAttachments = (editingTemplate.attachments || [])
-        .filter((att: any) => !('content' in att))
-        .map((att: any) => ({
-          filename: att.filename,
-          url: att.url,
-          size: att.size,
-          mimeType: att.mimeType,
-          uploadedAt: att.uploadedAt || new Date().toISOString(),
-          ...(att._id && { _id: att._id }),
-        }));
-
-      const payload = {
-        title: editingTemplate.title.trim(),
-        subject: editingTemplate.subject.trim(),
-        content: editingTemplate.content,
-        status: editingTemplate.status,
-        category: editingTemplate.category,
-        tags: editingTemplate.tags.filter((tag: string) => tag.trim() !== ''),
-        variables: (editingTemplate.variables || []).map((v: any) => ({
-          name: v.name?.trim() || '',
-          description: v.description?.trim() || '',
-          defaultValue: v.defaultValue?.trim() || '',
-        })),
-        includeSignature: editingTemplate.includeSignature,
-        signatureConfig: editingTemplate.signatureConfig,
-        builderConfig: editingTemplate.builderConfig || DEFAULT_BUILDER_CONFIG,
-        attachments: validAttachments,
-      };
-
-      const response = await axios.put<EmailTemplateWithConfig>(
-        `${process.env.REACT_APP_API_BASE_URL}/email-templates/${editingTemplate._id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      if (response.data) {
-        setTemplates((prev) =>
-          prev.map((t) => (t._id === editingTemplate._id ? response.data : t)),
-        );
-        setRefreshTrigger((prev) => prev + 1);
-        setEditingTemplate(null);
-        setShowEditModal(false);
-        setSuccessMessage('Template updated successfully!');
-        setTimeout(() => setSuccessMessage(null), 3000);
-      }
-    } catch (err) {
-      const error = err as AxiosError<ApiErrorResponse>;
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          'Failed to update template',
       );
     } finally {
       setIsSaving(false);
@@ -1418,7 +1258,7 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
                       bg='light'
                       text='dark'
                       className='me-2 mb-2 cursor-pointer'
-                      onClick={() => insertVariable(variable.value, false)}
+                      onClick={() => insertVariable(variable.value)}
                       style={{ cursor: 'pointer' }}
                     >
                       {variable.label}
@@ -1645,329 +1485,6 @@ const EmailTemplatesList: React.FC<EmailTemplatesListProps> = ({
               </div>
             </Form>
           </div>
-        </Modal.Body>
-      </Modal>
-
-      {/* Edit Modal */}
-      <Modal
-        show={showEditModal}
-        onHide={() => setShowEditModal(false)}
-        size='lg'
-        dialogClassName='modal-90w'
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Email Template</Modal.Title>
-        </Modal.Header>
-        <Modal.Body
-          style={{
-            padding: 0,
-            maxHeight: 'calc(100vh - 210px)',
-            overflowY: 'auto',
-          }}
-        >
-          {editingTemplate && (
-            <div style={{ padding: '20px' }}>
-              <Form onSubmit={saveEditedTemplate}>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Title*</Form.Label>
-                  <Form.Control
-                    type='text'
-                    name='title'
-                    placeholder='Enter Title'
-                    value={editingTemplate.title}
-                    onChange={handleEditInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Subject*</Form.Label>
-                  <Form.Control
-                    type='text'
-                    name='subject'
-                    placeholder='Enter Subject'
-                    value={editingTemplate.subject}
-                    onChange={handleEditInputChange}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Category</Form.Label>
-                  <Form.Select
-                    name='category'
-                    value={editingTemplate.category}
-                    onChange={handleEditInputChange}
-                  >
-                    <option value='system'>System</option>
-                    <option value='marketing'>Marketing</option>
-                    <option value='transactional'>Transactional</option>
-                    <option value='notification'>Notification</option>
-                    <option value='other'>Other</option>
-                  </Form.Select>
-                </Form.Group>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Tags (comma separated)</Form.Label>
-                  <Form.Control
-                    type='text'
-                    name='tags'
-                    placeholder='tag1, tag2, tag3'
-                    value={(editingTemplate.tags || []).join(', ')}
-                    onChange={handleEditTagsChange}
-                  />
-                </Form.Group>
-
-                <Form.Group className='mb-3'>
-                  <Form.Label>Available Variables</Form.Label>
-                  <div className='border p-3 rounded mb-3'>
-                    {availableVariables.map((variable, index) => (
-                      <Badge
-                        key={index}
-                        bg='light'
-                        text='dark'
-                        className='me-2 mb-2 cursor-pointer'
-                        onClick={() => insertVariable(variable.value, true)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {variable.label}
-                      </Badge>
-                    ))}
-                  </div>
-                </Form.Group>
-
-                <Form.Group className='mb-3'>
-                  <Form.Label>Template Content*</Form.Label>
-                  <QuillEditor
-                    ref={editQuillRef}
-                    theme='snow'
-                    value={editingTemplate.content}
-                    onChange={handleEditContentChange}
-                    modules={modules}
-                    formats={formats}
-                    style={{ height: '250px', marginBottom: '20px' }}
-                  />
-                </Form.Group>
-
-                <FileAttachmentsSection
-                  attachments={editingTemplate.attachments || []}
-                  onRemove={(attachmentId: string) =>
-                    handleRemoveAttachment(attachmentId, true)
-                  }
-                  onUpload={(files: FileList) => handleFileUpload(files, true)}
-                  uploadingFiles={uploadingFiles}
-                  uploadProgress={uploadProgress}
-                />
-
-                {/* Signature Section */}
-                <div className='border rounded p-3 mb-3'>
-                  <Form.Group className='mb-3 d-flex align-items-center justify-content-between'>
-                    <div>
-                      <h5 style={{ margin: 0 }}>Email Signature</h5>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: '0.875rem',
-                          color: '#6c757d',
-                        }}
-                      >
-                        Include a professional email signature
-                      </p>
-                    </div>
-                    <Form.Check
-                      type='switch'
-                      label='Include Signature'
-                      name='includeSignature'
-                      checked={editingTemplate.includeSignature}
-                      onChange={handleEditInputChange}
-                    />
-                  </Form.Group>
-
-                  {editingTemplate.includeSignature && (
-                    <div className='mt-3'>
-                      <Row className='mb-3'>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Organization Name</Form.Label>
-                            <Form.Control
-                              type='text'
-                              name='organizationName'
-                              placeholder='Your organization name'
-                              value={
-                                editingTemplate.signatureConfig
-                                  ?.organizationName || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Full Name</Form.Label>
-                            <Form.Control
-                              type='text'
-                              name='fullName'
-                              placeholder='Enter your name'
-                              value={
-                                editingTemplate.signatureConfig?.fullName || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className='mb-3'>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Title/Position</Form.Label>
-                            <Form.Control
-                              type='text'
-                              name='title'
-                              placeholder='Enter your position'
-                              value={
-                                editingTemplate.signatureConfig?.title || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                              type='text'
-                              name='phone'
-                              placeholder='(123) 456-7890'
-                              value={
-                                editingTemplate.signatureConfig?.phone || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className='mb-3'>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Email Address</Form.Label>
-                            <Form.Control
-                              type='email'
-                              name='email'
-                              placeholder='Enter your email address'
-                              value={
-                                editingTemplate.signatureConfig?.email || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Website</Form.Label>
-                            <Form.Control
-                              type='text'
-                              name='website'
-                              placeholder='Your url'
-                              value={
-                                editingTemplate.signatureConfig?.website || ''
-                              }
-                              onChange={handleEditSignatureChange}
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Form.Group>
-                        <Form.Label>Additional Information</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          rows={2}
-                          name='additionalInfo'
-                          placeholder='Additional notes, social media links, etc.'
-                          value={
-                            editingTemplate.signatureConfig?.additionalInfo ||
-                            ''
-                          }
-                          onChange={handleEditSignatureChange}
-                        />
-                      </Form.Group>
-                    </div>
-                  )}
-                </div>
-
-                {editingTemplate.content && (
-                  <Form.Group className='mt-5'>
-                    <Form.Label>Preview</Form.Label>
-                    <EmailPreview
-                      content={editingTemplate.content}
-                      includeSignature={editingTemplate.includeSignature}
-                      signatureConfig={editingTemplate.signatureConfig}
-                      attachments={editingTemplate.attachments}
-                    />
-                  </Form.Group>
-                )}
-
-                <Form.Group className='mb-3 d-flex align-items-center justify-content-between'>
-                  <div>
-                    <h5 style={{ margin: 0 }}>Template Status</h5>
-                    <p
-                      style={{
-                        margin: 0,
-                        fontSize: '0.875rem',
-                        color: '#6c757d',
-                      }}
-                    >
-                      Change the Status by toggle
-                    </p>
-                  </div>
-                  <Form.Check
-                    type='switch'
-                    label='Active'
-                    name='status'
-                    checked={editingTemplate.status}
-                    onChange={handleEditInputChange}
-                  />
-                </Form.Group>
-
-                <div
-                  className='d-flex justify-content-end gap-2'
-                  style={{
-                    marginTop: '20px',
-                    paddingTop: '15px',
-                    borderTop: '1px solid #dee2e6',
-                  }}
-                >
-                  <Button
-                    variant='secondary'
-                    onClick={() => setShowEditModal(false)}
-                    className='px-4'
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant='primary'
-                    type='submit'
-                    disabled={
-                      !editingTemplate.title ||
-                      !editingTemplate.subject ||
-                      !editingTemplate.content ||
-                      isSaving
-                    }
-                    className='px-4'
-                  >
-                    {isSaving ? (
-                      <>
-                        <Spinner
-                          size='sm'
-                          animation='border'
-                          className='me-2'
-                        />
-                        Saving...
-                      </>
-                    ) : (
-                      'Save Changes'
-                    )}
-                  </Button>
-                </div>
-              </Form>
-            </div>
-          )}
         </Modal.Body>
       </Modal>
 

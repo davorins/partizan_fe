@@ -123,6 +123,8 @@
   display: flex;
   justify-content: center;
   gap: 16px;
+  top: 0.7rem;
+  position: relative;
 }
 
 .social-icon {

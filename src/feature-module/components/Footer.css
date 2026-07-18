@@ -235,7 +235,7 @@
   }
 
   .footer-socials {
-    gap: 12px;
+    display: none;
   }
 
   .social-icon {
@@ -257,7 +257,7 @@
   }
 
   .footer-socials {
-    gap: 10px;
+    display: none;
   }
 
   .social-icon {

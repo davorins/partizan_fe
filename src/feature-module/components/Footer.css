@@ -147,12 +147,11 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.footer-socials > a {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.footer-socials > a:hover {
-  color: rgba(255, 255, 255, 1);
+a.social-icon.instagram,
+a.social-icon.facebook,
+a.social-icon.twitter,
+a.social-icon.youtube {
+  color: rgba(255, 255, 255, 0.75) !important;
 }
 
 .social-icon {

@@ -147,13 +147,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.footer-socials > a.social-icon.instagram,
-.footer-socials > a.social-icon.facebook,
-.footer-socials > a.social-icon.twitter,
-.footer-socials > a.social-icon.youtube {
-  color: rgba(255, 255, 255, 0.75) !important;
-}
-
 .social-icon {
   width: 40px;
   height: 40px;
@@ -176,16 +169,16 @@
 
 /* Instagram - Glassmorphized */
 .social-icon.instagram {
-  background: rgba(193, 53, 132, 0.15);
-  border-color: rgba(193, 53, 132, 0.2);
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
     0 4px 16px rgba(193, 53, 132, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .social-icon.instagram:hover {
-  background: rgba(193, 53, 132, 0.35);
-  border-color: rgba(193, 53, 132, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 1);
   color: #ffffff;
   transform: translateY(-3px) scale(1.05);
   box-shadow:
@@ -195,16 +188,16 @@
 
 /* Facebook - Glassmorphized */
 .social-icon.facebook {
-  background: rgba(24, 119, 242, 0.15);
-  border-color: rgba(24, 119, 242, 0.2);
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
     0 4px 16px rgba(24, 119, 242, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .social-icon.facebook:hover {
-  background: rgba(24, 119, 242, 0.35);
-  border-color: rgba(24, 119, 242, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 1);
   color: #ffffff;
   transform: translateY(-3px) scale(1.05);
   box-shadow:
@@ -214,16 +207,16 @@
 
 /* Twitter / X - Glassmorphized */
 .social-icon.twitter {
-  background: rgba(0, 0, 0, 0.25);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .social-icon.twitter:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 1);
   color: #ffffff;
   transform: translateY(-3px) scale(1.05);
   box-shadow:
@@ -233,16 +226,16 @@
 
 /* YouTube - Glassmorphized */
 .social-icon.youtube {
-  background: rgba(255, 0, 0, 0.12);
-  border-color: rgba(255, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
     0 4px 16px rgba(255, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .social-icon.youtube:hover {
-  background: rgba(255, 0, 0, 0.35);
-  border-color: rgba(255, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 1);
   color: #ffffff;
   transform: translateY(-3px) scale(1.05);
   box-shadow:

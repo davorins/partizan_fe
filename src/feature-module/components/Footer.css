@@ -147,6 +147,14 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.footer-socials a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-socials a:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
 .social-icon {
   width: 40px;
   height: 40px;
@@ -164,7 +172,7 @@
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  color: #7a6e60;
+  color: #fff;
 }
 
 /* Instagram - Glassmorphized */

@@ -147,10 +147,10 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-a.social-icon.instagram,
-a.social-icon.facebook,
-a.social-icon.twitter,
-a.social-icon.youtube {
+.footer-socials > a.social-icon.instagram,
+.footer-socials > a.social-icon.facebook,
+.footer-socials > a.social-icon.twitter,
+.footer-socials > a.social-icon.youtube {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 

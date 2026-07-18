@@ -107,8 +107,8 @@ export function generateEmailHTML(
         <div style="text-align:center;font-size:12px;color:#999;padding:24px 0 16px;border-top:1px solid #eaeaea;margin-top:32px;">
           <p style="margin:0 0 6px;">${cfg.footerText || "You're receiving this because you're part of <strong>Partizan AAU</strong>."}</p>
           <p style="margin:0;">
-            <a href="https://partizanhoops.com/unsubscribe" style="color:${primary};text-decoration:none;font-size:11px;">Unsubscribe</a>&nbsp;•&nbsp;
-            <a href="https://partizanhoops.com/contact" style="color:${primary};text-decoration:none;font-size:11px;">Contact Us</a>&nbsp;•&nbsp;
+            <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color:${primary};text-decoration:none;font-size:11px;">Unsubscribe</a>&nbsp;•&nbsp;
+            <a href="https://partizanhoops.com/contact-us" style="color:${primary};text-decoration:none;font-size:11px;">Contact Us</a>&nbsp;•&nbsp;
             <a href="https://partizanhoops.com" style="color:${primary};text-decoration:none;font-size:11px;">Website</a>
           </p>
         </div>
@@ -288,8 +288,8 @@ export function generateEmailHTML(
                 ${darkCTA}
                 ${lightSig}
                 <div style="text-align:center;margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.15);font-size:11px;color:rgba(255,255,255,0.45);">
-                  <a href="https://partizanhoops.com/unsubscribe" style="color:rgba(255,255,255,0.55);text-decoration:none;margin:0 6px;">Unsubscribe</a>
-                  <a href="https://partizanhoops.com/contact" style="color:rgba(255,255,255,0.55);text-decoration:none;margin:0 6px;">Contact</a>
+                  <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color:rgba(255,255,255,0.55);text-decoration:none;margin:0 6px;">Unsubscribe</a>
+                  <a href="https://partizanhoops.com/contact-us" style="color:rgba(255,255,255,0.55);text-decoration:none;margin:0 6px;">Contact</a>
                   <a href="https://partizanhoops.com" style="color:rgba(255,255,255,0.55);text-decoration:none;margin:0 6px;">Website</a>
                 </div>
               </td>
@@ -518,8 +518,8 @@ export function generateEmailHTML(
               <div style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid ${darkBorder};">
                 <p style="color:${darkMuted};font-size:11px;margin:0;">${cfg.footerText || "You're receiving this because you're part of Partizan AAU."}</p>
                 <div style="margin-top:8px;">
-                  <a href="https://partizanhoops.com/unsubscribe" style="color:${darkMuted};text-decoration:none;font-size:10px;margin:0 6px;">Unsubscribe</a>
-                  <a href="https://partizanhoops.com/contact" style="color:${darkMuted};text-decoration:none;font-size:10px;margin:0 6px;">Contact</a>
+                  <a href="https://partizanhoops.com/general-settings/notifications-settings" style="color:${darkMuted};text-decoration:none;font-size:10px;margin:0 6px;">Unsubscribe</a>
+                  <a href="https://partizanhoops.com/contact-us" style="color:${darkMuted};text-decoration:none;font-size:10px;margin:0 6px;">Contact</a>
                   <a href="https://partizanhoops.com" style="color:${darkMuted};text-decoration:none;font-size:10px;margin:0 6px;">Website</a>
                 </div>
               </div>

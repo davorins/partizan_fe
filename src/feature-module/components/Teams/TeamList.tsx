@@ -28,6 +28,7 @@ import { TeamListHeader } from '../Headers/TeamListHeader';
 import { TeamFilters } from '../Filters/TeamFilters';
 import { TeamSortOptions } from '../Filters/TeamSortOptions';
 import { Moment } from 'moment';
+import { useDynamicFormFields } from '../../hooks/useDynamicFormFields';
 import './TeamList.css';
 import './teams-mobile.css';
 
@@ -56,6 +57,17 @@ const TeamList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);
   const { getAuthToken, currentUser } = useAuth();
+
+  // ── Dynamic fields ─────────────────────────────────────────────────────────
+  const { getVisibleFields: getTeamVisibleFields } = useDynamicFormFields(
+    'team',
+    { registrationYear: new Date().getFullYear() },
+  );
+
+  const teamVisibleFieldNames = useMemo(() => {
+    const fields = getTeamVisibleFields({} as any);
+    return fields.map((f) => f.fieldName);
+  }, [getTeamVisibleFields]);
 
   // ── Filter state ───────────────────────────────────────────────────────────
   const [localFilters, setLocalFilters] = useState<TeamFilterParams>({
@@ -352,7 +364,7 @@ const TeamList: React.FC = () => {
     message.success('Refreshing teams...');
   }, []);
 
-  // Columns — pass handleToggleTeamStatus so status column can render inline toggle
+  // ── Columns — pass visible fields ─────────────────────────────────────────
   const columns = useMemo(() => {
     try {
       const cols = getTeamTableColumns({
@@ -361,6 +373,7 @@ const TeamList: React.FC = () => {
         location,
         loading: loading && teams.length === 0,
         currentUserRole: currentUser?.role,
+        visibleFields: teamVisibleFieldNames, // Pass visible fields
       });
       return Array.isArray(cols) ? cols : [];
     } catch (error) {
@@ -374,6 +387,7 @@ const TeamList: React.FC = () => {
     loading,
     teams.length,
     currentUser?.role,
+    teamVisibleFieldNames, // Add dependency
   ]);
 
   const dataSource = useMemo(() => {
@@ -421,7 +435,11 @@ const TeamList: React.FC = () => {
   return (
     <div className='page-wrapper team-list-page'>
       <div className='content'>
-        <TeamListHeader teamData={teams} onRefresh={handleRefresh} />
+        <TeamListHeader
+          teamData={teams}
+          onRefresh={handleRefresh}
+          visibleFields={teamVisibleFieldNames} // Pass to header for exports
+        />
         {localFilters.gradeFilter && (
           <div className='alert alert-info d-flex align-items-center justify-content-between mb-3'>
             <span>

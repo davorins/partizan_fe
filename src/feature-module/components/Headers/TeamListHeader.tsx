@@ -3,21 +3,36 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { all_routes } from '../../router/all_routes';
 import { useAuth } from '../../../context/AuthContext';
+import TooltipOption from '../../../core/common/tooltipOption';
+import {
+  exportTeamsToPDF,
+  exportTeamsToExcel,
+} from '../../components/Tables/TeamTableColumns';
 
 interface TeamListHeaderProps {
   teamData: any[];
   onRefresh?: () => void;
+  visibleFields?: string[];
 }
 
 export const TeamListHeader: React.FC<TeamListHeaderProps> = ({
   teamData,
   onRefresh,
+  visibleFields = [],
 }) => {
   const { currentUser } = useAuth();
 
-  // Define routes for teams if they don't exist in all_routes
   const teamRoutes = {
     createTeam: '/teams/create',
+  };
+
+  // Export handlers
+  const handleExportPDF = () => {
+    exportTeamsToPDF(teamData, visibleFields);
+  };
+
+  const handleExportExcel = () => {
+    exportTeamsToExcel(teamData, visibleFields);
   };
 
   return (
@@ -37,6 +52,12 @@ export const TeamListHeader: React.FC<TeamListHeaderProps> = ({
       </div>
       {currentUser && (currentUser.role === 'admin' || currentUser.isCoach) && (
         <div className='d-flex my-xl-auto right-content align-items-center flex-wrap'>
+          <TooltipOption
+            onExportPDF={handleExportPDF}
+            onExportExcel={handleExportExcel}
+            showRefresh={true}
+            onRefresh={onRefresh}
+          />
           <div className='mb-2'>
             <Link
               to={teamRoutes.createTeam}

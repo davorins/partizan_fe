@@ -19,6 +19,7 @@ interface TeamTableColumnsProps {
   location: any;
   loading?: boolean;
   currentUserRole?: string;
+  visibleFields?: string[];
 }
 
 export const TeamTableSkeleton: React.FC<{ rows?: number }> = ({
@@ -98,31 +99,50 @@ const getTeamStatus = (
   return 'Inactive';
 };
 
+// ✅ Updated exportTeamsToPDF with visibility support
 export const exportTeamsToPDF = <T extends InternalTeamTableData>(
   data: T[],
+  visibleFields?: string[],
 ) => {
   const doc = new jsPDF();
   doc.text('Teams List', 14, 15);
-  const tableColumn = [
-    'Team Name',
-    'Year',
-    'Grade',
-    'Gender',
-    'Players',
-    'Coaches',
-    'Tryout Season',
-    'Status',
-  ];
-  const tableRows = data.map((item) => [
-    item.name ?? 'N/A',
-    item.year?.toString() ?? 'N/A',
-    item.grade ? `Grade ${item.grade}` : 'N/A',
-    item.gender ?? 'N/A',
-    item.playerCount?.toString() ?? '0',
-    item.coachCount?.toString() ?? '0',
-    item.tryoutSeason ?? '-',
-    getTeamStatus(item),
-  ]);
+
+  // Check visibility for each field
+  const showName = true; // Always show name
+  const showYear = !visibleFields || visibleFields.includes('year');
+  const showGrade = !visibleFields || visibleFields.includes('grade');
+  const showGender = !visibleFields || visibleFields.includes('gender');
+  const showPlayers = !visibleFields || visibleFields.includes('playerCount');
+  const showCoaches = !visibleFields || visibleFields.includes('coachCount');
+  const showTryoutSeason =
+    !visibleFields || visibleFields.includes('tryoutSeason');
+  const showStatus = true; // Always show status
+
+  // Build dynamic columns
+  const tableColumn: string[] = ['Team Name'];
+  const tableRows = data.map((item) => {
+    const row: any[] = [item.name ?? 'N/A'];
+
+    if (showYear) row.push(item.year?.toString() ?? 'N/A');
+    if (showGrade) row.push(item.grade ? `Grade ${item.grade}` : 'N/A');
+    if (showGender) row.push(item.gender ?? 'N/A');
+    if (showPlayers) row.push(item.playerCount?.toString() ?? '0');
+    if (showCoaches) row.push(item.coachCount?.toString() ?? '0');
+    if (showTryoutSeason) row.push(item.tryoutSeason ?? '-');
+    if (showStatus) row.push(getTeamStatus(item));
+
+    return row;
+  });
+
+  // Add headers based on visibility
+  if (showYear) tableColumn.push('Year');
+  if (showGrade) tableColumn.push('Grade');
+  if (showGender) tableColumn.push('Gender');
+  if (showPlayers) tableColumn.push('Players');
+  if (showCoaches) tableColumn.push('Coaches');
+  if (showTryoutSeason) tableColumn.push('Tryout Season');
+  if (showStatus) tableColumn.push('Status');
+
   autoTable(doc, {
     head: [tableColumn],
     body: tableRows as (string | number)[][],
@@ -134,27 +154,43 @@ export const exportTeamsToPDF = <T extends InternalTeamTableData>(
       fontStyle: 'bold',
     },
     columnStyles: Object.fromEntries(
-      [0, 1, 2, 3, 4, 5, 6, 7].map((i) => [i, { cellWidth: 'auto' }]),
+      tableColumn.map((_, i) => [i, { cellWidth: 'auto' }]),
     ),
   });
   doc.save(`teams_${new Date().toISOString().slice(0, 10)}.pdf`);
 };
 
+// ✅ Updated exportTeamsToExcel with visibility support
 export const exportTeamsToExcel = <T extends InternalTeamTableData>(
   data: T[],
+  visibleFields?: string[], // Added parameter
 ) => {
-  const worksheet = XLSX.utils.json_to_sheet(
-    data.map((item) => ({
+  const showYear = !visibleFields || visibleFields.includes('year');
+  const showGrade = !visibleFields || visibleFields.includes('grade');
+  const showGender = !visibleFields || visibleFields.includes('gender');
+  const showPlayers = !visibleFields || visibleFields.includes('playerCount');
+  const showCoaches = !visibleFields || visibleFields.includes('coachCount');
+  const showTryoutSeason =
+    !visibleFields || visibleFields.includes('tryoutSeason');
+  const showStatus = true;
+
+  const excelData = data.map((item) => {
+    const obj: any = {
       'Team Name': item.name ?? 'N/A',
-      Year: item.year ?? 'N/A',
-      Grade: item.grade ? `Grade ${item.grade}` : 'N/A',
-      Gender: item.gender ?? 'N/A',
-      Players: item.playerCount ?? 0,
-      Coaches: item.coachCount ?? 0,
-      'Tryout Season': item.tryoutSeason ?? '-',
-      Status: getTeamStatus(item),
-    })),
-  );
+    };
+
+    if (showYear) obj.Year = item.year ?? 'N/A';
+    if (showGrade) obj.Grade = item.grade ? `Grade ${item.grade}` : 'N/A';
+    if (showGender) obj.Gender = item.gender ?? 'N/A';
+    if (showPlayers) obj.Players = item.playerCount ?? 0;
+    if (showCoaches) obj.Coaches = item.coachCount ?? 0;
+    if (showTryoutSeason) obj['Tryout Season'] = item.tryoutSeason ?? '-';
+    if (showStatus) obj.Status = getTeamStatus(item);
+
+    return obj;
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(excelData);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Teams');
   XLSX.writeFile(
@@ -169,6 +205,7 @@ export const getTeamTableColumns = ({
   location,
   loading = false,
   currentUserRole,
+  visibleFields = [], // Added parameter
 }: TeamTableColumnsProps): TableProps<InternalTeamTableData>['columns'] => {
   const resolveAvatar = (gender: string | undefined): string => {
     return gender === 'Female'
@@ -176,7 +213,14 @@ export const getTeamTableColumns = ({
       : 'https://partizan-be.onrender.com/uploads/avatars/boy.png';
   };
 
+  // Check visibility for columns
+  const isFieldVisible = (fieldName: string): boolean => {
+    if (visibleFields.length === 0) return true; // If no config, show all
+    return visibleFields.includes(fieldName);
+  };
+
   if (loading) {
+    // ... loading skeleton remains the same
     return [
       {
         title: 'Team Name',
@@ -195,80 +239,104 @@ export const getTeamTableColumns = ({
           </div>
         ),
       },
-      {
-        title: 'Year',
-        dataIndex: 'year',
-        width: 80,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 60, height: 16 }}
-          />
-        ),
-      },
-      {
-        title: 'Grade',
-        dataIndex: 'grade',
-        width: 100,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 80, height: 16 }}
-          />
-        ),
-      },
-      {
-        title: 'Gender',
-        dataIndex: 'gender',
-        width: 100,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 80, height: 16 }}
-          />
-        ),
-      },
-      {
-        title: 'Players',
-        dataIndex: 'playerCount',
-        width: 80,
-        align: 'center' as const,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 60, height: 16 }}
-          />
-        ),
-      },
-      {
-        title: 'Coaches',
-        dataIndex: 'coachCount',
-        width: 80,
-        align: 'center' as const,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 60, height: 16 }}
-          />
-        ),
-      },
-      {
-        title: 'Tryout Season',
-        dataIndex: 'tryoutSeason',
-        width: 150,
-        render: () => (
-          <Skeleton.Input
-            active
-            size='small'
-            style={{ width: 100, height: 16 }}
-          />
-        ),
-      },
+      ...(isFieldVisible('year')
+        ? [
+            {
+              title: 'Year',
+              dataIndex: 'year',
+              width: 80,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 60, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(isFieldVisible('grade')
+        ? [
+            {
+              title: 'Grade',
+              dataIndex: 'grade',
+              width: 100,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 80, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(isFieldVisible('gender')
+        ? [
+            {
+              title: 'Gender',
+              dataIndex: 'gender',
+              width: 100,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 80, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(isFieldVisible('playerCount')
+        ? [
+            {
+              title: 'Players',
+              dataIndex: 'playerCount',
+              width: 80,
+              align: 'center' as const,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 60, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(isFieldVisible('coachCount')
+        ? [
+            {
+              title: 'Coaches',
+              dataIndex: 'coachCount',
+              width: 80,
+              align: 'center' as const,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 60, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(isFieldVisible('tryoutSeason')
+        ? [
+            {
+              title: 'Tryout Season',
+              dataIndex: 'tryoutSeason',
+              width: 150,
+              render: () => (
+                <Skeleton.Input
+                  active
+                  size='small'
+                  style={{ width: 100, height: 16 }}
+                />
+              ),
+            },
+          ]
+        : []),
       {
         title: 'Status',
         key: 'status',
@@ -296,6 +364,7 @@ export const getTeamTableColumns = ({
     ];
   }
 
+  // Define columns - only include if visible
   const nameCol = {
     title: 'Team Name',
     dataIndex: 'name',
@@ -341,70 +410,81 @@ export const getTeamTableColumns = ({
       (a.name || '').localeCompare(b.name || ''),
   };
 
-  const yearCol = {
-    title: 'Year',
-    dataIndex: 'year',
-    width: 80,
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      (a.year || 0) - (b.year || 0),
-  };
+  const yearCol = isFieldVisible('year')
+    ? {
+        title: 'Year',
+        dataIndex: 'year',
+        width: 80,
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          (a.year || 0) - (b.year || 0),
+      }
+    : null;
 
-  const gradeCol = {
-    title: 'Grade',
-    dataIndex: 'grade',
-    width: 100,
-    render: (grade: string) => {
-      if (!grade) return '-';
-      const gradeNum = parseInt(grade);
-      if (isNaN(gradeNum)) return grade;
-      let suffix = 'th';
-      if (gradeNum === 1) suffix = 'st';
-      else if (gradeNum === 2) suffix = 'nd';
-      else if (gradeNum === 3) suffix = 'rd';
-      return `${gradeNum}${suffix} Grade`;
-    },
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      parseInt(a.grade || '0') - parseInt(b.grade || '0'),
-  };
+  const gradeCol = isFieldVisible('grade')
+    ? {
+        title: 'Grade',
+        dataIndex: 'grade',
+        width: 100,
+        render: (grade: string) => {
+          if (!grade) return '-';
+          const gradeNum = parseInt(grade);
+          if (isNaN(gradeNum)) return grade;
+          let suffix = 'th';
+          if (gradeNum === 1) suffix = 'st';
+          else if (gradeNum === 2) suffix = 'nd';
+          else if (gradeNum === 3) suffix = 'rd';
+          return `${gradeNum}${suffix} Grade`;
+        },
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          parseInt(a.grade || '0') - parseInt(b.grade || '0'),
+      }
+    : null;
 
-  const genderCol = {
-    title: 'Gender',
-    dataIndex: 'gender',
-    width: 100,
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      (a.gender || '').localeCompare(b.gender || ''),
-  };
+  const genderCol = isFieldVisible('gender')
+    ? {
+        title: 'Gender',
+        dataIndex: 'gender',
+        width: 100,
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          (a.gender || '').localeCompare(b.gender || ''),
+      }
+    : null;
 
-  const playersCol = {
-    title: 'Players',
-    dataIndex: 'playerCount',
-    width: 80,
-    align: 'center' as const,
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      (a.playerCount || 0) - (b.playerCount || 0),
-  };
+  const playersCol = isFieldVisible('playerCount')
+    ? {
+        title: 'Players',
+        dataIndex: 'playerCount',
+        width: 80,
+        align: 'center' as const,
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          (a.playerCount || 0) - (b.playerCount || 0),
+      }
+    : null;
 
-  const coachesCol = {
-    title: 'Coaches',
-    dataIndex: 'coachCount',
-    width: 80,
-    align: 'center' as const,
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      (a.coachCount || 0) - (b.coachCount || 0),
-  };
+  const coachesCol = isFieldVisible('coachCount')
+    ? {
+        title: 'Coaches',
+        dataIndex: 'coachCount',
+        width: 80,
+        align: 'center' as const,
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          (a.coachCount || 0) - (b.coachCount || 0),
+      }
+    : null;
 
-  const tryoutSeasonCol = {
-    title: 'Tryout Season',
-    dataIndex: 'tryoutSeason',
-    width: 150,
-    render: (tryoutSeason: string) => (
-      <span className='text-muted'>{tryoutSeason || '-'}</span>
-    ),
-    sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
-      (a.tryoutSeason || '').localeCompare(b.tryoutSeason || ''),
-  };
+  const tryoutSeasonCol = isFieldVisible('tryoutSeason')
+    ? {
+        title: 'Tryout Season',
+        dataIndex: 'tryoutSeason',
+        width: 150,
+        render: (tryoutSeason: string) => (
+          <span className='text-muted'>{tryoutSeason || '-'}</span>
+        ),
+        sorter: (a: InternalTeamTableData, b: InternalTeamTableData) =>
+          (a.tryoutSeason || '').localeCompare(b.tryoutSeason || ''),
+      }
+    : null;
 
-  // Status column — admin gets inline toggle, others get badge
   const statusCol = {
     title: 'Status',
     key: 'status',
@@ -505,6 +585,7 @@ export const getTeamTableColumns = ({
     },
   };
 
+  // Build the final columns array - filter out null values
   return [
     nameCol,
     yearCol,
@@ -515,5 +596,5 @@ export const getTeamTableColumns = ({
     tryoutSeasonCol,
     statusCol,
     actionCol,
-  ];
+  ].filter((col): col is NonNullable<typeof col> => col !== null);
 };

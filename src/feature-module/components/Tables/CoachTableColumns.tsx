@@ -96,29 +96,46 @@ export const exportEmailList = <T extends ExtendedCoachTableRecord>(
   });
 };
 
+const getCoachVisibility = (visibleFields: string[] = []) => {
+  return {
+    showName: true,
+    showEmail: visibleFields.includes('email'),
+    showPhone: visibleFields.includes('phone'),
+    showAAU: true, // AAU is always shown for coaches
+    showStatus: true,
+    showDateJoined: true,
+  };
+};
+
 export const exportCoachesToPDF = <T extends ExtendedCoachTableRecord>(
   data: T[],
   addrShow?: AddressShowConfig,
+  visibleFields?: string[], // Add this parameter
 ) => {
   const doc = new jsPDF();
   doc.text('Coaches List', 14, 15);
 
-  const tableColumn = [
-    'Name',
-    'Email',
-    'Phone',
-    'Address',
-    'Status',
-    'Date Joined',
-  ];
-  const tableRows = data.map((item) => [
-    item.fullName,
-    item.email || 'N/A',
-    item.phone ? formatPhoneNumber(item.phone) : 'N/A',
-    fmtAddr(item.address as any, addrShow),
-    'Active',
-    formatDate(item.createdAt),
-  ]);
+  const visibility = getCoachVisibility(visibleFields || []);
+
+  const tableColumn: string[] = ['Name'];
+  const tableRows = data.map((item) => {
+    const row: any[] = [item.fullName];
+
+    if (visibility.showEmail) row.push(item.email || 'N/A');
+    if (visibility.showPhone)
+      row.push(item.phone ? formatPhoneNumber(item.phone) : 'N/A');
+    if (visibility.showAAU) row.push(item.aauNumber || 'N/A');
+    if (visibility.showStatus) row.push('Active');
+    if (visibility.showDateJoined) row.push(formatDate(item.createdAt));
+
+    return row;
+  });
+
+  if (visibility.showEmail) tableColumn.push('Email');
+  if (visibility.showPhone) tableColumn.push('Phone');
+  if (visibility.showAAU) tableColumn.push('AAU Number');
+  if (visibility.showStatus) tableColumn.push('Status');
+  if (visibility.showDateJoined) tableColumn.push('Date Joined');
 
   autoTable(doc, {
     head: [tableColumn],
@@ -138,17 +155,27 @@ export const exportCoachesToPDF = <T extends ExtendedCoachTableRecord>(
 export const exportCoachesToExcel = <T extends ExtendedCoachTableRecord>(
   data: T[],
   addrShow?: AddressShowConfig,
+  visibleFields?: string[], // Add this parameter
 ) => {
-  const worksheet = XLSX.utils.json_to_sheet(
-    data.map((item) => ({
+  const visibility = getCoachVisibility(visibleFields || []);
+
+  const excelData = data.map((item) => {
+    const obj: any = {
       Name: item.fullName,
-      Email: item.email || 'N/A',
-      Phone: item.phone ? formatPhoneNumber(item.phone) : 'N/A',
-      Address: fmtAddr(item.address as any, addrShow),
-      Status: 'Active',
-      'Date Joined': formatDate(item.createdAt),
-    })),
-  );
+    };
+
+    if (visibility.showEmail) obj.Email = item.email || 'N/A';
+    if (visibility.showPhone)
+      obj.Phone = item.phone ? formatPhoneNumber(item.phone) : 'N/A';
+    if (visibility.showAAU) obj['AAU Number'] = item.aauNumber || 'N/A';
+    if (visibility.showStatus) obj.Status = 'Active';
+    if (visibility.showDateJoined)
+      obj['Date Joined'] = formatDate(item.createdAt);
+
+    return obj;
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(excelData);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Coaches');
   XLSX.writeFile(

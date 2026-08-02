@@ -962,14 +962,14 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               onEnded={handleIntroVideoEnd}
               onContextMenu={(e) => e.preventDefault()}
             />
-            {needsUnmutePrompt && (
+            {/* {needsUnmutePrompt && (
               <button
                 className='hp-intro-video__unmute'
                 onClick={handleUnmuteTap}
               >
                 🔊 Tap for sound
               </button>
-            )}
+            )} */}
           </div>
         )}
         <div className='hp-hero__bg-wrapper'>

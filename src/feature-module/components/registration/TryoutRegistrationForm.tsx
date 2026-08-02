@@ -18,6 +18,7 @@ import {
 } from '../../../types/registration-types';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
+import { scrollToRegistration } from '../../../utils/scrollUtils';
 import axios from 'axios';
 
 interface TryoutRegistrationFormProps {
@@ -157,6 +158,12 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
 
     loadTryoutConfig();
   }, [seasonEvent, propTryoutConfig]);
+
+  useEffect(() => {
+    if (!authLoading && !isLoadingConfig) {
+      setTimeout(scrollToRegistration, 300);
+    }
+  }, [authLoading, isLoadingConfig]);
 
   // Default tryout config
   const effectiveTryoutConfig = useMemo(() => {
@@ -661,6 +668,8 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
     setPaymentSuccessData(successData);
     setRegistrationTimestamp(new Date().toLocaleString());
     setCurrentStep('success');
+    // Scroll to registration after payment
+    setTimeout(scrollToRegistration, 100);
   };
 
   const handleComplete = () => {
@@ -668,6 +677,8 @@ const TryoutRegistrationForm: React.FC<TryoutRegistrationFormProps> = ({
       onSuccess(formData);
     }
     navigate(routes.profile);
+    // Scroll to registration after navigation
+    setTimeout(scrollToRegistration, 300);
   };
 
   // ─── Render Success Message ────────────────────────────────────────────────

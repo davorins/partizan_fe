@@ -13,6 +13,7 @@ import {
 } from '../../types/registration-types';
 import TodayEvents from '../components/TodayEvents/TodayEvents';
 import VideoGallery from '../components/VideoGallery/VideoGallery';
+import { scrollToSection } from '../../utils/scrollUtils';
 import './HomePage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -240,6 +241,13 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       video.muted = false;
     }
     setNeedsUnmutePrompt(false);
+  }, []);
+
+  const handleRegistrationClick = useCallback(() => {
+    // Wait for the form to render then scroll to it
+    setTimeout(() => {
+      scrollToSection('.hp-section--reg', 80);
+    }, 300);
   }, []);
 
   // Scroll activity detection
@@ -1061,6 +1069,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     if (isAuthenticated) checkAuth();
                   }}
                   hasEmbeddedForms={hasActiveEmbeddedForms()}
+                  onRegistrationClick={handleRegistrationClick}
                 />
               </div>
             </section>

@@ -26,6 +26,7 @@ import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
 import axios from 'axios';
 import { all_routes } from '../../router/all_routes';
+import { scrollToRegistration } from '../../../utils/scrollUtils';
 
 interface TrainingRegistrationFormProps {
   onSuccess?: (data?: any) => void;
@@ -367,6 +368,12 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
       hasCalledPlayerCompleteRef.current = false;
     }
   }, [currentStep]);
+
+  useEffect(() => {
+    if (!authLoading && !isLoadingUserData) {
+      setTimeout(scrollToRegistration, 300);
+    }
+  }, [authLoading, isLoadingUserData]);
 
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));
@@ -722,7 +729,6 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
 
     if (refreshParentData) await refreshParentData();
 
-    // If Clover was used, offer auto-pay before showing success
     if (successData.paymentSystem === 'clover' && successData.token) {
       setLastPaymentToken(successData.token);
       setIsCloverPayment(true);
@@ -730,6 +736,9 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
     } else {
       setCurrentStep('success');
     }
+
+    // Scroll to registration after payment
+    setTimeout(scrollToRegistration, 100);
   };
 
   // Handler for auto-pay prompt completion:
@@ -743,6 +752,8 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
       onSuccess(formData);
     }
     navigate(routes.profile);
+    // Scroll to registration after navigation
+    setTimeout(scrollToRegistration, 300);
   };
 
   const handleAddMorePlayers = () => {

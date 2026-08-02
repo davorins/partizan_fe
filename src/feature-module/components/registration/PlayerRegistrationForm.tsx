@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
 import axios from 'axios';
+import { scrollToRegistration } from '../../../utils/scrollUtils';
 import { all_routes } from '../../router/all_routes';
 
 interface PlayerRegistrationFormProps {
@@ -217,10 +218,11 @@ const PlayerRegistrationForm: React.FC<PlayerRegistrationFormProps> = ({
     isExistingUser,
   ]);
 
-  // ── Initialize players when stepping into player step ────────────────────────
-  // This handles the case where the user navigates back and forth between steps.
-  // We only add a blank player if there are truly no new (unsaved) players yet
-  // and the user is not an existing account holder with saved players.
+  useEffect(() => {
+    if (!authLoading && !isLoadingUserData) {
+      setTimeout(scrollToRegistration, 300);
+    }
+  }, [authLoading, isLoadingUserData]);
 
   useEffect(() => {
     if (currentStep !== 'player') return;
@@ -606,9 +608,11 @@ const PlayerRegistrationForm: React.FC<PlayerRegistrationFormProps> = ({
         onPlayerRegistrationComplete(localSavedPlayers);
       }
 
-      setRegistrationTimestamp(new Date().toLocaleString());
       setRegistrationCompleted(true);
       setCurrentStep('success');
+      setRegistrationTimestamp(new Date().toLocaleString());
+      // Scroll to registration
+      setTimeout(scrollToRegistration, 100);
 
       localStorage.removeItem('pendingRegistrationUser');
       localStorage.removeItem('pendingRegistrationPlayers');
@@ -638,6 +642,8 @@ const PlayerRegistrationForm: React.FC<PlayerRegistrationFormProps> = ({
       onSuccess(formData);
     }
     navigate(routes.profile);
+    // Scroll to registration after navigation
+    setTimeout(scrollToRegistration, 300);
   };
 
   const handleAddMorePlayers = () => {

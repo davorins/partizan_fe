@@ -1,5 +1,6 @@
-// AutoGridFromDescription.tsx - Complete working solution with pricing as separate section in grid layout, bottom orange CTA, and FAQ section
+// components/AutoGridFromDescription.tsx
 import React from 'react';
+import { scrollToRegistration } from '../../utils/scrollUtils';
 import './AutoGridFromDescription.css';
 
 interface TrainingSession {
@@ -779,7 +780,12 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     const ageGroupsDisplay = tryoutDetails.ageGroups?.length
       ? sortAgeGroups(tryoutDetails.ageGroups).join(', ')
       : '';
-    const handleRegister = () => onRegister?.();
+    const handleRegister = () => {
+      // Call the onRegister callback first
+      onRegister?.();
+      // Then scroll to the registration section
+      setTimeout(scrollToRegistration, 100);
+    };
 
     const validTryoutSessions = getValidSessions(
       tryoutDetails.tryoutSessions || [],

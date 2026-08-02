@@ -13,6 +13,7 @@ import {
 } from '../../../types/registration-types';
 import { useAuth } from '../../../context/AuthContext';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
+import { scrollToRegistration } from '../../../utils/scrollUtils';
 
 interface TournamentRegistrationFormProps {
   onSuccess?: (data?: any) => void;
@@ -55,7 +56,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
   // Helper function to extract tournament data from config
   const extractTournamentConfig = useCallback(
     (
-      config: RegistrationFormConfig | TournamentSpecificConfig | null
+      config: RegistrationFormConfig | TournamentSpecificConfig | null,
     ): TournamentSpecificConfig | null => {
       if (!config) return null;
 
@@ -98,7 +99,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
 
       return null;
     },
-    []
+    [],
   );
 
   // Load tournament configuration
@@ -124,8 +125,8 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
 
           const response = await fetch(
             `${API_BASE_URL}/admin/tournament-configs/${encodeURIComponent(
-              seasonEvent.season
-            )}/${seasonEvent.year}`
+              seasonEvent.season,
+            )}/${seasonEvent.year}`,
           );
 
           if (response.ok) {
@@ -139,7 +140,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
           } else {
             const errorData = await response.json();
             throw new Error(
-              errorData.message || 'Failed to load tournament config'
+              errorData.message || 'Failed to load tournament config',
             );
           }
         } catch (error) {
@@ -155,6 +156,13 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
     loadTournamentConfig();
   }, [seasonEvent, propTournamentConfig, extractTournamentConfig]);
 
+  useEffect(() => {
+    // Scroll to registration when component mounts
+    if (!authLoading) {
+      setTimeout(scrollToRegistration, 300);
+    }
+  }, [authLoading]);
+
   const defaultSeasonEvent = useMemo(
     () =>
       seasonEvent || {
@@ -162,7 +170,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
         year: new Date().getFullYear(),
         eventId: `tournament-${new Date().getFullYear()}`,
       },
-    [seasonEvent]
+    [seasonEvent],
   );
 
   // Default tournament config (used if none loaded)
@@ -186,7 +194,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
       isActive: true,
       _id: `default-tournament-${defaultSeasonEvent.year}`,
     }),
-    [defaultSeasonEvent]
+    [defaultSeasonEvent],
   );
 
   // Merge loaded config with defaults
@@ -211,7 +219,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
       },
       ...formConfig,
     }),
-    [formConfig, effectiveTournamentConfig]
+    [formConfig, effectiveTournamentConfig],
   );
 
   // Check if form should be shown based on isActive
@@ -252,7 +260,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
 
     if (isAuthenticated || hasCompletedUserRegistration) {
       return allSteps.filter(
-        (step) => step.id !== 'account' && step.id !== 'verifyEmail'
+        (step) => step.id !== 'account' && step.id !== 'verifyEmail',
       );
     }
     return allSteps;
@@ -260,7 +268,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
 
   const currentStepIndex = useMemo(
     () => steps.findIndex((step) => step.id === currentStep),
-    [steps, currentStep]
+    [steps, currentStep],
   );
 
   // Initialize step for authenticated users or existing registration
@@ -377,7 +385,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
-            errorData.message || errorData.error || 'Coach registration failed'
+            errorData.message || errorData.error || 'Coach registration failed',
           );
         }
 
@@ -398,7 +406,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
           };
           localStorage.setItem(
             'tournamentCoachData',
-            JSON.stringify(tournamentCoachData)
+            JSON.stringify(tournamentCoachData),
           );
 
           if (checkAuth) {
@@ -425,7 +433,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
       isAuthenticated,
       effectiveTournamentConfig,
       checkAuth,
-    ]
+    ],
   );
 
   const handleAccountCreated = useCallback(
@@ -465,7 +473,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
         setIsProcessing(false);
       }
     },
-    [createTempAccount, updateFormData]
+    [createTempAccount, updateFormData],
   );
 
   const handleVerified = useCallback(() => {
@@ -501,13 +509,14 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
       } catch (error: any) {
         console.error('❌ Error saving coach data:', error);
         setFormError(
-          error.message || 'Failed to save coach information. Please try again.'
+          error.message ||
+            'Failed to save coach information. Please try again.',
         );
       } finally {
         setIsProcessing(false);
       }
     },
-    [saveCoachData, updateFormData]
+    [saveCoachData, updateFormData],
   );
 
   const handleNext = useCallback(
@@ -549,7 +558,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
       teamValidation,
       defaultFormConfig.requiresPayment,
       updateFormData,
-    ]
+    ],
   );
 
   const handleBack = useCallback(() => {
@@ -572,6 +581,9 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
   const handlePaymentComplete = useCallback((successData: any) => {
     setPaymentSuccessData(successData);
 
+    // Scroll to registration after payment
+    setTimeout(scrollToRegistration, 100);
+
     // Clear tournament registration data
     localStorage.removeItem('tournamentCoachData');
 
@@ -582,6 +594,8 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
 
   const handleComplete = useCallback(() => {
     onSuccess?.(formData);
+    // Scroll to registration after completion
+    setTimeout(scrollToRegistration, 100);
   }, [onSuccess, formData]);
 
   // Handle team validation change
@@ -614,7 +628,7 @@ const TournamentRegistrationForm: React.FC<TournamentRegistrationFormProps> = ({
         </div>
       </div>
     ),
-    [steps, currentStep, currentStepIndex]
+    [steps, currentStep, currentStepIndex],
   );
 
   // Render thank you message with tournament details

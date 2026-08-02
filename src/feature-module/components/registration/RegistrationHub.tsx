@@ -10,6 +10,7 @@ import {
   TryoutSpecificConfig,
 } from '../../../types/registration-types';
 import AutoGridFromDescription from '../AutoGridFromDescription';
+import { scrollToRegistration } from '../../../utils/scrollUtils';
 import './RegistrationHub.css';
 
 interface RegistrationHubProps {
@@ -20,6 +21,7 @@ interface RegistrationHubProps {
   seasonEvent?: SeasonEvent;
   onRegistrationComplete?: () => void;
   hasEmbeddedForms?: boolean;
+  onRegistrationClick?: () => void;
 }
 
 // Helper type guard functions
@@ -133,6 +135,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
   seasonEvent,
   onRegistrationComplete,
   hasEmbeddedForms = true,
+  onRegistrationClick,
 }) => {
   const [activeForm, setActiveForm] = useState<
     'player' | 'tournament' | 'training' | 'tryout' | null
@@ -340,8 +343,10 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     (form: 'player' | 'tournament' | 'training' | 'tryout') => {
       setActiveForm(form);
       setShowDescription(true);
+      // Call the parent handler if provided
+      onRegistrationClick?.();
     },
-    [],
+    [onRegistrationClick],
   );
 
   const handleBackToTiles = useCallback(() => {
@@ -356,11 +361,17 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
   const handleToggleView = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
+    // Call the parent handler if provided
+    onRegistrationClick?.();
     setTimeout(() => {
       setShowDescription((prev) => !prev);
-      setTimeout(() => setIsAnimating(false), 50);
+      // Scroll to registration after toggling
+      setTimeout(() => {
+        scrollToRegistration();
+        setTimeout(() => setIsAnimating(false), 50);
+      }, 100);
     }, 200);
-  }, [isAnimating]);
+  }, [isAnimating, onRegistrationClick]);
 
   if (availableForms.length === 0) return null;
 

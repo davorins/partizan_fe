@@ -1,3 +1,4 @@
+/* style/css/style.css
 @charset "UTF-8";
 /****** Utils ******/
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
@@ -33181,4 +33182,292 @@ table.table.dataTable > thead > tr th {
 .active > .page-link,
 .page-link.active {
   z-index: unset;
+}
+
+/* ============================================
+   DROPDOWN FIXES - Cross-browser compatibility
+   ============================================ */
+
+/* 1. Base select fixes - ensures text is always visible */
+select.form-control,
+select.form-select,
+select.custom-select {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+  border-color: #e8e8e8 !important;
+}
+
+/* 2. Option elements - critical for Edge/Chromium */
+select.form-control option,
+select.form-select option,
+select.custom-select option {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+  padding: 6px 12px !important;
+  min-height: 32px !important;
+}
+
+/* 3. Hover state for options */
+select.form-control option:hover,
+select.form-select option:hover,
+select.custom-select option:hover {
+  background-color: rgba(228, 31, 7, 0.1) !important;
+}
+
+/* 4. Selected option state */
+select.form-control option:checked,
+select.form-select option:checked,
+select.custom-select option:checked {
+  background-color: rgba(228, 31, 7, 0.15) !important;
+  color: #212529 !important;
+}
+
+/* 5. Focus state */
+select.form-control:focus,
+select.form-select:focus,
+select.custom-select:focus {
+  border-color: rgba(228, 31, 7, 0.5) !important;
+  box-shadow: 0 0 0 0.2rem rgba(228, 31, 7, 0.15) !important;
+  color: #212529 !important;
+  background-color: #ffffff !important;
+}
+
+/* 6. Disabled state */
+select.form-control:disabled,
+select.form-select:disabled,
+select.custom-select:disabled {
+  opacity: 0.65 !important;
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
+}
+
+/* 7. Invalid state */
+select.form-control.is-invalid,
+select.form-select.is-invalid,
+select.custom-select.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+select.form-control.is-invalid option,
+select.form-select.is-invalid option,
+select.custom-select.is-invalid option {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+}
+
+/* 8. Dark theme support - fix your existing dark theme overrides */
+[data-theme='dark'] select.form-control,
+[data-theme='dark'] select.form-select,
+[data-theme='dark'] select.custom-select,
+.dark-data-theme select.form-control,
+.dark-data-theme select.form-select,
+.dark-data-theme select.custom-select {
+  color: #e0e0e0 !important;
+  background-color: #1d1d42 !important;
+  border-color: #393947 !important;
+}
+
+[data-theme='dark'] select.form-control option,
+[data-theme='dark'] select.form-select option,
+[data-theme='dark'] select.custom-select option,
+.dark-data-theme select.form-control option,
+.dark-data-theme select.form-select option,
+.dark-data-theme select.custom-select option {
+  color: #e0e0e0 !important;
+  background-color: #1d1d42 !important;
+}
+
+[data-theme='dark'] select.form-control option:checked,
+[data-theme='dark'] select.form-select option:checked,
+[data-theme='dark'] select.custom-select option:checked,
+.dark-data-theme select.form-control option:checked,
+.dark-data-theme select.form-select option:checked,
+.dark-data-theme select.custom-select option:checked {
+  background-color: rgba(228, 31, 7, 0.3) !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] select.form-control option:hover,
+[data-theme='dark'] select.form-select option:hover,
+[data-theme='dark'] select.custom-select option:hover,
+.dark-data-theme select.form-control option:hover,
+.dark-data-theme select.form-select option:hover,
+.dark-data-theme select.custom-select option:hover {
+  background-color: rgba(228, 31, 7, 0.2) !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] select.form-control:focus,
+[data-theme='dark'] select.form-select:focus,
+[data-theme='dark'] select.custom-select:focus,
+.dark-data-theme select.form-control:focus,
+.dark-data-theme select.form-select:focus,
+.dark-data-theme select.custom-select:focus {
+  border-color: rgba(228, 31, 7, 0.6) !important;
+  box-shadow: 0 0 0 0.2rem rgba(228, 31, 7, 0.2) !important;
+  color: #e0e0e0 !important;
+  background-color: #1d1d42 !important;
+}
+
+/* 9. Edge/Chromium specific fixes */
+@supports (-ms-ime-align: auto) {
+  /* Edge */
+  select.form-control,
+  select.form-select,
+  select.custom-select {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+
+  select.form-control option,
+  select.form-select option,
+  select.custom-select option {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Dark mode Edge fix */
+  [data-theme='dark'] select.form-control,
+  [data-theme='dark'] select.form-select,
+  [data-theme='dark'] select.custom-select,
+  .dark-data-theme select.form-control,
+  .dark-data-theme select.form-select,
+  .dark-data-theme select.custom-select {
+    color: #e0e0e0 !important;
+    background-color: #1d1d42 !important;
+  }
+
+  [data-theme='dark'] select.form-control option,
+  [data-theme='dark'] select.form-select option,
+  [data-theme='dark'] select.custom-select option,
+  .dark-data-theme select.form-control option,
+  .dark-data-theme select.form-select option,
+  .dark-data-theme select.custom-select option {
+    color: #e0e0e0 !important;
+    background-color: #1d1d42 !important;
+  }
+}
+
+/* 10. WebKit specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select.form-control,
+  select.form-select,
+  select.custom-select {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+
+  select.form-control option,
+  select.form-select option,
+  select.custom-select option {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+}
+
+/* 11. Firefox specific fixes */
+@-moz-document url-prefix() {
+  select.form-control,
+  select.form-select,
+  select.custom-select {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+
+  select.form-control option,
+  select.form-select option,
+  select.custom-select option {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+  }
+}
+
+/* 12. Branded dropdown styling - matches your theme */
+select.form-control option:hover,
+select.form-select option:hover,
+select.custom-select option:hover {
+  background-color: rgba(228, 31, 7, 0.1) !important;
+}
+
+select.form-control option:checked,
+select.form-select option:checked,
+select.custom-select option:checked {
+  background: linear-gradient(
+    135deg,
+    rgba(228, 31, 7, 0.2),
+    rgba(228, 31, 7, 0.1)
+  ) !important;
+}
+
+/* 13. Ensure dropdown arrow is always visible */
+select.form-control,
+select.form-select,
+select.custom-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px 12px !important;
+  padding-right: 2.5rem !important;
+}
+
+[data-theme='dark'] select.form-control,
+[data-theme='dark'] select.form-select,
+[data-theme='dark'] select.custom-select,
+.dark-data-theme select.form-control,
+.dark-data-theme select.form-select,
+.dark-data-theme select.custom-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a0aec0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* 14. Fix for your specific select styles in the CSS */
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: #6f6f6f !important;
+}
+
+[data-theme='dark']
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: #e0e0e0 !important;
+}
+
+/* Fix for your dark theme select overrides */
+[data-theme='dark'] .form-select option {
+  background: #1d1d42 !important;
+  color: #e0e0e0 !important;
+}
+
+[data-theme='dark'] .form-select option:checked {
+  background: rgba(228, 31, 7, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* Fix for your specific select classes */
+[data-theme='dark'] select.form-control,
+[data-theme='dark'] select.form-select {
+  background-color: #171724 !important;
+  border-color: #393947 !important;
+  color: #a3a6a6 !important;
+}
+
+[data-theme='dark'] select.form-control option,
+[data-theme='dark'] select.form-select option {
+  background-color: #171724 !important;
+  color: #a3a6a6 !important;
+}
+
+[data-theme='dark'] select.form-control option:checked,
+[data-theme='dark'] select.form-select option:checked {
+  background: rgba(228, 31, 7, 0.3) !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] select.form-control option:hover,
+[data-theme='dark'] select.form-select option:hover {
+  background: rgba(228, 31, 7, 0.2) !important;
+  color: #ffffff !important;
 }

@@ -1091,7 +1091,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     className={`hp-video__player ${videoLoaded ? 'hp-video__player--loaded' : ''}`}
                     src={promoVideoUrl}
                     autoPlay
-                    muted={false}
+                    muted={true}
                     loop={false}
                     playsInline
                     preload='auto'
@@ -1145,7 +1145,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                           </svg>
                         )}
                       </button>
-                      <button
+                      {/* <button
                         className='hp-video-controls__btn'
                         onClick={handleVolumeToggle}
                         aria-label='Toggle mute'
@@ -1162,7 +1162,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                           <path d='M15.54 8.46a5 5 0 0 1 0 7.07' />
                           <path d='M19.07 4.93a10 10 0 0 1 0 14.14' />
                         </svg>
-                      </button>
+                      </button> */}
                       <div className='hp-video-controls__time'>
                         <span>{formatTime(currentTime)}</span>
                         <span>/</span>

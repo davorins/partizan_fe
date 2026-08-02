@@ -1840,11 +1840,12 @@
 }
 
 .reg-form-content .btn-primary {
-  background: linear-gradient(
+  /* background: linear-gradient(
     135deg,
     var(--gold) 0%,
     var(--gold-bright) 100%
-  ) !important;
+  ) !important; */
+  background: var(--gold-bright) !important;
   border: none !important;
   border-radius: 40px !important;
   padding: 12px 28px !important;

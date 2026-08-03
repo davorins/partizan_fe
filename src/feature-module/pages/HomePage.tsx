@@ -243,6 +243,25 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     setNeedsUnmutePrompt(false);
   }, []);
 
+  useEffect(() => {
+    const video = sectionVideoRef.current;
+    if (!video) return;
+
+    // Force mute on mount and whenever the video source changes
+    video.muted = true;
+
+    // Add event listener to ensure it stays muted
+    const handleLoadedMetadata = () => {
+      video.muted = true;
+    };
+
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [promoVideoUrl]);
+
   const handleRegistrationClick = useCallback(() => {
     // Wait for the form to render then scroll to it
     setTimeout(() => {

@@ -1,5 +1,5 @@
 // components/AutoGridFromDescription.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { scrollToRegistration } from '../../utils/scrollUtils';
 import './AutoGridFromDescription.css';
 
@@ -155,35 +155,43 @@ const getFullAddress = (location: any): string => {
   return parts.join(', ');
 };
 
-// Helper function to check if description has meaningful content
 const hasValidDescription = (description?: string): boolean => {
   if (!description) return false;
-  // Remove HTML tags and check if there's any non-whitespace content
   const strippedText = description.replace(/<[^>]*>/g, '').trim();
   return strippedText.length > 0;
 };
 
-const TileHead: React.FC<{ icon: string; label: string }> = ({
-  icon,
-  label,
-}) => (
+const TileHead: React.FC<{
+  icon: string;
+  label: string;
+  isLight?: boolean;
+}> = ({ icon, label, isLight = false }) => (
   <div className='agd-head'>
     <i
       className={`ti ${icon}`}
-      style={{ color: '#ffffff', fontSize: '0.95rem' }}
+      style={{ color: isLight ? '#594230' : '#ffffff', fontSize: '0.95rem' }}
     />
-    <span style={{ color: '#ffffff', fontSize: '0.95rem' }}>{label}</span>
+    <span
+      style={{ color: isLight ? '#4a4a5a' : '#ffffff', fontSize: '0.95rem' }}
+    >
+      {label}
+    </span>
   </div>
 );
 
-const InfoRow: React.FC<{ icon: string; children: React.ReactNode }> = ({
-  icon,
-  children,
-}) => (
+const InfoRow: React.FC<{
+  icon: string;
+  children: React.ReactNode;
+  isLight?: boolean;
+}> = ({ icon, children, isLight = false }) => (
   <li className='agd-row'>
     <i
       className={`ti ${icon}`}
-      style={{ color: 'rgba(255,140,0,.7)', flexShrink: 0, marginTop: 2 }}
+      style={{
+        color: isLight ? '#594230' : 'rgba(255,140,0,.7)',
+        flexShrink: 0,
+        marginTop: 2,
+      }}
     />
     <span>{children}</span>
   </li>
@@ -193,41 +201,61 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
   config,
   onRegister,
 }) => {
+  const [isLightTheme, setIsLightTheme] = useState(false);
+
+  // Detect theme from parent section
+  useEffect(() => {
+    const checkTheme = () => {
+      const section = document.querySelector('.hp-section--reg');
+      if (section) {
+        setIsLightTheme(section.classList.contains('light-theme'));
+      }
+    };
+
+    checkTheme();
+
+    const observer = new MutationObserver(() => {
+      checkTheme();
+    });
+
+    const section = document.querySelector('.hp-section--reg');
+    if (section) {
+      observer.observe(section, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const trainingDetails = config?.trainingDetails;
   const tryoutDetails = config?.tryoutDetails;
   const isTryout = !!tryoutDetails;
 
-  // Helper function to get tryout locations (handles both old and new format)
   const getTryoutLocations = (): TryoutLocation[] => {
     if (!tryoutDetails) return [];
-
-    // New format: locations array
     if (tryoutDetails.locations && tryoutDetails.locations.length > 0) {
       return tryoutDetails.locations;
     }
-
-    // Old format: single location
     if (tryoutDetails.location && tryoutDetails.location.name) {
       return [tryoutDetails.location];
     }
-
     return [];
   };
 
-  // Helper function to check if a session is "simple" (only date and location name)
   const isSimpleSession = (
     session: TrainingSession | TryoutSession,
   ): boolean => {
-    const hasOnlyDateAndLocation =
+    return (
       !!session.date &&
       !!session.location?.name &&
       !session.startTime &&
       !session.endTime &&
-      !session.grades;
-    return hasOnlyDateAndLocation;
+      !session.grades
+    );
   };
 
-  // Helper function to check if a session has any meaningful data
   const hasSessionData = (
     session: TrainingSession | TryoutSession,
   ): boolean => {
@@ -240,18 +268,19 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     );
   };
 
-  // Filter sessions to only show those with data
   const getValidSessions = (
     sessions: (TrainingSession | TryoutSession)[],
   ): (TrainingSession | TryoutSession)[] => {
     return sessions.filter(hasSessionData);
   };
 
-  // Component for simple session (date and location only)
   const SimpleSessionItem: React.FC<{
     session: TrainingSession | TryoutSession;
-  }> = ({ session }) => (
-    <div className='agd-session-simple'>
+    isLight?: boolean;
+  }> = ({ session, isLight = false }) => (
+    <div
+      className={`agd-session-simple ${isLight ? 'agd-session-simple--light' : ''}`}
+    >
       <div className='agd-session-simple-content'>
         <span className='agd-session-simple-date'>
           <i className='ti ti-calendar' />
@@ -266,11 +295,13 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     </div>
   );
 
-  // Component for detailed session (with time/grades)
   const DetailedSessionItem: React.FC<{
     session: TrainingSession | TryoutSession;
-  }> = ({ session }) => (
-    <div className='agd-session-card'>
+    isLight?: boolean;
+  }> = ({ session, isLight = false }) => (
+    <div
+      className={`agd-session-card ${isLight ? 'agd-session-card--light' : ''}`}
+    >
       <div className='agd-session-header'>
         <div className='agd-session-time'>
           {session.date && (
@@ -310,7 +341,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             )}
             {getFullAddress(session.location) && (
               <a
-                className='agd-session-map-link'
+                className={`agd-session-map-link ${isLight ? 'agd-session-map-link--light' : ''}`}
                 href={`https://www.google.com/maps/search/${encodeURIComponent([session.location.name, getFullAddress(session.location)].filter(Boolean).join(' '))}`}
                 target='_blank'
                 rel='noopener noreferrer'
@@ -324,15 +355,25 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     </div>
   );
 
-  // FAQ Section Component
   const FAQSection: React.FC = () => (
-    <div className='agd-tile agd-tile--faq'>
-      <TileHead icon='ti-help-circle' label='Frequently Asked Questions' />
+    <div
+      className={`agd-tile agd-tile--faq ${isLightTheme ? 'agd-tile--faq-light' : ''}`}
+    >
+      <TileHead
+        icon='ti-help-circle'
+        label='Frequently Asked Questions'
+        isLight={isLightTheme}
+      />
       <div className='agd-faq-content'>
-        <p className='agd-faq-text'>
+        <p
+          className={`agd-faq-text ${isLightTheme ? 'agd-faq-text--light' : ''}`}
+        >
           Have questions about our programs, schedules, or registration process?
         </p>
-        <a href='/faq' className='agd-faq-link'>
+        <a
+          href='/faq'
+          className={`agd-faq-link ${isLightTheme ? 'agd-faq-link--light' : ''}`}
+        >
           <i className='ti ti-message-question' />
           Visit our FAQ page for answers to common questions
           <i className='ti ti-arrow-right' />
@@ -349,9 +390,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       (trainingDetails.trainingSessions?.length || 0) > 0;
 
     if (!hasValidTrainingDetails) {
-      const accent = '#594230';
+      const accent = isLightTheme ? '#594230' : '#594230';
       return (
-        <div className='agd-root'>
+        <div
+          className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}
+        >
           <div className='agd-event'>
             <div
               className='agd-tile agd-tile--hdr'
@@ -404,17 +447,13 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       );
     }
 
-    const accent = '#594230';
+    const accent = isLightTheme ? '#594230' : '#594230';
     const sortAgeGroups = (groups: string[]): string[] => {
       return [...groups].sort((a, b) => {
-        // Define custom order: everything except College first, then College last
         const aIsCollege = a.toLowerCase().includes('college');
         const bIsCollege = b.toLowerCase().includes('college');
-
-        if (aIsCollege && !bIsCollege) return 1; // College goes to end
-        if (!aIsCollege && bIsCollege) return -1; // Non-College comes first
-
-        // For non-College items, sort alphabetically or by grade number if possible
+        if (aIsCollege && !bIsCollege) return 1;
+        if (!aIsCollege && bIsCollege) return -1;
         return a.localeCompare(b);
       });
     };
@@ -424,18 +463,14 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       : '';
     const handleRegister = () => onRegister?.();
 
-    // Get valid sessions for display
     const validSessions = getValidSessions(
       trainingDetails.trainingSessions || [],
     );
-
-    // Separate sessions into simple and detailed
     const simpleSessions = validSessions.filter(isSimpleSession);
     const detailedSessions = validSessions.filter(
       (session) => !isSimpleSession(session),
     );
 
-    // Check if there are any pricing packages
     const hasPricingPackages =
       config.pricing?.packages && config.pricing.packages.length > 0;
     const hasBasePrice =
@@ -443,7 +478,9 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       config.pricing.basePrice > 0;
 
     return (
-      <div className='agd-root'>
+      <div
+        className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}
+      >
         <div className='agd-event'>
           <div
             className='agd-tile agd-tile--hdr'
@@ -485,7 +522,6 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             )}
           </div>
 
-          {/* Top CTA Button */}
           <div className='agd-tile agd-tile--cta'>
             <button
               className='agd-cta'
@@ -500,18 +536,20 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </button>
           </div>
 
-          {/* About the Program - Only show if description has valid content */}
           {hasValidDescription(config?.description) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-article' label='About the Program' />
+              <TileHead
+                icon='ti-article'
+                label='About the Program'
+                isLight={isLightTheme}
+              />
               <div
-                className='agd-desc'
+                className={`agd-desc ${isLightTheme ? 'agd-desc--light' : ''}`}
                 dangerouslySetInnerHTML={{ __html: config.description! }}
               />
             </div>
           )}
 
-          {/* Program Details Section */}
           {(ageGroupsDisplay ||
             trainingDetails.gender ||
             trainingDetails.duration ||
@@ -520,40 +558,44 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             trainingDetails.pickUpTime ||
             trainingDetails.maxParticipants) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-info-circle' label='Program Details' />
+              <TileHead
+                icon='ti-info-circle'
+                label='Program Details'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
                 {ageGroupsDisplay && (
-                  <InfoRow icon='ti-school'>
+                  <InfoRow icon='ti-school' isLight={isLightTheme}>
                     <strong>Ages / Grades:</strong> {ageGroupsDisplay}
                   </InfoRow>
                 )}
                 {trainingDetails.gender && (
-                  <InfoRow icon='ti-gender-bigender'>
+                  <InfoRow icon='ti-gender-bigender' isLight={isLightTheme}>
                     <strong>Gender:</strong> {trainingDetails.gender}
                   </InfoRow>
                 )}
                 {trainingDetails.duration && (
-                  <InfoRow icon='ti-clock-hour-4'>
+                  <InfoRow icon='ti-clock-hour-4' isLight={isLightTheme}>
                     <strong>Duration:</strong> {trainingDetails.duration}
                   </InfoRow>
                 )}
                 {(trainingDetails.days?.length || 0) > 0 && (
-                  <InfoRow icon='ti-calendar-week'>
+                  <InfoRow icon='ti-calendar-week' isLight={isLightTheme}>
                     <strong>Days:</strong> {formatDays(trainingDetails.days)}
                   </InfoRow>
                 )}
                 {trainingDetails.dropOffTime && (
-                  <InfoRow icon='ti-car'>
+                  <InfoRow icon='ti-car' isLight={isLightTheme}>
                     <strong>Drop-off:</strong> {trainingDetails.dropOffTime}
                   </InfoRow>
                 )}
                 {trainingDetails.pickUpTime && (
-                  <InfoRow icon='ti-car'>
+                  <InfoRow icon='ti-car' isLight={isLightTheme}>
                     <strong>Pick-up:</strong> {trainingDetails.pickUpTime}
                   </InfoRow>
                 )}
                 {trainingDetails.maxParticipants && (
-                  <InfoRow icon='ti-users'>
+                  <InfoRow icon='ti-users' isLight={isLightTheme}>
                     <strong>Max Participants:</strong>{' '}
                     {trainingDetails.maxParticipants}
                   </InfoRow>
@@ -562,14 +604,18 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Pricing Section - Separate section with grid layout */}
           {(hasBasePrice || hasPricingPackages) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-currency-dollar' label='Pricing' />
+              <TileHead
+                icon='ti-currency-dollar'
+                label='Pricing'
+                isLight={isLightTheme}
+              />
 
-              {/* Base Price */}
               {hasBasePrice && (
-                <div className='agd-base-price'>
+                <div
+                  className={`agd-base-price ${isLightTheme ? 'agd-base-price--light' : ''}`}
+                >
                   <span className='agd-base-price-amount'>
                     ${config.pricing.basePrice}
                   </span>
@@ -577,14 +623,16 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
                 </div>
               )}
 
-              {/* Pricing Packages Grid */}
               {hasPricingPackages && (
                 <div
                   className='agd-packages-grid'
                   data-count={config.pricing.packages.length}
                 >
                   {config.pricing.packages.map((pkg, idx) => (
-                    <div key={pkg.id || idx} className='agd-package-card'>
+                    <div
+                      key={pkg.id || idx}
+                      className={`agd-package-card ${isLightTheme ? 'agd-package-card--light' : ''}`}
+                    >
                       <div className='agd-package-name'>{pkg.name}</div>
                       <div className='agd-package-price'>${pkg.price}</div>
                       {pkg.description && (
@@ -599,13 +647,16 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Location Section */}
           {(trainingDetails.location?.name ||
             getFullAddress(trainingDetails.location)) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-map-pin' label='Location' />
+              <TileHead
+                icon='ti-map-pin'
+                label='Location'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
-                <InfoRow icon='ti-location-pin'>
+                <InfoRow icon='ti-location-pin' isLight={isLightTheme}>
                   {trainingDetails.location?.name && (
                     <strong>{trainingDetails.location.name}</strong>
                   )}
@@ -616,7 +667,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
               </ul>
               {getFullAddress(trainingDetails.location) && (
                 <a
-                  className='agd-map-link'
+                  className={`agd-map-link ${isLightTheme ? 'agd-map-link--light' : ''}`}
                   href={`https://www.google.com/maps/search/${encodeURIComponent([trainingDetails.location.name, getFullAddress(trainingDetails.location)].filter(Boolean).join(' '))}`}
                   target='_blank'
                   rel='noopener noreferrer'
@@ -627,25 +678,33 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Training Schedule - Only show if there are valid sessions */}
           {validSessions.length > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-calendar-event' label='Training Schedule' />
+              <TileHead
+                icon='ti-calendar-event'
+                label='Training Schedule'
+                isLight={isLightTheme}
+              />
               <div className='agd-sessions-container'>
-                {/* Simple sessions (date + location only) - shown in compact list */}
                 {simpleSessions.length > 0 && (
                   <div className='agd-sessions-simple-list'>
                     {simpleSessions.map((session) => (
-                      <SimpleSessionItem key={session.id} session={session} />
+                      <SimpleSessionItem
+                        key={session.id}
+                        session={session}
+                        isLight={isLightTheme}
+                      />
                     ))}
                   </div>
                 )}
-
-                {/* Detailed sessions (with time/grades) - shown in card layout */}
                 {detailedSessions.length > 0 && (
                   <div className='agd-sessions-detailed-list'>
                     {detailedSessions.map((session) => (
-                      <DetailedSessionItem key={session.id} session={session} />
+                      <DetailedSessionItem
+                        key={session.id}
+                        session={session}
+                        isLight={isLightTheme}
+                      />
                     ))}
                   </div>
                 )}
@@ -653,13 +712,20 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Important Notes Section */}
           {(trainingDetails.notes?.length || 0) > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-notes' label='Important Notes' />
+              <TileHead
+                icon='ti-notes'
+                label='Important Notes'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
                 {trainingDetails.notes.map((note, index) => (
-                  <InfoRow key={index} icon='ti-info-square'>
+                  <InfoRow
+                    key={index}
+                    icon='ti-info-square'
+                    isLight={isLightTheme}
+                  >
                     {note}
                   </InfoRow>
                 ))}
@@ -667,12 +733,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Contact Section */}
           {trainingDetails.contactEmail && (
             <div className='agd-tile'>
-              <TileHead icon='ti-mail' label='Contact' />
+              <TileHead icon='ti-mail' label='Contact' isLight={isLightTheme} />
               <ul className='agd-list'>
-                <InfoRow icon='ti-at'>
+                <InfoRow icon='ti-at' isLight={isLightTheme}>
                   <a
                     href={`mailto:${trainingDetails.contactEmail}`}
                     style={{ color: accent, textDecoration: 'none' }}
@@ -684,10 +749,8 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* FAQ Section */}
           <FAQSection />
 
-          {/* Bottom Orange CTA Button */}
           <div className='agd-tile agd-tile--cta-bottom'>
             <button className='agd-cta-bottom' onClick={handleRegister}>
               <i className='ti ti-user-plus' /> Register Now{' '}
@@ -708,9 +771,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       (tryoutDetails.tryoutSessions?.length || 0) > 0;
 
     if (!hasValidTryoutDetails) {
-      const accent = '#f59e0b';
+      const accent = isLightTheme ? '#f59e0b' : '#f59e0b';
       return (
-        <div className='agd-root'>
+        <div
+          className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}
+        >
           <div className='agd-event'>
             <div
               className='agd-tile agd-tile--hdr'
@@ -764,15 +829,13 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       );
     }
 
-    const accent = '#f59e0b';
+    const accent = isLightTheme ? '#f59e0b' : '#f59e0b';
     const sortAgeGroups = (groups: string[]): string[] => {
       return [...groups].sort((a, b) => {
         const aIsCollege = a.toLowerCase().includes('college');
         const bIsCollege = b.toLowerCase().includes('college');
-
         if (aIsCollege && !bIsCollege) return 1;
         if (!aIsCollege && bIsCollege) return -1;
-
         return a.localeCompare(b);
       });
     };
@@ -781,9 +844,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
       ? sortAgeGroups(tryoutDetails.ageGroups).join(', ')
       : '';
     const handleRegister = () => {
-      // Call the onRegister callback first
       onRegister?.();
-      // Then scroll to the registration section
       setTimeout(scrollToRegistration, 100);
     };
 
@@ -796,7 +857,9 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     );
 
     return (
-      <div className='agd-root'>
+      <div
+        className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}
+      >
         <div className='agd-event'>
           <div
             className='agd-tile agd-tile--hdr'
@@ -839,7 +902,6 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             )}
           </div>
 
-          {/* Top CTA Button */}
           <div className='agd-tile agd-tile--cta'>
             <button
               className='agd-cta'
@@ -854,18 +916,20 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </button>
           </div>
 
-          {/* About Tryouts - Only show if description has valid content */}
           {hasValidDescription(config?.description) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-article' label='About Tryouts' />
+              <TileHead
+                icon='ti-article'
+                label='About Tryouts'
+                isLight={isLightTheme}
+              />
               <div
-                className='agd-desc'
+                className={`agd-desc ${isLightTheme ? 'agd-desc--light' : ''}`}
                 dangerouslySetInnerHTML={{ __html: config.description! }}
               />
             </div>
           )}
 
-          {/* Tryout Details Section */}
           {(ageGroupsDisplay ||
             tryoutDetails.gender ||
             tryoutDetails.duration ||
@@ -874,40 +938,44 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             tryoutDetails.pickUpTime ||
             tryoutDetails.maxParticipants) && (
             <div className='agd-tile'>
-              <TileHead icon='ti-info-circle' label='Tryout Details' />
+              <TileHead
+                icon='ti-info-circle'
+                label='Tryout Details'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
                 {ageGroupsDisplay && (
-                  <InfoRow icon='ti-school'>
+                  <InfoRow icon='ti-school' isLight={isLightTheme}>
                     <strong>Age Groups:</strong> {ageGroupsDisplay}
                   </InfoRow>
                 )}
                 {tryoutDetails.gender && (
-                  <InfoRow icon='ti-gender-bigender'>
+                  <InfoRow icon='ti-gender-bigender' isLight={isLightTheme}>
                     <strong>Gender:</strong> {tryoutDetails.gender}
                   </InfoRow>
                 )}
                 {tryoutDetails.duration && (
-                  <InfoRow icon='ti-clock-hour-4'>
+                  <InfoRow icon='ti-clock-hour-4' isLight={isLightTheme}>
                     <strong>Duration:</strong> {tryoutDetails.duration}
                   </InfoRow>
                 )}
                 {(tryoutDetails.days?.length || 0) > 0 && (
-                  <InfoRow icon='ti-calendar-week'>
+                  <InfoRow icon='ti-calendar-week' isLight={isLightTheme}>
                     <strong>Days:</strong> {formatDays(tryoutDetails.days)}
                   </InfoRow>
                 )}
                 {tryoutDetails.dropOffTime && (
-                  <InfoRow icon='ti-car'>
+                  <InfoRow icon='ti-car' isLight={isLightTheme}>
                     <strong>Check-in:</strong> {tryoutDetails.dropOffTime}
                   </InfoRow>
                 )}
                 {tryoutDetails.pickUpTime && (
-                  <InfoRow icon='ti-car'>
+                  <InfoRow icon='ti-car' isLight={isLightTheme}>
                     <strong>Pick-up:</strong> {tryoutDetails.pickUpTime}
                   </InfoRow>
                 )}
                 {tryoutDetails.maxParticipants && (
-                  <InfoRow icon='ti-users'>
+                  <InfoRow icon='ti-users' isLight={isLightTheme}>
                     <strong>Max Participants:</strong>{' '}
                     {tryoutDetails.maxParticipants}
                   </InfoRow>
@@ -916,11 +984,16 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Pricing Section for Tryouts */}
           {typeof config.tryoutFee === 'number' && config.tryoutFee > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-currency-dollar' label='Price' />
-              <div className='agd-base-price'>
+              <TileHead
+                icon='ti-currency-dollar'
+                label='Price'
+                isLight={isLightTheme}
+              />
+              <div
+                className={`agd-base-price ${isLightTheme ? 'agd-base-price--light' : ''}`}
+              >
                 <span className='agd-base-price-amount'>
                   ${config.tryoutFee}
                 </span>
@@ -929,18 +1002,18 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Locations section - supports multiple locations */}
           {tryoutLocations.length > 0 && (
             <div className='agd-tile'>
               <TileHead
                 icon='ti-map-pin'
                 label={tryoutLocations.length === 1 ? 'Location' : 'Locations'}
+                isLight={isLightTheme}
               />
               <div className='agd-locations'>
                 {tryoutLocations.map((location, idx) => (
                   <div key={idx} className='agd-location-item'>
                     <ul className='agd-list'>
-                      <InfoRow icon='ti-location-pin'>
+                      <InfoRow icon='ti-location-pin' isLight={isLightTheme}>
                         <strong>{location.name}</strong>
                         {location.name && getFullAddress(location) && <br />}
                         {getFullAddress(location)}
@@ -948,7 +1021,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
                     </ul>
                     {getFullAddress(location) && (
                       <a
-                        className='agd-map-link'
+                        className={`agd-map-link ${isLightTheme ? 'agd-map-link--light' : ''}`}
                         href={`https://www.google.com/maps/search/${encodeURIComponent([location.name, getFullAddress(location)].filter(Boolean).join(' '))}`}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -963,25 +1036,33 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Tryout Schedule - Only show if there are valid sessions */}
           {validTryoutSessions.length > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-calendar-event' label='Tryout Schedule' />
+              <TileHead
+                icon='ti-calendar-event'
+                label='Tryout Schedule'
+                isLight={isLightTheme}
+              />
               <div className='agd-sessions-container'>
-                {/* Simple sessions (date + location only) - shown in compact list */}
                 {simpleTryoutSessions.length > 0 && (
                   <div className='agd-sessions-simple-list'>
                     {simpleTryoutSessions.map((session) => (
-                      <SimpleSessionItem key={session.id} session={session} />
+                      <SimpleSessionItem
+                        key={session.id}
+                        session={session}
+                        isLight={isLightTheme}
+                      />
                     ))}
                   </div>
                 )}
-
-                {/* Detailed sessions (with time/grades) - shown in card layout */}
                 {detailedTryoutSessions.length > 0 && (
                   <div className='agd-sessions-detailed-list'>
                     {detailedTryoutSessions.map((session) => (
-                      <DetailedSessionItem key={session.id} session={session} />
+                      <DetailedSessionItem
+                        key={session.id}
+                        session={session}
+                        isLight={isLightTheme}
+                      />
                     ))}
                   </div>
                 )}
@@ -989,13 +1070,16 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* What to Bring Section */}
           {(tryoutDetails.whatToBring?.length || 0) > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-backpack' label='What to Bring' />
+              <TileHead
+                icon='ti-backpack'
+                label='What to Bring'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
                 {tryoutDetails.whatToBring.map((item, idx) => (
-                  <InfoRow key={idx} icon='ti-check'>
+                  <InfoRow key={idx} icon='ti-check' isLight={isLightTheme}>
                     {item}
                   </InfoRow>
                 ))}
@@ -1003,13 +1087,20 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Important Notes Section */}
           {(tryoutDetails.notes?.length || 0) > 0 && (
             <div className='agd-tile'>
-              <TileHead icon='ti-notes' label='Important Notes' />
+              <TileHead
+                icon='ti-notes'
+                label='Important Notes'
+                isLight={isLightTheme}
+              />
               <ul className='agd-list'>
                 {tryoutDetails.notes.map((note, idx) => (
-                  <InfoRow key={idx} icon='ti-info-square'>
+                  <InfoRow
+                    key={idx}
+                    icon='ti-info-square'
+                    isLight={isLightTheme}
+                  >
                     {note}
                   </InfoRow>
                 ))}
@@ -1017,12 +1108,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* Contact Section */}
           {tryoutDetails.contactEmail && (
             <div className='agd-tile'>
-              <TileHead icon='ti-mail' label='Contact' />
+              <TileHead icon='ti-mail' label='Contact' isLight={isLightTheme} />
               <ul className='agd-list'>
-                <InfoRow icon='ti-at'>
+                <InfoRow icon='ti-at' isLight={isLightTheme}>
                   <a
                     href={`mailto:${tryoutDetails.contactEmail}`}
                     style={{ color: accent, textDecoration: 'none' }}
@@ -1034,10 +1124,8 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
           )}
 
-          {/* FAQ Section */}
           <FAQSection />
 
-          {/* Bottom Orange CTA Button */}
           <div className='agd-tile agd-tile--cta-bottom'>
             <button className='agd-cta-bottom' onClick={handleRegister}>
               <i className='ti ti-user-plus' /> Register for Tryout{' '}
@@ -1049,9 +1137,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     );
   }
 
-  // Fallback for when no details are available
+  // Fallback
   return (
-    <div className='agd-root'>
+    <div
+      className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}
+    >
       <div className='agd-event'>
         <div
           className='agd-tile agd-tile--hdr'
@@ -1090,7 +1180,6 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
           </button>
         </div>
         <FAQSection />
-        {/* Bottom Orange CTA Button for fallback */}
         <div className='agd-tile agd-tile--cta-bottom'>
           <button className='agd-cta-bottom' onClick={() => onRegister?.()}>
             <i className='ti ti-user-plus' /> Register Now{' '}

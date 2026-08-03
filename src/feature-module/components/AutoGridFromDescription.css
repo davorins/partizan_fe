@@ -1,17 +1,337 @@
+/* ── Root ── */
 .agd-root {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #fff;
   width: 70%;
   margin: auto;
   margin-top: 3rem;
 }
 
-/* tabs */
+/* ── Dark Theme (Default) ── */
+.agd-root--dark {
+  color: #fff;
+}
+
+.agd-root--dark .agd-tile {
+  background: rgba(255, 255, 255, 0.065);
+  border-radius: 16px;
+  padding: 18px 20px;
+  background-image: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    transparent 60%
+  );
+  transition: background 0.2s;
+}
+
+.agd-root--dark .agd-tile:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.agd-root--dark .agd-title {
+  color: #fff;
+}
+
+.agd-root--dark .agd-sub {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.agd-root--dark .agd-head {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.agd-root--dark .agd-row {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.agd-root--dark .agd-row strong {
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.agd-root--dark .agd-desc {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.agd-root--dark .agd-session-simple {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.agd-root--dark .agd-session-simple:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.agd-root--dark .agd-session-simple-date,
+.agd-root--dark .agd-session-simple-location {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.agd-root--dark .agd-session-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.agd-root--dark .agd-session-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.agd-root--dark .agd-session-date {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.agd-root--dark .agd-session-time-range {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.agd-root--dark .agd-session-grades {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.agd-root--dark .agd-session-location-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.agd-root--dark .agd-session-location-address {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.agd-root--dark .agd-session-simple-separator {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.agd-root--dark .agd-base-price {
+  background: rgba(89, 66, 48, 0.15);
+  border: 1px solid rgba(89, 66, 48, 0.3);
+}
+
+.agd-root--dark .agd-base-price-amount {
+  color: #fff;
+}
+
+.agd-root--dark .agd-base-price-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.agd-root--dark .agd-package-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.agd-root--dark .agd-package-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(89, 66, 48, 0.4);
+}
+
+.agd-root--dark .agd-package-name {
+  color: #fff;
+}
+
+.agd-root--dark .agd-package-description {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.agd-root--dark .agd-tile--faq {
+  background: linear-gradient(
+    135deg,
+    rgba(89, 66, 48, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 100%
+  );
+  border: 1px solid rgba(89, 66, 48, 0.2);
+}
+
+.agd-root--dark .agd-faq-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.agd-root--dark .agd-faq-link {
+  background: rgba(89, 66, 48, 0.8);
+  color: #fff;
+}
+
+.agd-root--dark .agd-faq-link:hover {
+  background: rgba(89, 66, 48, 1);
+}
+
+.agd-root--dark .agd-tile--cta-bottom {
+  background: rgba(255, 140, 0, 0.1);
+  border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+/* ── Light Theme ── */
+.agd-root--light {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-tile {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(89, 66, 48, 0.1);
+  background-image: none;
+}
+
+.agd-root--light .agd-tile:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.agd-root--light .agd-title {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-sub {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-head {
+  color: #6a6a7a;
+}
+
+.agd-root--light .agd-row {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-row strong {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-desc {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-session-simple {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(89, 66, 48, 0.08);
+}
+
+.agd-root--light .agd-session-simple:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agd-root--light .agd-session-simple-date,
+.agd-root--light .agd-session-simple-location {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-session-card {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(89, 66, 48, 0.08);
+}
+
+.agd-root--light .agd-session-card:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agd-root--light .agd-session-date {
+  color: #4a4a5a;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agd-root--light .agd-session-time-range {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-session-grades {
+  color: #4a4a5a;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.agd-root--light .agd-session-location-name {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-session-location-address {
+  color: #6a6a7a;
+}
+
+.agd-root--light .agd-session-simple-separator {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+.agd-root--light .agd-base-price {
+  background: rgba(89, 66, 48, 0.08);
+  border: 1px solid rgba(89, 66, 48, 0.15);
+}
+
+.agd-root--light .agd-base-price-amount {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-base-price-label {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-package-card {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(89, 66, 48, 0.1);
+}
+
+.agd-root--light .agd-package-card:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.agd-root--light .agd-package-name {
+  color: #1a1a2e;
+}
+
+.agd-root--light .agd-package-description {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-tile--faq {
+  background: rgba(89, 66, 48, 0.06);
+  border: 1px solid rgba(89, 66, 48, 0.15);
+}
+
+.agd-root--light .agd-faq-text {
+  color: #4a4a5a;
+}
+
+.agd-root--light .agd-faq-link {
+  background: rgba(89, 66, 48, 0.9);
+  color: #fff;
+}
+
+.agd-root--light .agd-faq-link:hover {
+  background: rgba(89, 66, 48, 1);
+}
+
+.agd-root--light .agd-tile--cta-bottom {
+  background: rgba(255, 140, 0, 0.08);
+  border: 1px solid rgba(255, 140, 0, 0.2);
+}
+
+.agd-root--light .agd-tile--hdr {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.agd-root--light .agd-hdr-icon {
+  border-color: rgba(89, 66, 48, 0.2);
+}
+
+.agd-root--light .agd-session-location-icon {
+  color: rgba(89, 66, 48, 0.7);
+}
+
+.agd-root--light .agd-session-map-link {
+  color: rgba(89, 66, 48, 0.7);
+}
+
+.agd-root--light .agd-session-map-link:hover {
+  color: rgba(89, 66, 48, 1);
+}
+
+.agd-root--light .agd-package-price {
+  color: #594230;
+}
+
+/* ── Shared Styles ── */
 .agd-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 14px;
 }
+
 .agd-tab {
   flex: 1;
   padding: 10px 14px;
@@ -29,22 +349,24 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .agd-tab:hover {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.85);
 }
+
 .agd-tab.is-active {
   background: rgba(255, 255, 255, 0.11);
   color: #fff;
 }
 
-/* event animation */
 .agd-event {
   display: flex;
   flex-direction: column;
   gap: 10px;
   animation: agd-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
 @keyframes agd-up {
   from {
     opacity: 0;
@@ -56,28 +378,11 @@
   }
 }
 
-/* base tile */
-.agd-tile {
-  background: rgba(255, 255, 255, 0.065);
-  /* border: 1px solid rgba(255, 255, 255, 0.1); */
-  border-radius: 16px;
-  padding: 18px 20px;
-  background-image: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    transparent 60%
-  );
-  transition: background 0.2s;
-}
-.agd-tile:hover {
-  background: rgba(255, 255, 255, 0.09);
-}
-
-/* header tile */
 .agd-tile--hdr {
   text-align: center;
   padding: 26px 22px 20px;
 }
+
 .agd-hdr-icon {
   width: 50px;
   height: 50px;
@@ -89,22 +394,23 @@
   margin-bottom: 12px;
   font-size: 1.5rem;
 }
+
 .agd-title {
   font-size: 1.1rem;
   font-weight: 800;
   margin: 0 0 8px;
-  color: #fff;
   line-height: 1.3;
 }
+
 .agd-sub {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: rem;
+  font-size: 0.95rem;
   margin: 4px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 }
+
 .agd-badge {
   display: inline-block;
   margin-top: 12px;
@@ -117,7 +423,6 @@
   text-transform: uppercase;
 }
 
-/* tile heading */
 .agd-head {
   display: flex;
   align-items: center;
@@ -127,10 +432,8 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
 }
 
-/* info list */
 .agd-list {
   list-style: none;
   margin: 0;
@@ -139,70 +442,29 @@
   flex-direction: column;
   gap: 8px;
 }
+
 .agd-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   font-size: 0.86rem;
-  color: rgba(255, 255, 255, 0.78);
   line-height: 1.45;
 }
-.agd-row strong {
-  color: rgba(255, 255, 255, 0.94);
+
+.agd-row i {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-/* map link */
 .agd-map-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   margin-top: 10px;
-  color: rgba(89, 66, 48, 0.75);
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
-}
-.agd-map-link:hover {
-  color: rgba(89, 66, 48, 1);
-}
-
-/* schedule */
-.agd-sched {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.agd-srow {
-  display: flex;
-  align-items: center;
-  padding: 9px 14px;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: background 0.15s;
-}
-.agd-srow:last-child {
-  border-bottom: none;
-}
-.agd-srow:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.025);
-}
-.agd-srow:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-.agd-stime {
-  flex-shrink: 0;
-  width: 148px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-}
-.agd-slabel {
-  font-size: 0.83rem;
-  color: rgba(255, 255, 255, 0.78);
-  display: flex;
-  align-items: center;
 }
 
 .agd-sessions-container {
@@ -211,7 +473,6 @@
   gap: 12px;
 }
 
-/* Simple Session Styles (date + location only) */
 .agd-sessions-simple-list {
   display: flex;
   flex-direction: column;
@@ -221,15 +482,8 @@
 
 .agd-session-simple {
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.04);
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.2s ease;
-}
-
-.agd-session-simple:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .agd-session-simple-content {
@@ -245,12 +499,10 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
 }
 
 .agd-session-simple-date i,
 .agd-session-simple-location i {
-  color: rgba(255, 140, 0, 0.7);
   font-size: 1rem;
 }
 
@@ -263,12 +515,10 @@
 }
 
 .agd-session-simple-separator {
-  color: rgba(255, 255, 255, 0.3);
   font-size: 0.9rem;
   font-weight: 400;
 }
 
-/* Detailed Session Styles (with time/grades) */
 .agd-sessions-detailed-list {
   display: flex;
   flex-direction: column;
@@ -276,16 +526,9 @@
 }
 
 .agd-session-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 14px;
   transition: all 0.2s ease;
-}
-
-.agd-session-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .agd-session-header {
@@ -307,11 +550,9 @@
 .agd-session-date {
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
   padding: 4px 10px;
   border-radius: 20px;
 }
@@ -319,7 +560,6 @@
 .agd-session-time-range {
   font-size: 0.85rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -328,11 +568,9 @@
 .agd-session-grades {
   font-size: 0.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
   padding: 4px 10px;
   border-radius: 20px;
 }
@@ -348,7 +586,6 @@
 }
 
 .agd-session-location-icon {
-  color: rgba(255, 140, 0, 0.7);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -360,14 +597,12 @@
 .agd-session-location-name {
   font-weight: 600;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.9);
   display: block;
   margin-bottom: 2px;
 }
 
 .agd-session-location-address {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.55);
   display: block;
   margin-bottom: 6px;
 }
@@ -377,80 +612,15 @@
   align-items: center;
   gap: 4px;
   font-size: 0.7rem;
-  color: rgba(89, 66, 48, 0.7);
   text-decoration: none;
   margin-top: 4px;
+  transition: color 0.2s;
 }
 
-.agd-session-map-link:hover {
-  color: rgba(89, 66, 48, 1);
-}
-
-.agd-srow-with-location {
-  display: flex;
-  flex-direction: column;
-  padding: 12px 14px;
-}
-
-.agd-srow-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.agd-srow-location {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.agd-srow-location i {
-  font-size: 0.7rem;
-}
-
-/* price */
-.agd-tile--price {
-  text-align: center;
-  background: rgba(89, 66, 48, 1);
-}
-.agd-price {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  margin-top: 2px;
-}
-.agd-pamount {
-  font-size: 2.4rem;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.agd-pper {
-  font-size: 0.74rem;
-  color: rgba(255, 255, 255, 1);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* description */
-.agd-desc {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.68);
-  line-height: 1.65;
-  margin: 0;
-}
-
-/* CTA */
 .agd-tile--cta {
   text-align: center;
 }
+
 .agd-cta {
   width: 100%;
   padding: 13px 20px;
@@ -468,32 +638,14 @@
   cursor: pointer;
   transition: all 0.22s ease;
 }
+
 .agd-cta:hover {
   transform: translateY(-2px);
   filter: brightness(1.1);
 }
+
 .agd-cta:active {
   transform: translateY(0);
-}
-.agd-cta-note {
-  margin: 8px 0 0;
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-/* FAQ Section Styles */
-.agd-tile--faq {
-  background: linear-gradient(
-    135deg,
-    rgba(89, 66, 48, 0.1) 0%,
-    rgba(147, 51, 234, 0.1) 100%
-  );
-  border: 1px solid rgba(89, 66, 48, 0.2);
-  text-align: center;
 }
 
 .agd-faq-content {
@@ -505,7 +657,6 @@
 
 .agd-faq-text {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
   margin: 0;
   line-height: 1.5;
 }
@@ -515,9 +666,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(89, 66, 48, 0.8);
   border-radius: 20px;
-  color: #fff;
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
@@ -525,20 +674,15 @@
 }
 
 .agd-faq-link:hover {
-  background: rgba(89, 66, 48, 1);
   transform: translateX(4px);
-  color: #fff;
 }
 
 .agd-faq-link i {
   font-size: 1rem;
 }
 
-/* Bottom Orange CTA Button */
 .agd-tile--cta-bottom {
   text-align: center;
-  background: rgba(255, 140, 0, 0.1);
-  border: 1px solid rgba(255, 140, 0, 0.3);
 }
 
 .agd-cta-bottom {
@@ -546,7 +690,6 @@
   padding: 13px 20px;
   border: none;
   border-radius: 12px;
-  color: var(--dark-0);
   font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -557,10 +700,10 @@
   gap: 10px;
   cursor: pointer;
   transition: all 0.22s ease;
-  /* background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%); */
-  background: var(--gold-bright);
+  background: var(--gold-bright, #e8c84a);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(89, 66, 48, 0.4);
+  color: var(--dark-0, #07080c);
 }
 
 .agd-cta-bottom:hover {
@@ -573,7 +716,6 @@
   transform: translateY(0);
 }
 
-/* Multiple locations support (legacy) */
 .agd-location-item {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
@@ -595,35 +737,29 @@
 .agd-base-price {
   text-align: center;
   padding: 16px;
-  background: rgba(89, 66, 48, 0.15);
   border-radius: 12px;
   margin-bottom: 20px;
-  border: 1px solid rgba(89, 66, 48, 0.3);
 }
 
 .agd-base-price-amount {
   font-size: 2rem;
   font-weight: 900;
   display: block;
-  color: #fff;
   letter-spacing: -0.02em;
 }
 
 .agd-base-price-label {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Pricing Packages Grid - Custom layout based on number of items */
 .agd-packages-grid {
   display: grid;
   gap: 16px;
   margin-top: 8px;
 }
 
-/* 1 item - single column, centered */
 .agd-packages-grid[data-count='1'] {
   grid-template-columns: 1fr;
   max-width: 400px;
@@ -631,39 +767,31 @@
   margin-right: auto;
 }
 
-/* 2 items - 1 row, 2 columns */
 .agd-packages-grid[data-count='2'] {
   grid-template-columns: repeat(2, 1fr);
 }
 
-/* 3 items - 1 row, 3 columns */
 .agd-packages-grid[data-count='3'] {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* 4 items - 2 rows, 2 columns */
 .agd-packages-grid[data-count='4'] {
   grid-template-columns: repeat(2, 1fr);
 }
 
-/* 5 items - 2 rows: first row 3 columns, second row 2 columns */
 .agd-packages-grid[data-count='5'] {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* 6 items - 2 rows, 3 columns */
 .agd-packages-grid[data-count='6'] {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Default fallback for any other count */
 .agd-packages-grid:not([data-count]) {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .agd-package-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 16px;
   transition: all 0.2s ease;
@@ -671,43 +799,31 @@
 }
 
 .agd-package-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(89, 66, 48, 0.4);
   transform: translateY(-2px);
 }
 
 .agd-package-name {
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
   margin-bottom: 8px;
 }
 
 .agd-package-price {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #e8c84a;
   margin-bottom: 8px;
 }
 
 .agd-package-description {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
   line-height: 1.4;
 }
 
-/* Special styling for the 5th item in a 5-item grid to make it span correctly */
-.agd-packages-grid[data-count='5'] .agd-package-card:nth-child(4),
-.agd-packages-grid[data-count='5'] .agd-package-card:nth-child(5) {
-  grid-column: span 1;
-}
-
-/* For 5 items, center the last two items */
 .agd-packages-grid[data-count='5'] {
   justify-content: center;
 }
 
-/* responsive */
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .agd-root {
     width: 90%;
@@ -738,10 +854,8 @@
   .agd-session-simple-date::after {
     content: '→';
     margin-left: 8px;
-    color: rgba(255, 255, 255, 0.3);
   }
 
-  /* Mobile: all grids become 1 column */
   .agd-packages-grid[data-count='2'],
   .agd-packages-grid[data-count='3'],
   .agd-packages-grid[data-count='4'],
@@ -761,11 +875,6 @@
     margin-top: 1rem;
   }
 
-  .agd-stime {
-    width: auto;
-    font-size: 0.72rem;
-  }
-
   .agd-title {
     font-size: 1rem;
   }
@@ -776,15 +885,6 @@
 
   .agd-tile--hdr {
     padding: 20px 16px 16px;
-  }
-
-  .agd-pamount {
-    font-size: 2rem;
-  }
-
-  .agd-srow-main {
-    flex-direction: column;
-    align-items: flex-start;
   }
 
   .agd-session-simple-date,

@@ -174,9 +174,6 @@
   border-radius: 25px;
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
-  /* box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1); */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -198,13 +195,6 @@
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  background: linear-gradient(
-    180deg,
-    rgba(89, 66, 48, 0.95) 0%,
-    rgba(89, 66, 48, 0.8) 10%,
-    rgba(89, 66, 48, 0.5) 50%,
-    rgba(89, 66, 48, 0.3) 90%
-  );
   backdrop-filter: blur(2px);
   max-height: 100%;
   overflow-y: auto;
@@ -243,7 +233,6 @@
   margin-bottom: 16px;
   min-height: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .reg-description::-webkit-scrollbar {
@@ -261,7 +250,6 @@
 }
 
 .reg-description-content {
-  color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -278,7 +266,6 @@
 
 .reg-description-content strong {
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
 }
 
 .reg-description-content a {
@@ -304,7 +291,6 @@
   overflow-x: hidden;
   min-height: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 /* Also target form elements at any depth within the wrapper */
@@ -318,7 +304,6 @@
   overflow-x: hidden;
   min-height: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 /* Scrollbar styling for all scrollable elements */
@@ -389,60 +374,6 @@
   font-size: 0.9rem;
 }
 
-/* Form Overrides for Glass Theme */
-.reg-form-wrapper .form-label,
-.reg-form-content .form-label {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.8rem;
-  margin-bottom: 4px;
-}
-
-.reg-form-wrapper .form-label {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-.reg-form-wrapper .btn-primary {
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  color: white;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.reg-form-wrapper .btn-primary:hover {
-  background: rgba(89, 66, 48, 1);
-  transform: translateY(-2px);
-}
-
-.reg-form-wrapper .form-check-label {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.8rem;
-}
-
-.reg-form-wrapper .form-content .form-check-input {
-  background-color: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-.reg-form-wrapper .form-content .form-check-input:checked {
-  background-color: rgba(89, 66, 48, 1);
-  border-color: rgba(89, 66, 48, 1);
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
-}
-
-.reg-form-wrapper .form-content,
-.reg-form-wrapper .card {
-  max-width: 640px;
-  margin: 0 auto;
-  color: rgba(0, 0, 0, 0.75);
-}
-
-.tryout-registration-form .step-indicator {
-  margin-top: 4rem;
-}
-
 /* Multi-form mode container */
 .reg-hub-multi {
   display: flex;
@@ -455,12 +386,6 @@
 
 /* Toggle Button Styles */
 .reg-toggle-btn {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-  border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 12px;
   padding: 12px 20px;
   cursor: pointer;
@@ -468,7 +393,6 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -501,31 +425,13 @@
   height: 300px;
 }
 
-.reg-toggle-btn:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.95) 100%
-  );
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
 .reg-toggle-back-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
   margin-bottom: 16px;
   margin-top: 0;
   flex-shrink: 0;
   width: 85%;
   margin: auto;
   margin-bottom: 3rem;
-}
-
-.reg-toggle-back-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Animations */
@@ -627,24 +533,12 @@
   margin-bottom: 1rem;
 }
 
-.reg-form-wrapper .card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.reg-form-wrapper .card-header {
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .reg-form-card .form-header h2 {
-  color: rgba(255, 255, 255, 1) !important;
   font-size: 2.5rem;
   text-transform: uppercase;
 }
 
 .reg-form-card .form-header p {
-  color: rgba(255, 255, 255, 0.75);
   font-size: 1.25rem;
   margin-bottom: 4rem;
   font-weight: 500;
@@ -661,30 +555,12 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
   font-size: 20px;
   margin: 0 auto 12px;
   border: 2px solid;
   transition: all 0.3s ease;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.15);
-  border-color: rgba(255, 255, 255, 0.7);
-}
-
-.reg-form-card .step.completed .step-icon-wrapper {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 3px solid;
-  border-color: rgba(255, 255, 255, 1);
-  color: rgba(0, 0, 0, 1);
-}
-
-.reg-form-card .step.active .step-icon-wrapper {
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 2px solid;
-  border-color: rgba(255, 255, 255, 1);
-  color: rgba(255, 255, 255, 1);
-  transform: scale(1.05);
 }
 
 .reg-form-card .step-icon-wrapper::before {
@@ -703,51 +579,12 @@
   font-size: 26px;
 }
 
-.reg-form-card .step-indicator .step-label {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.reg-form-card .step-indicator .step.active .step-label {
-  color: rgba(255, 255, 255, 1);
-}
-
-.reg-form-card .step-indicator .step.completed .step-label {
-  color: rgba(255, 255, 255, 0.75);
-}
-
 .reg-form-card .step-indicator .step-connector {
   flex: 1 1;
   height: 3px;
-  background-color: rgba(255, 255, 255, 0.2);
   margin: 0 0.5rem;
   margin-top: 18px;
   min-width: 20px;
-}
-
-.step.completed + .step-connector::before {
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.reg-form-wrapper .form-content .btn.btn-primary:hover,
-.reg-form-wrapper .form-content .btn.btn-primary:focus {
-  background: rgba(0, 0, 0, 1);
-}
-
-.reg-form-wrapper .form-content .btn.btn-secondary {
-  width: 40%;
-  background-color: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(0, 0, 0, 0.75);
-}
-
-.reg-form-wrapper .form-content .btn-outline-secondary {
-  border: 1px solid rgba(0, 0, 0, 0.75) !important;
-  color: rgba(0, 0, 0, 0.75) !important;
-}
-
-.reg-form-wrapper .form-content .btn-outline-secondary:hover {
-  background-color: rgba(0, 0, 0, 1) !important;
-  color: rgba(255, 255, 255, 1) !important;
 }
 
 /* ============================================
@@ -756,10 +593,6 @@
 
 /* Main wrapper with glass effect */
 .reg-form-card .form-embed-wrapper {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(12px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 20px !important;
   padding: 24px !important;
   margin: 0 auto !important;
@@ -795,12 +628,6 @@
   left: 100%;
 }
 
-.reg-form-card .form-embed-wrapper:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-}
-
 /* Form container */
 .reg-form-card .form-container {
   position: relative;
@@ -812,12 +639,10 @@
   font-size: 1.3rem;
   font-weight: 800;
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.95);
   letter-spacing: -0.01em;
 }
 
 .reg-form-card .form-container .text-muted {
-  color: rgba(255, 255, 255, 0.55) !important;
   font-size: 0.85rem;
   margin-bottom: 20px;
   line-height: 1.5;
@@ -825,8 +650,6 @@
 
 /* Tournament info box */
 .reg-form-card .form-container .tournament-info {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 16px !important;
   padding: 20px !important;
   margin-bottom: 24px !important;
@@ -838,15 +661,10 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.65);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.reg-form-card .form-container .tournament-info h4 svg {
-  stroke: rgba(89, 66, 48, 0.8);
 }
 
 /* Info rows */
@@ -863,7 +681,6 @@
 }
 
 .reg-form-card .form-container .tournament-info strong {
-  color: rgba(255, 255, 255, 0.9);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -872,19 +689,12 @@
   gap: 6px;
 }
 
-.reg-form-card .form-container .tournament-info strong svg {
-  stroke: rgba(89, 66, 48, 0.7);
-  width: 14px;
-  height: 14px;
-}
-
 .reg-form-card .form-container .tournament-info .mb-2 {
   margin-bottom: 12px;
 }
 
 .reg-form-card .form-container .tournament-info .mb-2 > div,
 .reg-form-card .form-container .tournament-info .mb-2 > div > div {
-  color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
   line-height: 1.4;
   margin-top: 4px;
@@ -900,13 +710,11 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 16px;
 }
 
 /* Form labels */
 .reg-form-card .form-container .form-label {
-  color: rgba(255, 255, 255, 0.7);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -919,13 +727,10 @@
   color: #e82646 !important;
 }
 
-/* Form inputs with glass effect */
+/* Form inputs */
 .reg-form-card .form-container .form-control {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 12px !important;
   padding: 10px 14px !important;
-  color: rgba(255, 255, 255, 0.9) !important;
   font-size: 0.85rem !important;
   transition: all 0.2s ease !important;
   width: 100%;
@@ -933,13 +738,7 @@
 
 .reg-form-card .form-container .form-control:focus {
   outline: none !important;
-  border-color: rgba(89, 66, 48, 0.5) !important;
-  background: rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
-}
-
-.reg-form-card .form-container .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Form groups spacing */
@@ -949,15 +748,9 @@
 
 /* Button styling - matches agd-cta */
 .reg-form-card .form-container .btn-primary {
-  background: linear-gradient(
-    135deg,
-    rgba(89, 66, 48, 0.9) 0%,
-    rgba(89, 66, 48, 0.9) 100%
-  ) !important;
   border: none !important;
   border-radius: 12px !important;
   padding: 12px 20px !important;
-  color: #fff !important;
   font-size: 0.85rem !important;
   font-weight: 800 !important;
   letter-spacing: 0.04em !important;
@@ -975,7 +768,6 @@
 .reg-form-card .form-container .btn-primary:hover {
   transform: translateY(-2px);
   filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3);
 }
 
 .reg-form-card .form-container .btn-primary:active {
@@ -1040,71 +832,6 @@
   margin: 0 auto;
 }
 
-.reg-hub-embedded .reg-form-card .form-container .payment-step .card,
-.reg-form-card .form-container .tournament-info {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 24px;
-  backdrop-filter: blur(4px);
-  color: rgba(0, 0, 0, 1) !important;
-}
-
-.reg-hub-embedded .reg-form-card .form-container .card .btn-outline-secondary {
-  background-color: transparent !important;
-  border: 1px solid #ffffff !important;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-  color: #000000 !important;
-}
-
-.reg-hub-embedded
-  .reg-form-card
-  .form-container
-  .card
-  .btn-outline-secondary.active {
-  background-color: #000000 !important;
-  border: 1px solid #000000 !important;
-  color: #ffffff !important;
-}
-
-.reg-hub-embedded
-  .reg-form-card
-  .form-container
-  .card
-  .mt-2.text-primary.fw-bold {
-  color: #000000 !important;
-  margin-top: 25px !important;
-}
-
-.reg-hub-embedded .reg-form-card .form-container .payment-summary-card {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 3px 10px rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  color: #000000;
-  margin-bottom: 2rem;
-  font-size: 1.15rem;
-  padding: 20px;
-}
-
-.reg-form-card .form-container .card h3,
-.reg-form-card .form-container .card .card-title,
-.reg-form-card .form-container .card .text-muted,
-.reg-form-card .form-container .card .form-label,
-.reg-form-card .form-container .tournament-info h4,
-.reg-form-card .form-container .tournament-info strong,
-.reg-form-card .form-container .tournament-info .mb-2 > div {
-  color: #000000 !important;
-}
-
-.reg-form-card .form-container .card .form-check-input {
-  border-color: rgba(0, 0, 0, 0.4) !important;
-}
-
-.reg-form-card .form-container .card .form-check-input:active {
-  background-color: rgba(0, 0, 0, 1) !important;
-}
-
 /* ============================================
    EMAIL VERIFICATION FORM FIXES
    ============================================ */
@@ -1131,16 +858,12 @@
 .reg-form-wrapper .input-group input.form-control {
   flex: 1;
   min-width: 200px;
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid rgba(0, 0, 0, 0.2) !important;
   border-radius: 12px !important;
   padding: 12px 16px 12px 48px !important;
-  color: #1a1a1a !important;
   font-size: 0.95rem !important;
 }
 
 .reg-form-wrapper .input-group input.form-control:focus {
-  border-color: rgba(89, 66, 48, 1) !important;
   outline: none;
   box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.2);
 }
@@ -1176,15 +899,9 @@
 
 /* Fix Verify Token button */
 .reg-form-wrapper .input-group .btn-primary {
-  background: linear-gradient(
-    135deg,
-    rgba(89, 66, 48, 0.9) 0%,
-    rgba(89, 66, 48, 0.9) 100%
-  ) !important;
   border: none !important;
   border-radius: 12px !important;
   padding: 12px 24px !important;
-  color: white !important;
   font-weight: 600 !important;
   white-space: nowrap;
   transition: all 0.2s ease;
@@ -1207,14 +924,12 @@
 .reg-form-wrapper .input-group .btn-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background: rgba(100, 100, 100, 0.7) !important;
   transform: none;
 }
 
 /* Resend link styling */
 .reg-form-wrapper .text-muted a,
 .reg-form-wrapper a[href='#'] {
-  color: rgba(89, 66, 48, 1) !important;
   text-decoration: none;
   font-weight: 500;
 }
@@ -1225,7 +940,6 @@
 
 /* Email display styling */
 .reg-form-wrapper strong {
-  color: rgba(0, 0, 0, 0.7) !important;
   font-weight: 600;
 }
 
@@ -1313,7 +1027,6 @@
     padding: 16px !important;
     -webkit-overflow-scrolling: touch !important;
     overflow-y: auto !important;
-    background: #000;
   }
 
   /* FORM WRAPPER */
@@ -1387,7 +1100,6 @@
     right: auto !important;
     width: 48px !important;
     height: 48px !important;
-    background: rgba(0, 0, 0, 0.75) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -1403,7 +1115,6 @@
 
   .reg-hub-multi .reg-back-btn:active {
     transform: scale(0.92) !important;
-    background: rgba(0, 0, 0, 0.9) !important;
     transition: transform 0.1s ease !important;
   }
 
@@ -1557,11 +1268,6 @@
   }
 
   /* TOGGLE BUTTONS GENERAL */
-  .reg-toggle-btn,
-  .reg-toggle-back-btn {
-    display: none;
-  }
-
   .reg-toggle-btn {
     background: linear-gradient(
       135deg,
@@ -1602,70 +1308,6 @@
   .reg-toggle-btn i,
   .reg-toggle-back-btn i {
     font-size: 1.2rem !important;
-  }
-
-  /* HTR-DOCK STYLES - Ensure it sits above footer with icons only */
-  .htr-dock {
-    position: fixed !important;
-    bottom: 32px !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 9999 !important;
-    backdrop-filter: blur(10px) !important;
-    display: flex !important;
-    justify-content: space-around !important;
-    align-items: center !important;
-    padding: 8px 16px !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-    transform: translateY(0) !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2) !important;
-  }
-
-  .htr-dock .dock-item,
-  .htr-dock a,
-  .htr-dock button {
-    flex: 1;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 4px !important;
-    padding: 8px 4px !important;
-    background: transparent !important;
-    border: none !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-    transition: all 0.2s ease !important;
-  }
-
-  .htr-dock .dock-item i,
-  .htr-dock a i,
-  .htr-dock button i {
-    font-size: 1.5rem !important;
-  }
-
-  .htr-dock .dock-item span,
-  .htr-dock a span,
-  .htr-dock button span {
-    font-size: 0.7rem !important;
-  }
-
-  .htr-dock .dock-item.active,
-  .htr-dock a.active,
-  .htr-dock button.active {
-    color: rgba(89, 66, 48, 1) !important;
-  }
-
-  .htr-dock .dock-item:hover,
-  .htr-dock a:hover,
-  .htr-dock button:hover {
-    color: rgba(255, 255, 255, 1) !important;
-    transform: translateY(-2px) !important;
-  }
-
-  .glow-effect {
-    display: none !important;
   }
 
   /* Ensure footer sits below the dock */
@@ -1764,23 +1406,6 @@
     padding: 10px 16px !important;
     font-size: 0.8rem !important;
   }
-
-  /* HTR-DOCK extra small */
-  .htr-dock {
-    padding: 4px 12px !important;
-  }
-
-  .htr-dock .dock-item i,
-  .htr-dock a i,
-  .htr-dock button i {
-    font-size: 1.3rem !important;
-  }
-
-  .htr-dock .dock-item span,
-  .htr-dock a span,
-  .htr-dock button span {
-    font-size: 0.6rem !important;
-  }
 }
 
 /* ============================================
@@ -1811,10 +1436,6 @@
         100px,
         calc(100px + env(safe-area-inset-bottom))
       ) !important;
-    }
-
-    .htr-dock {
-      padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
     }
   }
 
@@ -1890,25 +1511,399 @@
     padding: 10px 20px !important;
     min-height: 48px !important;
   }
-
-  .htr-dock {
-    padding: 4px 12px !important;
-  }
-
-  .htr-dock .dock-item i,
-  .htr-dock a i,
-  .htr-dock button i {
-    font-size: 1.2rem !important;
-  }
 }
 
-/* Theme toggle button - light mode */
-.hp-section--reg.light-theme .hp-theme-toggle {
-  background: rgba(89, 66, 48, 0.08);
-  border: 1px solid rgba(89, 66, 48, 0.15);
-  color: #1a1a2e;
+/* ════════════════════════════════════════════════════════════════
+   THEME STYLES
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Dark Theme ── */
+.hp-section--reg.dark-theme .reg-form-content {
+  background: linear-gradient(
+    180deg,
+    rgba(89, 66, 48, 0.95) 0%,
+    rgba(89, 66, 48, 0.8) 10%,
+    rgba(89, 66, 48, 0.5) 50%,
+    rgba(89, 66, 48, 0.3) 90%
+  );
+  color: #ffffff;
 }
 
-.hp-section--reg.light-theme .hp-theme-toggle:hover {
-  background: rgba(89, 66, 48, 0.15);
+.hp-section--reg.dark-theme .reg-form-content .form-control,
+.hp-section--reg.dark-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.dark-theme .reg-form-content select,
+.hp-section--reg.dark-theme .reg-form-content textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control:focus,
+.hp-section--reg.dark-theme .reg-form-content input:focus,
+.hp-section--reg.dark-theme .reg-form-content select:focus,
+.hp-section--reg.dark-theme .reg-form-content textarea:focus {
+  border-color: rgba(89, 66, 48, 0.5) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control::placeholder,
+.hp-section--reg.dark-theme .reg-form-content input::placeholder,
+.hp-section--reg.dark-theme .reg-form-content textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-header {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-header h4,
+.hp-section--reg.dark-theme .reg-form-content .card-header h5,
+.hp-section--reg.dark-theme .reg-form-content .card-header h6 {
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .text-muted {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .text-white {
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .text-warning,
+.hp-section--reg.dark-theme .reg-form-content .text-primary {
+  color: #e8c84a !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-warning {
+  background: rgba(253, 167, 0, 0.05) !important;
+  border-color: rgba(253, 167, 0, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-info {
+  background: rgba(30, 203, 226, 0.05) !important;
+  border-color: rgba(30, 203, 226, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-danger {
+  background: rgba(252, 0, 39, 0.05) !important;
+  border-color: rgba(252, 0, 39, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(89, 66, 48, 0.9) 0%,
+    rgba(89, 66, 48, 0.9) 100%
+  ) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.3);
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-secondary {
+  background: transparent !important;
+  border: 1.5px solid #e8c84a !important;
+  color: #e8c84a !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-secondary:hover {
+  background: rgba(89, 66, 48, 0.2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-label {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-input {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-input:checked {
+  background-color: #e8c84a !important;
+  border-color: #e8c84a !important;
+}
+
+/* Step indicator dark theme */
+.hp-section--reg.dark-theme .step-indicator .step-label {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.active .step-label {
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.completed .step-label {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step-number {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.active .step-number {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  color: #000000 !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.completed .step-number {
+  background-color: #5cb85c !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step-connector {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-toggle-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  ) !important;
+  border: 1px solid rgba(0, 0, 0, 0.5) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.hp-section--reg.dark-theme .reg-toggle-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  ) !important;
+}
+
+.hp-section--reg.dark-theme .reg-toggle-back-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-toggle-back-btn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ── Light Theme ── */
+.hp-section--reg.light-theme .reg-form-content {
+  background: #f5f0eb !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control,
+.hp-section--reg.light-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.light-theme .reg-form-content select,
+.hp-section--reg.light-theme .reg-form-content textarea {
+  background: #ffffff !important;
+  border: 1px solid rgba(89, 66, 48, 0.2) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control:focus,
+.hp-section--reg.light-theme .reg-form-content input:focus,
+.hp-section--reg.light-theme .reg-form-content select:focus,
+.hp-section--reg.light-theme .reg-form-content textarea:focus {
+  border-color: #594230 !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control::placeholder,
+.hp-section--reg.light-theme .reg-form-content input::placeholder,
+.hp-section--reg.light-theme .reg-form-content textarea::placeholder {
+  color: #9a9aaa !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-bottom: 1px solid rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header h4,
+.hp-section--reg.light-theme .reg-form-content .card-header h5,
+.hp-section--reg.light-theme .reg-form-content .card-header h6 {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-muted {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-white {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-warning,
+.hp-section--reg.light-theme .reg-form-content .text-primary {
+  color: #594230 !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert {
+  background: rgba(89, 66, 48, 0.05) !important;
+  border-color: rgba(89, 66, 48, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-warning {
+  background: rgba(253, 167, 0, 0.05) !important;
+  border-color: rgba(253, 167, 0, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-info {
+  background: rgba(30, 203, 226, 0.05) !important;
+  border-color: rgba(30, 203, 226, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-danger {
+  background: rgba(252, 0, 39, 0.05) !important;
+  border-color: rgba(252, 0, 39, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-primary {
+  background: #e8c84a !important;
+  color: #000000 !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(89, 66, 48, 0.2);
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-secondary {
+  background: transparent !important;
+  border: 1.5px solid #594230 !important;
+  color: #594230 !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-secondary:hover {
+  background: rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(89, 66, 48, 0.2) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input:checked {
+  background-color: #594230 !important;
+  border-color: #594230 !important;
+}
+
+/* Step indicator light theme */
+.hp-section--reg.light-theme .step-indicator .step-label {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.active .step-label {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.completed .step-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step-number {
+  background-color: #e9ecef !important;
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.active .step-number {
+  background-color: #594230 !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.completed .step-number {
+  background-color: #5cb85c !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step-connector {
+  background-color: rgba(89, 66, 48, 0.2) !important;
+}
+
+.hp-section--reg.light-theme .reg-toggle-btn {
+  background: rgba(89, 66, 48, 0.08) !important;
+  border: 1px solid rgba(89, 66, 48, 0.15) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-toggle-btn:hover {
+  background: rgba(89, 66, 48, 0.15) !important;
+}
+
+.hp-section--reg.light-theme .reg-toggle-back-btn {
+  background: rgba(89, 66, 48, 0.05) !important;
+  border-color: rgba(89, 66, 48, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-toggle-back-btn:hover {
+  background: rgba(89, 66, 48, 0.1) !important;
+}
+
+/* ── Theme Toggle Button ── */
+.hp-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hp-theme-toggle:hover {
+  transform: translateY(-2px);
+}
+
+.hp-theme-toggle .toggle-icon {
+  font-size: 1rem;
 }

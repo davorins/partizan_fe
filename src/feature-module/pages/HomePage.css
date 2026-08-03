@@ -615,16 +615,55 @@
 }
 
 /* ════════════════════════════════════════════════════════════════
-   REGISTRATION SECTION
+   REGISTRATION SECTION - THEME TOGGLE
    ════════════════════════════════════════════════════════════════ */
+
+/* ── Theme toggle button ── */
+.hp-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 40px;
+  color: var(--text-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hp-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.hp-theme-toggle .toggle-icon {
+  font-size: 1rem;
+}
+
+/* ── Light Theme (Default) ── */
 .hp-section--reg {
-  background: var(--dark-1);
   position: relative;
   overflow: hidden;
   isolation: isolate;
+  border-radius: 0;
+  transition:
+    background 0.5s ease,
+    color 0.5s ease;
 }
 
-.hp-section--reg::before {
+/* Light Theme Styles */
+.hp-section--reg.light-theme {
+  background: #f5f0eb;
+  box-shadow: inset 0 0 60px rgba(89, 66, 48, 0.05);
+}
+
+.hp-section--reg.light-theme::before {
   content: '';
   position: absolute;
   top: -10%;
@@ -635,55 +674,190 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 1;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 1;
   will-change: transform;
-  transition: transform 0.1s ease-out;
 }
 
-@media (min-width: 769px) {
-  .hp-section--reg {
-    transform-style: preserve-3d;
-  }
-  .hp-section--reg::before {
-    transform: translateZ(-1px) scale(1.5);
-    transition: transform 0.1s linear;
-  }
-  .hp-hero__bg {
-    transform: translate(-50%, -50%) translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-  }
+.hp-section--reg.light-theme .hp-section__label {
+  color: var(--gold);
 }
 
-.hp-section--reg .hp-section__inner {
-  position: relative;
+.hp-section--reg.light-theme .hp-section__title {
+  color: #1a1a2e;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  text-shadow: none;
+}
+
+.hp-section--reg.light-theme .hp-section__sub {
+  color: #4a4a5a;
+}
+
+.hp-section--reg.light-theme .reg-form-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(89, 66, 48, 0.15) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 32px rgba(89, 66, 48, 0.08) !important;
+  overflow: hidden;
+  transition: all 0.3s var(--ease-sport);
+}
+
+.hp-section--reg.light-theme .reg-form-content {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 32px !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+  border-radius: 20px;
+}
+
+.hp-section--reg.light-theme .reg-form-card .form-header h2 {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-card .form-header p {
+  color: #4a4a5a !important;
+}
+
+/* Tiles - Light */
+.hp-section--reg.light-theme .reg-tile {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(89, 66, 48, 0.12) !important;
+  border-radius: 20px !important;
+  padding: 32px 24px !important;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-sport);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.hp-section--reg.light-theme .reg-tile:hover {
+  background: #ffffff !important;
+  border-color: var(--gold) !important;
+  transform: translateY(-5px) !important;
+  box-shadow: 0 12px 32px rgba(89, 66, 48, 0.12) !important;
+}
+
+.hp-section--reg.light-theme .reg-tile-icon {
+  background: rgba(89, 66, 48, 0.08) !important;
+}
+
+.hp-section--reg.light-theme .reg-tile-icon i {
+  color: var(--gold) !important;
+}
+
+.hp-section--reg.light-theme .reg-tile-title {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-tile-subtitle {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .reg-tile-arrow {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .reg-tile:hover .reg-tile-arrow {
+  color: var(--gold) !important;
+}
+
+/* Form controls - Light */
+.hp-section--reg.light-theme .reg-form-content .form-control,
+.hp-section--reg.light-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.light-theme .reg-form-content select,
+.hp-section--reg.light-theme .reg-form-content textarea {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(89, 66, 48, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 6px 16px !important;
+  color: #1a1a2e !important;
+  font-size: 0.9rem !important;
+  transition: all 0.3s ease !important;
+  width: 100%;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control:focus,
+.hp-section--reg.light-theme .reg-form-content input:focus,
+.hp-section--reg.light-theme .reg-form-content select:focus,
+.hp-section--reg.light-theme .reg-form-content textarea:focus {
+  outline: none !important;
+  border-color: var(--gold) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.08) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control::placeholder,
+.hp-section--reg.light-theme .reg-form-content input::placeholder,
+.hp-section--reg.light-theme .reg-form-content textarea::placeholder {
+  color: #9a9aaa !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-bottom: 1px solid rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header h4,
+.hp-section--reg.light-theme .reg-form-content .card-header h5,
+.hp-section--reg.light-theme .reg-form-content .card-header h6 {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(89, 66, 48, 0.2) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input:checked {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ── Dark Theme ── */
+.hp-section--reg.dark-theme {
+  background: var(--dark-1);
+  box-shadow: none;
+}
+
+.hp-section--reg.dark-theme::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: 0;
+  right: 0;
+  bottom: -20%;
+  background-image: url('../../../public/assets/img/theme/bg-registration.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
   z-index: 1;
 }
 
-.hp-section--reg .hp-section__head::before {
-  background: var(--gold);
-  box-shadow: 0 0 15px rgba(89, 66, 48, 0.6);
-  animation: goldPulse 2s ease-in-out infinite;
-}
-
-@keyframes goldPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 15px rgba(89, 66, 48, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(89, 66, 48, 0.9);
-  }
-}
-
-.hp-section--reg .hp-section__label {
+.hp-section--reg.dark-theme .hp-section__label {
+  color: var(--gold);
   letter-spacing: 0.25em;
   font-weight: 700;
 }
 
-.hp-section--reg .hp-section__title {
+.hp-section--reg.dark-theme .hp-section__title {
   background: linear-gradient(135deg, #ffffff 0%, rgba(232, 200, 74, 0.9) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -691,13 +865,138 @@
   text-shadow: none;
 }
 
-.hp-section--reg .hp-section__sub {
+.hp-section--reg.dark-theme .hp-section__sub {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.hp-section--reg:hover::before {
-  opacity: 0.25;
-  transition: opacity 0.5s ease;
+.hp-section--reg.dark-theme .reg-form-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  overflow: hidden;
+  transition: all 0.3s var(--ease-sport);
+}
+
+.hp-section--reg.dark-theme .reg-form-content {
+  background: rgba(13, 15, 22, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 32px !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+  border-radius: 20px;
+}
+
+.hp-section--reg.dark-theme .reg-form-card .form-header h2 {
+  color: var(--text-1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-card .form-header p {
+  color: var(--text-2) !important;
+}
+
+/* Tiles - Dark */
+.hp-section--reg.dark-theme .reg-tile {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid var(--dark-border) !important;
+  border-radius: 20px !important;
+  padding: 32px 24px !important;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-sport);
+  text-align: center;
+}
+
+.hp-section--reg.dark-theme .reg-tile:hover {
+  background: rgba(89, 66, 48, 0.1) !important;
+  border-color: var(--gold) !important;
+  transform: translateY(-5px) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile-icon {
+  background: rgba(89, 66, 48, 0.15) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile-icon i {
+  color: var(--gold) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile-title {
+  color: var(--text-1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile-subtitle {
+  color: var(--text-3) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile-arrow {
+  color: var(--text-3) !important;
+}
+
+.hp-section--reg.dark-theme .reg-tile:hover .reg-tile-arrow {
+  color: var(--gold) !important;
+}
+
+/* Form controls - Dark */
+.hp-section--reg.dark-theme .reg-form-content .form-control,
+.hp-section--reg.dark-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.dark-theme .reg-form-content select,
+.hp-section--reg.dark-theme .reg-form-content textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 6px 16px !important;
+  color: var(--text-1) !important;
+  font-size: 0.9rem !important;
+  transition: all 0.3s ease !important;
+  width: 100%;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control:focus,
+.hp-section--reg.dark-theme .reg-form-content input:focus,
+.hp-section--reg.dark-theme .reg-form-content select:focus,
+.hp-section--reg.dark-theme .reg-form-content textarea:focus {
+  outline: none !important;
+  border-color: var(--gold) !important;
+  background: rgba(89, 66, 48, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control::placeholder,
+.hp-section--reg.dark-theme .reg-form-content input::placeholder,
+.hp-section--reg.dark-theme .reg-form-content textarea::placeholder {
+  color: var(--text-3) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-label {
+  color: var(--text-2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-header {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 1px solid var(--dark-border) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-header h4,
+.hp-section--reg.dark-theme .reg-form-content .card-header h5,
+.hp-section--reg.dark-theme .reg-form-content .card-header h6 {
+  color: var(--text-1) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-label {
+  color: var(--text-2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-input {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-input:checked {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
 }
 
 /* ── Section backgrounds ── */

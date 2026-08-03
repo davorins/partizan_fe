@@ -108,6 +108,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     sectionsRef.current[index] = el;
   };
 
+  const [isLightTheme, setIsLightTheme] = useState(true);
+
   // ─── Force video mute ────────────────────────────────────────────────────────
   // This effect ensures the promo video is always muted, even when the URL changes
   // or the component re-renders
@@ -145,6 +147,21 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       video.removeEventListener('volumechange', handleVolumeChange);
     };
   }, [promoVideoUrl]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('registrationTheme');
+    if (savedTheme) {
+      setIsLightTheme(savedTheme === 'light');
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setIsLightTheme((prev) => {
+      const newTheme = !prev;
+      localStorage.setItem('registrationTheme', newTheme ? 'light' : 'dark');
+      return newTheme;
+    });
+  }, []);
 
   // ─── Contact form handlers ──────────────────────────────────────────────────
   const handleContactChange = (
@@ -1084,7 +1101,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
           {/* ─── Registration Section ────────────────────────────────────────── */}
           {hasActiveRegistrationForms() && (
             <section
-              className='hp-section hp-section--reg'
+              className={`hp-section hp-section--reg ${isLightTheme ? 'light-theme' : 'dark-theme'}`}
               ref={setSectionRef(0)}
             >
               <div className='hp-section__inner'>
@@ -1095,6 +1112,27 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     Secure your spot in the program
                   </p>
                 </header>
+
+                {/* Theme Toggle Button - Positioned above the registration hub */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <button
+                    className='hp-theme-toggle'
+                    onClick={toggleTheme}
+                    aria-label='Toggle theme'
+                  >
+                    <span className='toggle-icon'>
+                      {isLightTheme ? '🌙' : '☀️'}
+                    </span>
+                    <span>{isLightTheme ? 'Dark Mode' : 'Light Mode'}</span>
+                  </button>
+                </div>
+
                 <RegistrationHub
                   playerConfig={formConfigs.player}
                   trainingConfig={formConfigs.training}

@@ -108,7 +108,45 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     sectionsRef.current[index] = el;
   };
 
-  // Contact form handlers
+  // ─── Force video mute ────────────────────────────────────────────────────────
+  // This effect ensures the promo video is always muted, even when the URL changes
+  // or the component re-renders
+  useEffect(() => {
+    const video = sectionVideoRef.current;
+    if (!video) return;
+
+    // Force mute immediately
+    video.muted = true;
+
+    // Force mute on metadata load
+    const handleLoadedMetadata = () => {
+      video.muted = true;
+    };
+
+    // Force mute on play
+    const handlePlay = () => {
+      video.muted = true;
+    };
+
+    // Force mute on volume change
+    const handleVolumeChange = () => {
+      if (!video.muted) {
+        video.muted = true;
+      }
+    };
+
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('volumechange', handleVolumeChange);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('volumechange', handleVolumeChange);
+    };
+  }, [promoVideoUrl]);
+
+  // ─── Contact form handlers ──────────────────────────────────────────────────
   const handleContactChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -152,7 +190,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     }
   };
 
-  // Video control handlers
+  // ─── Video control handlers ──────────────────────────────────────────────────
   const handlePlayPause = useCallback(() => {
     if (sectionVideoRef.current) {
       if (isPlaying) {
@@ -165,10 +203,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   }, [isPlaying]);
 
   const handleVolumeToggle = useCallback(() => {
-    if (sectionVideoRef.current) {
-      const video = sectionVideoRef.current;
-      video.muted = !video.muted;
-    }
+    // Volume is permanently muted - do nothing
+    // This function is kept but the button is commented out in the UI
   }, []);
 
   const handleTimeUpdate = useCallback(() => {
@@ -180,6 +216,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   const handleLoadedMetadata = useCallback(() => {
     if (sectionVideoRef.current) {
       setDuration(sectionVideoRef.current.duration);
+      // Ensure mute is applied after metadata loads
+      sectionVideoRef.current.muted = true;
     }
   }, []);
 
@@ -206,7 +244,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     setControlsTimeout(timeout);
   }, [controlsTimeout]);
 
-  // Modal handlers
+  // ─── Modal handlers ──────────────────────────────────────────────────────────
   const openFormModal = (formId: string) => {
     setSelectedFormId(formId);
     setIsModalOpen(true);
@@ -223,12 +261,15 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     document.body.style.width = '';
   };
 
+  // ─── Intro video handlers ────────────────────────────────────────────────────
   useEffect(() => {
     const video = introVideoRef.current;
     if (!video) return;
 
+    // Mute the intro video by default
+    video.muted = true;
+
     video.play().catch(() => {
-      // Sound blocked — play muted, but offer a tap-to-unmute prompt
       video.muted = true;
       setNeedsUnmutePrompt(true);
       video.play().catch(() => handleIntroVideoEnd());
@@ -236,31 +277,13 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   }, [handleIntroVideoEnd]);
 
   const handleUnmuteTap = useCallback(() => {
-    const video = introVideoRef.current;
-    if (video) {
-      video.muted = false;
-    }
-    setNeedsUnmutePrompt(false);
+    // Do nothing - keep muted
+    // const video = introVideoRef.current;
+    // if (video) {
+    //   video.muted = false;
+    // }
+    // setNeedsUnmutePrompt(false);
   }, []);
-
-  useEffect(() => {
-    const video = sectionVideoRef.current;
-    if (!video) return;
-
-    // Force mute on mount and whenever the video source changes
-    video.muted = true;
-
-    // Add event listener to ensure it stays muted
-    const handleLoadedMetadata = () => {
-      video.muted = true;
-    };
-
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-    return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    };
-  }, [promoVideoUrl]);
 
   const handleRegistrationClick = useCallback(() => {
     // Wait for the form to render then scroll to it
@@ -269,7 +292,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     }, 300);
   }, []);
 
-  // Scroll activity detection
+  // ─── Scroll activity detection ──────────────────────────────────────────────
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
 
@@ -299,7 +322,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     };
   }, []);
 
-  // Scroll animations for player images and headlines
+  // ─── Scroll animations for player images and headlines ──────────────────────
   useEffect(() => {
     const handleScrollAnimations = () => {
       const scrollY = window.scrollY;
@@ -347,7 +370,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     return () => window.removeEventListener('scroll', handleScrollAnimations);
   }, []);
 
-  // Parallax scroll
+  // ─── Parallax scroll ─────────────────────────────────────────────────────────
   useEffect(() => {
     // Store the current parallax offset for each container
     let currentPlayer3Offset = 0;
@@ -443,7 +466,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     };
   }, [player3Active, player4Active]);
 
-  // Intersection observer for section visibility
+  // ─── Intersection observer for section visibility ───────────────────────────
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -460,7 +483,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     return () => observer.disconnect();
   }, [formConfigs, activeFormIds, promoVideoUrl]);
 
-  // Fetch promo video from server
+  // ─── Fetch promo video from server ──────────────────────────────────────────
   const fetchPromoVideo = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/upload/promo-video`);
@@ -508,7 +531,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     }
   }, []);
 
-  // Fetch active forms
+  // ─── Fetch active forms ──────────────────────────────────────────────────────
   const fetchActiveForms = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/forms/published`);
@@ -779,7 +802,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
     [formConfigs],
   );
 
-  // Admin upload
+  // ─── Admin upload ────────────────────────────────────────────────────────────
   const uploadContent = useCallback(
     async (file: File) => {
       if (!file || !token) {
@@ -931,6 +954,8 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   const handleVideoLoaded = useCallback(() => {
     setVideoLoaded(true);
     if (sectionVideoRef.current) {
+      // Ensure mute before playing
+      sectionVideoRef.current.muted = true;
       sectionVideoRef.current.play().catch((err) => {
         console.log('Auto-play prevented:', err);
         setIsPlaying(false);
@@ -967,7 +992,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
       onDragOver={isAdmin ? handleDrag : undefined}
       onDrop={isAdmin ? handleDrop : undefined}
     >
-      {/* HERO SECTION */}
+      {/* ─── HERO SECTION ────────────────────────────────────────────────────── */}
       <section className='hp-hero' ref={heroRef}>
         {introVideoActive && (
           <div
@@ -982,6 +1007,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               ref={introVideoRef}
               className='hp-intro-video__player'
               src='/assets/videos/intro.mp4'
+              muted={true}
               playsInline
               preload='auto'
               disablePictureInPicture
@@ -989,14 +1015,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               onEnded={handleIntroVideoEnd}
               onContextMenu={(e) => e.preventDefault()}
             />
-            {/* {needsUnmutePrompt && (
-              <button
-                className='hp-intro-video__unmute'
-                onClick={handleUnmuteTap}
-              >
-                🔊 Tap for sound
-              </button>
-            )} */}
           </div>
         )}
         <div className='hp-hero__bg-wrapper'>
@@ -1058,12 +1076,12 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
         </div>
       </section>
 
-      {/* MAIN CONTENT */}
+      {/* ─── MAIN CONTENT ────────────────────────────────────────────────────── */}
       <main className='hp-main'>
         <div className='hp-cut' aria-hidden='true' />
 
         <div className='hp-main__content'>
-          {/* Registration Section */}
+          {/* ─── Registration Section ────────────────────────────────────────── */}
           {hasActiveRegistrationForms() && (
             <section
               className='hp-section hp-section--reg'
@@ -1094,7 +1112,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             </section>
           )}
 
-          {/* Video Section */}
+          {/* ─── Video Section ───────────────────────────────────────────────── */}
           {showVideoElement && !videoError && (
             <section
               className='hp-section hp-section--video'
@@ -1173,24 +1191,6 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                           </svg>
                         )}
                       </button>
-                      {/* <button
-                        className='hp-video-controls__btn'
-                        onClick={handleVolumeToggle}
-                        aria-label='Toggle mute'
-                      >
-                        <svg
-                          width='18'
-                          height='18'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                        >
-                          <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
-                          <path d='M15.54 8.46a5 5 0 0 1 0 7.07' />
-                          <path d='M19.07 4.93a10 10 0 0 1 0 14.14' />
-                        </svg>
-                      </button> */}
                       <div className='hp-video-controls__time'>
                         <span>{formatTime(currentTime)}</span>
                         <span>/</span>
@@ -1225,10 +1225,9 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                 </div>
               </div>
             </section>
-            // <VideoGallery initialLimit={4} />
           )}
 
-          {/* Embedded Forms Section */}
+          {/* ─── Embedded Forms Section ──────────────────────────────────────── */}
           {hasActiveEmbeddedForms() && (
             <section
               className='hp-section hp-section--forms'
@@ -1288,7 +1287,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             </section>
           )}
 
-          {/* Spotlight Section */}
+          {/* ─── Spotlight Section ───────────────────────────────────────────── */}
           <section
             className='hp-section hp-section--spotlight'
             ref={setSectionRef(3)}
@@ -1336,7 +1335,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             </div>
           </section>
 
-          {/* Events Section */}
+          {/* ─── Events Section ───────────────────────────────────────────────── */}
           <section
             className='hp-section hp-section--events'
             ref={setSectionRef(4)}
@@ -1367,71 +1366,11 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   Don't miss out on what's coming
                 </p>
               </header>
-              {/* <div className='hp-events-empty'>
-                <svg
-                  className='hp-events-empty__icon'
-                  viewBox='0 0 48 48'
-                  fill='none'
-                >
-                  <rect
-                    x='6'
-                    y='10'
-                    width='36'
-                    height='32'
-                    rx='4'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                  />
-                  <line
-                    x1='6'
-                    y1='20'
-                    x2='42'
-                    y2='20'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                  />
-                  <line
-                    x1='16'
-                    y1='6'
-                    x2='16'
-                    y2='14'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                  />
-                  <line
-                    x1='32'
-                    y1='6'
-                    x2='32'
-                    y2='14'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                  />
-                </svg>
-                <p>Events and programs will be announced here.</p>
-                <button
-                  className='hp-btn-outline'
-                  onClick={() => navigate('/events')}
-                >
-                  View all events
-                  <svg
-                    width='14'
-                    height='14'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2.5'
-                  >
-                    <path d='M5 12h14M13 6l6 6-6 6' />
-                  </svg>
-                </button>
-              </div> */}
               <TodayEvents />
             </div>
           </section>
 
-          {/* About Us Section */}
+          {/* ─── About Us Section ────────────────────────────────────────────── */}
           <section
             className='hp-section hp-section--about'
             ref={setSectionRef(5)}
@@ -1551,7 +1490,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
             </div>
           </section>
 
-          {/* Contact Us Section */}
+          {/* ─── Contact Us Section ──────────────────────────────────────────── */}
           <section
             className='hp-section hp-section--contact'
             ref={setSectionRef(6)}
@@ -1750,7 +1689,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
         </div>
       </main>
 
-      {/* FORM MODAL */}
+      {/* ─── FORM MODAL ──────────────────────────────────────────────────────── */}
       {isModalOpen && selectedFormId && (
         <div className='hp-modal-overlay' onClick={closeFormModal}>
           <div className='hp-modal' onClick={(e) => e.stopPropagation()}>
@@ -1780,7 +1719,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
         </div>
       )}
 
-      {/* ADMIN PANEL */}
+      {/* ─── ADMIN PANEL ────────────────────────────────────────────────────── */}
       {isAdmin && (
         <>
           <button

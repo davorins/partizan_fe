@@ -670,8 +670,18 @@
     color 0.5s ease;
 }
 
-/* ── Light Theme (Default) ── */
+/* ── Light Theme (Default) ──
+   NOTE: this whole stylesheet is dark-mode-first — --text-1/2/3 are
+   defined white at :root. Re-declaring them here means ANY descendant
+   of the light-theme registration section that colors itself via
+   var(--text-1) etc. (including markup inside RegistrationHub/FormEmbed
+   that this file doesn't otherwise target) automatically gets dark,
+   readable text instead of falling back to the white :root default. */
 .hp-section--reg.light-theme {
+  --text-1: #1a1a2e;
+  --text-2: #4a4a5a;
+  --text-3: #6a6a7a;
+  --dark-border: rgba(89, 66, 48, 0.18);
   background: #f5f0eb;
   box-shadow: inset 0 0 60px rgba(89, 66, 48, 0.05);
 }
@@ -785,6 +795,26 @@
 .hp-section--reg.light-theme .reg-form-content {
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(8px) !important;
+  /* Belt-and-braces: catch any plain text element (p, span, label, li,
+     h1-h6, etc.) inside the form that isn't covered by a more specific
+     rule below. More specific selectors (buttons, .form-control, gold
+     accents) still win over this because they come later / are more
+     specific, so nothing intentionally colored gets clobbered. */
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content h1,
+.hp-section--reg.light-theme .reg-form-content h2,
+.hp-section--reg.light-theme .reg-form-content h3,
+.hp-section--reg.light-theme .reg-form-content h4,
+.hp-section--reg.light-theme .reg-form-content h5,
+.hp-section--reg.light-theme .reg-form-content h6,
+.hp-section--reg.light-theme .reg-form-content p,
+.hp-section--reg.light-theme .reg-form-content span,
+.hp-section--reg.light-theme .reg-form-content label,
+.hp-section--reg.light-theme .reg-form-content li,
+.hp-section--reg.light-theme .reg-form-content small {
+  color: #1a1a2e;
 }
 
 .hp-section--reg.light-theme .reg-form-card .form-header h2 {
@@ -885,6 +915,14 @@
   color: #6a6a7a !important;
 }
 
+.hp-section--reg.light-theme .reg-tile:hover .reg-tile-title {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-tile:hover .reg-tile-subtitle {
+  color: #4a4a5a !important;
+}
+
 .hp-section--reg.light-theme .reg-tile-arrow {
   margin-top: 20px !important;
   color: #6a6a7a !important;
@@ -977,6 +1015,21 @@
   width: 100%;
 }
 
+/* Explicit hover state — previously undefined here, so a hover could
+   fall through to a lighter default (e.g. Bootstrap's own hover/focus
+   styling) with nothing in this file to stop it. Hovering should only
+   ever get MORE readable, never less. */
+.hp-section--reg.light-theme .reg-form-content .form-control:hover,
+.hp-section--reg.light-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']):hover,
+.hp-section--reg.light-theme .reg-form-content select:hover,
+.hp-section--reg.light-theme .reg-form-content textarea:hover {
+  background: #ffffff !important;
+  border-color: rgba(89, 66, 48, 0.35) !important;
+  color: #1a1a2e !important;
+}
+
 .hp-section--reg.light-theme .reg-form-content .form-control:focus,
 .hp-section--reg.light-theme .reg-form-content input:focus,
 .hp-section--reg.light-theme .reg-form-content select:focus,
@@ -984,13 +1037,14 @@
   outline: none !important;
   border-color: var(--gold) !important;
   background: #ffffff !important;
+  color: #1a1a2e !important;
   box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.08) !important;
 }
 
 .hp-section--reg.light-theme .reg-form-content .form-control::placeholder,
 .hp-section--reg.light-theme .reg-form-content input::placeholder,
 .hp-section--reg.light-theme .reg-form-content textarea::placeholder {
-  color: #9a9aaa !important;
+  color: #7a7a8a !important;
 }
 
 .hp-section--reg.light-theme .reg-form-content .form-label {
@@ -1028,10 +1082,19 @@
   color: #1a1a2e !important;
 }
 
+.hp-section--reg.light-theme .reg-form-content a:not(.btn) {
+  color: var(--gold) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content a:not(.btn):hover {
+  color: #1a1a2e !important;
+}
+
 .hp-section--reg.light-theme .reg-form-content .btn-outline-primary,
 .hp-section--reg.light-theme .reg-form-content .btn-outline-secondary {
   border: 1px solid rgba(89, 66, 48, 0.3) !important;
   color: #1a1a2e !important;
+  background: transparent !important;
 }
 
 .hp-section--reg.light-theme .reg-form-content .btn-outline-primary:hover,
@@ -1055,6 +1118,7 @@
 }
 
 .hp-section--reg.light-theme .reg-form-content .btn-primary:hover {
+  color: var(--dark-0) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 10px 25px rgba(89, 66, 48, 0.4) !important;
 }
@@ -1073,6 +1137,7 @@
 
 .hp-section--reg.light-theme .reg-form-content .btn-secondary:hover {
   background: var(--gold-dim) !important;
+  color: var(--gold) !important;
   transform: translateY(-2px) !important;
   border-color: var(--gold-bright) !important;
 }

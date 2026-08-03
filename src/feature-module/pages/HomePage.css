@@ -3213,3 +3213,263 @@
     animation: none;
   }
 }
+
+/* ============================================
+   DARK MODE – Registration Hub & Forms
+   ============================================ */
+
+/* Main container – ensure dark background */
+.hp-section--reg.dark-theme .reg-form-content {
+  background: #0d0f16 !important;
+  color: #ffffff !important;
+}
+
+/* All cards inside the registration form */
+.hp-section--reg.dark-theme .reg-form-content .card {
+  background: #1a1a2e !important;
+  border-color: #2a2a4a !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-header {
+  background: #252540 !important;
+  border-bottom-color: #2a2a4a !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .card-body {
+  background: #1a1a2e !important;
+  color: #ffffff !important;
+}
+
+/* Form controls – inputs, selects, textareas */
+.hp-section--reg.dark-theme .reg-form-content .form-control,
+.hp-section--reg.dark-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.dark-theme .reg-form-content select,
+.hp-section--reg.dark-theme .reg-form-content textarea {
+  background: #252540 !important;
+  border-color: #3a3a5a !important;
+  color: #f0f0f0 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control:focus,
+.hp-section--reg.dark-theme .reg-form-content input:focus,
+.hp-section--reg.dark-theme .reg-form-content select:focus,
+.hp-section--reg.dark-theme .reg-form-content textarea:focus {
+  background: #2a2a4a !important;
+  border-color: #594230 !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-control::placeholder,
+.hp-section--reg.dark-theme .reg-form-content input::placeholder,
+.hp-section--reg.dark-theme .reg-form-content textarea::placeholder {
+  color: #888899 !important;
+}
+
+/* Labels and text */
+.hp-section--reg.dark-theme .reg-form-content .form-label,
+.hp-section--reg.dark-theme .reg-form-content label,
+.hp-section--reg.dark-theme .reg-form-content .col-form-label {
+  color: #ccccdd !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .text-muted {
+  color: #9999aa !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .text-dark {
+  color: #ffffff !important;
+}
+
+/* Buttons – primary, secondary, outline */
+.hp-section--reg.dark-theme .reg-form-content .btn-primary {
+  background: #594230 !important;
+  border-color: #594230 !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-primary:hover {
+  background: #6b523f !important;
+  border-color: #6b523f !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-secondary {
+  background: #3a3a5a !important;
+  border-color: #4a4a6a !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-secondary:hover {
+  background: #4a4a6a !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-outline-primary {
+  border-color: #594230 !important;
+  color: #594230 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-outline-primary:hover {
+  background: #594230 !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-outline-secondary {
+  border-color: #6a6a8a !important;
+  color: #ccccdd !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .btn-outline-secondary:hover {
+  background: #6a6a8a !important;
+  color: #ffffff !important;
+}
+
+/* Toggle buttons (Back to Description) */
+.hp-section--reg.dark-theme .reg-toggle-btn,
+.hp-section--reg.dark-theme .reg-toggle-back-btn {
+  background: #1a1a2e !important;
+  border-color: #3a3a5a !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .reg-toggle-btn:hover,
+.hp-section--reg.dark-theme .reg-toggle-back-btn:hover {
+  background: #2a2a4a !important;
+}
+
+/* Checkboxes and radio buttons */
+.hp-section--reg.dark-theme .reg-form-content .form-check-input {
+  background-color: #252540 !important;
+  border-color: #4a4a6a !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-input:checked {
+  background-color: #594230 !important;
+  border-color: #594230 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .form-check-label {
+  color: #ccccdd !important;
+}
+
+/* Alerts */
+.hp-section--reg.dark-theme .reg-form-content .alert {
+  background: #1a1a2e !important;
+  border-color: #3a3a5a !important;
+  color: #eeeeee !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-danger {
+  background: #2a1a1a !important;
+  border-color: #5a2a2a !important;
+  color: #ff9999 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-warning {
+  background: #2a2a1a !important;
+  border-color: #5a5a2a !important;
+  color: #ffcc66 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-success {
+  background: #1a2a1a !important;
+  border-color: #2a5a2a !important;
+  color: #99ff99 !important;
+}
+
+.hp-section--reg.dark-theme .reg-form-content .alert-info {
+  background: #1a2a2a !important;
+  border-color: #2a5a5a !important;
+  color: #66ccff !important;
+}
+
+/* Step indicator */
+.hp-section--reg.dark-theme .step-indicator .step-number {
+  background: #252540 !important;
+  color: #aaaaaa !important;
+  border-color: #3a3a5a !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.active .step-number {
+  background: #594230 !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.completed .step-number {
+  background: #2a6a2a !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step-label {
+  color: #888899 !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step.active .step-label {
+  color: #ffffff !important;
+}
+
+.hp-section--reg.dark-theme .step-indicator .step-connector {
+  background: #3a3a5a !important;
+}
+
+/* Grade confirmation banner */
+.hp-section--reg.dark-theme .grade-confirmation-banner {
+  background: #1a1a2e !important;
+  border-color: #3a3a5a !important;
+  color: #ffffff !important;
+}
+
+/* Payment form */
+.hp-section--reg.dark-theme .payment-form-container {
+  background: #1a1a2e !important;
+}
+
+.hp-section--reg.dark-theme .payment-form-container .card {
+  background: #252540 !important;
+}
+
+/* React-select dropdowns */
+.hp-section--reg.dark-theme .css-13cymwt-control,
+.hp-section--reg.dark-theme .css-t3ipsp-control {
+  background: #252540 !important;
+  border-color: #3a3a5a !important;
+  color: #f0f0f0 !important;
+}
+
+.hp-section--reg.dark-theme .css-1dimb5e-singleValue,
+.hp-section--reg.dark-theme .css-1jqq78o-placeholder {
+  color: #f0f0f0 !important;
+}
+
+.hp-section--reg.dark-theme .css-1nmdiq5-menu {
+  background: #252540 !important;
+}
+
+.hp-section--reg.dark-theme .react-select__option {
+  background: #252540 !important;
+  color: #f0f0f0 !important;
+}
+
+.hp-section--reg.dark-theme .react-select__option--is-focused {
+  background: #3a3a5a !important;
+}
+
+.hp-section--reg.dark-theme .react-select__option--is-selected {
+  background: #594230 !important;
+  color: #ffffff !important;
+}
+
+/* Square payment iframe container */
+.hp-section--reg.dark-theme .sq-card-message,
+.hp-section--reg.dark-theme .sq-label {
+  color: #ccccdd !important;
+}
+
+.hp-section--reg.dark-theme .sq-input {
+  background: #252540 !important;
+  border-color: #3a3a5a !important;
+  color: #f0f0f0 !important;
+}

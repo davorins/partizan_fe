@@ -1,5 +1,5 @@
 // components/AutoGridFromDescription.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { scrollToRegistration } from '../../utils/scrollUtils';
 import './AutoGridFromDescription.css';
 
@@ -203,31 +203,59 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
 }) => {
   const [isLightTheme, setIsLightTheme] = useState(false);
 
-  // Detect theme from parent section
-  useEffect(() => {
-    const checkTheme = () => {
-      const section = document.querySelector('.hp-section--reg');
-      if (section) {
-        setIsLightTheme(section.classList.contains('light-theme'));
-      }
-    };
-
-    checkTheme();
-
-    const observer = new MutationObserver(() => {
-      checkTheme();
-    });
-
+  // More reliable theme detection
+  const checkTheme = useCallback(() => {
     const section = document.querySelector('.hp-section--reg');
     if (section) {
-      observer.observe(section, {
-        attributes: true,
-        attributeFilter: ['class'],
+      const isLight = section.classList.contains('light-theme');
+      setIsLightTheme(isLight);
+    }
+  }, []);
+
+  // Check theme on mount and when DOM changes
+  useEffect(() => {
+    // Initial check
+    checkTheme();
+
+    // Use MutationObserver to watch for class changes
+    const section = document.querySelector('.hp-section--reg');
+    if (!section) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'class'
+        ) {
+          checkTheme();
+        }
       });
+    });
+
+    observer.observe(section, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    // Also listen for click events on the theme toggle button
+    const handleThemeToggle = () => {
+      // Small delay to let the class change take effect
+      setTimeout(checkTheme, 50);
+    };
+
+    // Find and listen to the theme toggle button
+    const toggleButton = document.querySelector('.hp-theme-toggle');
+    if (toggleButton) {
+      toggleButton.addEventListener('click', handleThemeToggle);
     }
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      if (toggleButton) {
+        toggleButton.removeEventListener('click', handleThemeToggle);
+      }
+    };
+  }, [checkTheme]);
 
   const trainingDetails = config?.trainingDetails;
   const tryoutDetails = config?.tryoutDetails;

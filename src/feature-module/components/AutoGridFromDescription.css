@@ -900,3 +900,145 @@
     font-size: 0.9rem;
   }
 }
+
+/* ── Light theme overrides for Registration Hub ── */
+.hp-section--reg.light-theme .reg-form-content {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control,
+.hp-section--reg.light-theme
+  .reg-form-content
+  input:not([type='checkbox']):not([type='radio']),
+.hp-section--reg.light-theme .reg-form-content select,
+.hp-section--reg.light-theme .reg-form-content textarea {
+  background: #ffffff !important;
+  border: 1px solid rgba(89, 66, 48, 0.2) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-control:focus,
+.hp-section--reg.light-theme .reg-form-content input:focus,
+.hp-section--reg.light-theme .reg-form-content select:focus,
+.hp-section--reg.light-theme .reg-form-content textarea:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-bottom: 1px solid rgba(89, 66, 48, 0.1) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .card-header h4,
+.hp-section--reg.light-theme .reg-form-content .card-header h5,
+.hp-section--reg.light-theme .reg-form-content .card-header h6 {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-muted {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-white {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .text-warning,
+.hp-section--reg.light-theme .reg-form-content .text-primary {
+  color: var(--gold) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert {
+  background: rgba(89, 66, 48, 0.05) !important;
+  border-color: rgba(89, 66, 48, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-warning {
+  background: rgba(253, 167, 0, 0.05) !important;
+  border-color: rgba(253, 167, 0, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-info {
+  background: rgba(30, 203, 226, 0.05) !important;
+  border-color: rgba(30, 203, 226, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .alert-danger {
+  background: rgba(252, 0, 39, 0.05) !important;
+  border-color: rgba(252, 0, 39, 0.1) !important;
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-primary {
+  background: var(--gold-bright) !important;
+  color: var(--dark-0) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-secondary {
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .btn-secondary:hover {
+  background: var(--gold-dim) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(89, 66, 48, 0.2) !important;
+}
+
+.hp-section--reg.light-theme .reg-form-content .form-check-input:checked {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* Step indicator light theme */
+.hp-section--reg.light-theme .step-indicator .step-label {
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.active .step-label {
+  color: #1a1a2e !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.completed .step-label {
+  color: #4a4a5a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step-number {
+  background-color: #e9ecef !important;
+  color: #6a6a7a !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.active .step-number {
+  background-color: var(--gold) !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step.completed .step-number {
+  background-color: #5cb85c !important;
+  color: #ffffff !important;
+}
+
+.hp-section--reg.light-theme .step-indicator .step-connector {
+  background-color: rgba(89, 66, 48, 0.2) !important;
+}

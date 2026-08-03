@@ -1901,3 +1901,14 @@
     font-size: 1.2rem !important;
   }
 }
+
+/* Theme toggle button - light mode */
+.hp-section--reg.light-theme .hp-theme-toggle {
+  background: rgba(89, 66, 48, 0.08);
+  border: 1px solid rgba(89, 66, 48, 0.15);
+  color: #1a1a2e;
+}
+
+.hp-section--reg.light-theme .hp-theme-toggle:hover {
+  background: rgba(89, 66, 48, 0.15);
+}

@@ -1,7 +1,8 @@
-// components/AutoGridFromDescription.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { scrollToRegistration } from '../../utils/scrollUtils';
 import './AutoGridFromDescription.css';
+
+// ─── Types ────────────────────────────────────────────────────────────────
 
 interface TrainingSession {
   id?: string;
@@ -106,7 +107,10 @@ interface RegistrationFormConfig {
 interface AutoGridFromDescriptionProps {
   config: RegistrationFormConfig;
   onRegister?: () => void;
+  isLightTheme?: boolean; // <-- added
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
 
 const formatTimeRange = (startTime: string, endTime: string): string => {
   const formatTime = (time: string) => {
@@ -161,6 +165,8 @@ const hasValidDescription = (description?: string): boolean => {
   return strippedText.length > 0;
 };
 
+// ─── Subcomponents ────────────────────────────────────────────────────────
+
 const TileHead: React.FC<{
   icon: string;
   label: string;
@@ -197,65 +203,14 @@ const InfoRow: React.FC<{
   </li>
 );
 
+// ─── Main Component ──────────────────────────────────────────────────────
+
 const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
   config,
   onRegister,
+  isLightTheme = false,
 }) => {
-  const [isLightTheme, setIsLightTheme] = useState(false);
-
-  // More reliable theme detection
-  const checkTheme = useCallback(() => {
-    const section = document.querySelector('.hp-section--reg');
-    if (section) {
-      const isLight = section.classList.contains('light-theme');
-      setIsLightTheme(isLight);
-    }
-  }, []);
-
-  // Check theme on mount and when DOM changes
-  useEffect(() => {
-    // Initial check
-    checkTheme();
-
-    // Use MutationObserver to watch for class changes
-    const section = document.querySelector('.hp-section--reg');
-    if (!section) return;
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          mutation.type === 'attributes' &&
-          mutation.attributeName === 'class'
-        ) {
-          checkTheme();
-        }
-      });
-    });
-
-    observer.observe(section, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    // Also listen for click events on the theme toggle button
-    const handleThemeToggle = () => {
-      // Small delay to let the class change take effect
-      setTimeout(checkTheme, 50);
-    };
-
-    // Find and listen to the theme toggle button
-    const toggleButton = document.querySelector('.hp-theme-toggle');
-    if (toggleButton) {
-      toggleButton.addEventListener('click', handleThemeToggle);
-    }
-
-    return () => {
-      observer.disconnect();
-      if (toggleButton) {
-        toggleButton.removeEventListener('click', handleThemeToggle);
-      }
-    };
-  }, [checkTheme]);
+  // Remove theme detection logic – use isLightTheme directly
 
   const trainingDetails = config?.trainingDetails;
   const tryoutDetails = config?.tryoutDetails;
@@ -410,7 +365,18 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     </div>
   );
 
-  // TRAINING VIEW
+  const sortAgeGroups = (groups: string[]): string[] => {
+    return [...groups].sort((a, b) => {
+      const aIsCollege = a.toLowerCase().includes('college');
+      const bIsCollege = b.toLowerCase().includes('college');
+      if (aIsCollege && !bIsCollege) return 1;
+      if (!aIsCollege && bIsCollege) return -1;
+      return a.localeCompare(b);
+    });
+  };
+
+  // ─── Training View ─────────────────────────────────────────────────────
+
   if (!isTryout && trainingDetails) {
     const hasValidTrainingDetails =
       trainingDetails.startDate ||
@@ -476,16 +442,6 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     }
 
     const accent = isLightTheme ? '#594230' : '#594230';
-    const sortAgeGroups = (groups: string[]): string[] => {
-      return [...groups].sort((a, b) => {
-        const aIsCollege = a.toLowerCase().includes('college');
-        const bIsCollege = b.toLowerCase().includes('college');
-        if (aIsCollege && !bIsCollege) return 1;
-        if (!aIsCollege && bIsCollege) return -1;
-        return a.localeCompare(b);
-      });
-    };
-
     const ageGroupsDisplay = trainingDetails.ageGroups?.length
       ? sortAgeGroups(trainingDetails.ageGroups).join(', ')
       : '';
@@ -790,7 +746,8 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     );
   }
 
-  // TRYOUT VIEW
+  // ─── Tryout View ──────────────────────────────────────────────────────
+
   if (isTryout && tryoutDetails) {
     const tryoutLocations = getTryoutLocations();
     const hasValidTryoutDetails =
@@ -858,16 +815,6 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     }
 
     const accent = isLightTheme ? '#f59e0b' : '#f59e0b';
-    const sortAgeGroups = (groups: string[]): string[] => {
-      return [...groups].sort((a, b) => {
-        const aIsCollege = a.toLowerCase().includes('college');
-        const bIsCollege = b.toLowerCase().includes('college');
-        if (aIsCollege && !bIsCollege) return 1;
-        if (!aIsCollege && bIsCollege) return -1;
-        return a.localeCompare(b);
-      });
-    };
-
     const ageGroupsDisplay = tryoutDetails.ageGroups?.length
       ? sortAgeGroups(tryoutDetails.ageGroups).join(', ')
       : '';
@@ -1165,7 +1112,8 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
     );
   }
 
-  // Fallback
+  // ─── Fallback ─────────────────────────────────────────────────────────
+
   return (
     <div
       className={`agd-root ${isLightTheme ? 'agd-root--light' : 'agd-root--dark'}`}

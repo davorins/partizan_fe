@@ -22,9 +22,10 @@ interface RegistrationHubProps {
   onRegistrationComplete?: () => void;
   hasEmbeddedForms?: boolean;
   onRegistrationClick?: () => void;
+  isLightTheme?: boolean; // <-- added
 }
 
-// Helper type guard functions
+// Helper functions (unchanged)
 const isTournamentConfig = (
   config: any,
 ): config is TournamentSpecificConfig => {
@@ -35,16 +36,9 @@ const isTryoutConfig = (config: any): config is TryoutSpecificConfig => {
   return config && typeof config === 'object' && 'tryoutName' in config;
 };
 
-// Helper function to convert TryoutSpecificConfig to RegistrationFormConfig
 const tryoutToRegistrationConfig = (
   tryoutConfig: TryoutSpecificConfig,
 ): RegistrationFormConfig => {
-  console.log('🔍 tryoutToRegistrationConfig - input:', {
-    tryoutName: tryoutConfig.tryoutName,
-    hasTryoutDetails: !!(tryoutConfig as any).tryoutDetails,
-    tryoutDetails: (tryoutConfig as any).tryoutDetails,
-  });
-
   const locationStrings: string[] | undefined = tryoutConfig.locations
     ?.map((loc) => loc.name)
     .filter(Boolean);
@@ -81,7 +75,6 @@ const tryoutToRegistrationConfig = (
   };
 };
 
-// Helper function to convert TournamentSpecificConfig to RegistrationFormConfig
 const tournamentToRegistrationConfig = (
   tournamentConfig: TournamentSpecificConfig,
 ): RegistrationFormConfig => {
@@ -93,7 +86,7 @@ const tournamentToRegistrationConfig = (
     requiresPayment: true,
     requiresQualification: false,
     pricing: {
-      basePrice: tournamentConfig.tournamentFee,
+      basePrice: tournamentConfig.tournamentFee || 425,
       packages: [],
     },
     tournamentName: tournamentConfig.tournamentName,
@@ -108,6 +101,8 @@ const tournamentToRegistrationConfig = (
     requiresInsurance: tournamentConfig.requiresInsurance,
     paymentDeadline: tournamentConfig.paymentDeadline,
     refundPolicy: tournamentConfig.refundPolicy,
+    rulesDocumentUrl: tournamentConfig.rulesDocumentUrl,
+    scheduleDocumentUrl: tournamentConfig.scheduleDocumentUrl,
     tournamentFee: tournamentConfig.tournamentFee,
     createdAt: tournamentConfig.createdAt,
     updatedAt: tournamentConfig.updatedAt,
@@ -116,7 +111,6 @@ const tournamentToRegistrationConfig = (
   };
 };
 
-// Helper to convert any config to RegistrationFormConfig
 const toRegistrationConfig = (config: any): RegistrationFormConfig => {
   if (isTournamentConfig(config)) {
     return tournamentToRegistrationConfig(config);
@@ -136,14 +130,15 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
   onRegistrationComplete,
   hasEmbeddedForms = true,
   onRegistrationClick,
+  isLightTheme = false, // default dark
 }) => {
   const [activeForm, setActiveForm] = useState<
     'player' | 'tournament' | 'training' | 'tryout' | null
   >(null);
-
   const [showDescription, setShowDescription] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Memoized helpers (unchanged)
   const getIsActive = useCallback((config: any): boolean => {
     if (!config) return false;
     return config.isActive || false;
@@ -169,7 +164,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
   const getDisplayName = useCallback(
     (config: any): string => {
       if (!config) return 'Registration';
-
       if (seasonEvent) {
         if (config.displayName) return config.displayName;
         if (config.tournamentName) return config.tournamentName;
@@ -177,7 +171,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
         if (config.season) return config.season;
         return seasonEvent.season;
       }
-
       if (isTournamentConfig(config)) {
         return (
           config.displayName ||
@@ -185,11 +178,9 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
           'Tournament Registration'
         );
       }
-
       if (isTryoutConfig(config)) {
         return config.displayName || config.tryoutName || 'Tryout Registration';
       }
-
       return config.displayName || config.season || 'Registration';
     },
     [seasonEvent],
@@ -233,7 +224,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     (config: any): SeasonEvent | undefined => {
       if (seasonEvent) return seasonEvent;
       if (!config) return undefined;
-
       if (isTournamentConfig(config)) {
         return {
           season: config.tournamentName,
@@ -243,7 +233,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
           registrationOpens: config.isActive ? new Date() : undefined,
         };
       }
-
       if (isTryoutConfig(config)) {
         return {
           season: config.season || config.tryoutName,
@@ -252,7 +241,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
           registrationOpens: config.isActive ? new Date() : undefined,
         };
       }
-
       return {
         season: config.season || 'Training',
         year: config.year || new Date().getFullYear(),
@@ -306,6 +294,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     playerConfig,
   ]);
 
+  // Auto-select single form
   useEffect(() => {
     if (availableForms.length === 1 && !activeForm) {
       const formType = availableForms[0].type;
@@ -343,7 +332,6 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     (form: 'player' | 'tournament' | 'training' | 'tryout') => {
       setActiveForm(form);
       setShowDescription(true);
-      // Call the parent handler if provided
       onRegistrationClick?.();
     },
     [onRegistrationClick],
@@ -361,11 +349,9 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
   const handleToggleView = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
-    // Call the parent handler if provided
     onRegistrationClick?.();
     setTimeout(() => {
       setShowDescription((prev) => !prev);
-      // Scroll to registration after toggling
       setTimeout(() => {
         scrollToRegistration();
         setTimeout(() => setIsAnimating(false), 50);
@@ -373,9 +359,10 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     }, 200);
   }, [isAnimating, onRegistrationClick]);
 
+  // Render logic
   if (availableForms.length === 0) return null;
 
-  // SINGLE FORM MODE
+  // Single form mode
   if (availableForms.length === 1 && activeForm) {
     const form = availableForms[0];
     const backgroundImage = getBackgroundImage(form.type, form.config);
@@ -413,20 +400,11 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
                   <AutoGridFromDescription
                     config={toRegistrationConfig(form.config)}
                     onRegister={handleToggleView}
+                    isLightTheme={isLightTheme}
                   />
                 </div>
-                {/* <button
-                  className='reg-toggle-btn'
-                  onClick={handleToggleView}
-                  disabled={isAnimating}
-                >
-                  <i className='ti ti-eye'></i>
-                  <span>Continue to Registration Form</span>
-                  <i className='ti ti-arrow-right'></i>
-                </button> */}
               </div>
             )}
-
             {!showDescription && (
               <div className='reg-form-container'>
                 <button
@@ -473,7 +451,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     );
   }
 
-  // TILES MODE
+  // Tiles mode
   if (!activeForm) {
     return (
       <div className='reg-hub-grid'>
@@ -513,7 +491,7 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
     );
   }
 
-  // MULTIPLE FORMS MODE - Selected form
+  // Multiple forms mode – selected form
   const selectedForm = availableForms.find((f) => f.type === activeForm);
   if (!selectedForm) return null;
 
@@ -535,15 +513,10 @@ const RegistrationHub: React.FC<RegistrationHubProps> = ({
               <AutoGridFromDescription
                 config={toRegistrationConfig(selectedForm.config)}
                 onRegister={handleToggleView}
+                isLightTheme={isLightTheme} // <-- pass down
               />
-              {/* <button className='reg-toggle-btn' onClick={handleToggleView}>
-                <i className='ti ti-chevron-down'></i>
-                <span>Continue to Registration Form</span>
-                <i className='ti ti-arrow-right'></i>
-              </button> */}
             </>
           )}
-
           {!showDescription && (
             <>
               <button

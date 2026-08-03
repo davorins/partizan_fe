@@ -1095,7 +1095,10 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
 
       {/* ─── MAIN CONTENT ────────────────────────────────────────────────────── */}
       <main className='hp-main'>
-        <div className='hp-cut' aria-hidden='true' />
+        <div
+          className={`hp-cut ${isLightTheme ? 'hp-cut--light' : ''}`}
+          aria-hidden='true'
+        />
 
         <div className='hp-main__content'>
           {/* ─── Registration Section ────────────────────────────────────────── */}
@@ -1156,7 +1159,10 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
               className='hp-section hp-section--video'
               ref={setSectionRef(1)}
             >
-              <div className='hp-cut-light' aria-hidden='true' />
+              <div
+                className={`hp-cut-light ${isLightTheme ? 'hp-cut--light' : ''}`}
+                aria-hidden='true'
+              />
               <div className='hp-section__inner'>
                 <header className='hp-section__head'>
                   <span className='hp-section__label'>Watch</span>

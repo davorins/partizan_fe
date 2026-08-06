@@ -1148,6 +1148,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   }}
                   hasEmbeddedForms={hasActiveEmbeddedForms()}
                   onRegistrationClick={handleRegistrationClick}
+                  isLightTheme={isLightTheme}
                 />
               </div>
             </section>

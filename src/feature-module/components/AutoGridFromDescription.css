@@ -167,8 +167,9 @@
 
 .agd-root--light .agd-tile {
   background: rgba(255, 255, 255, 0.85);
-  /* border: 1px solid rgba(89, 66, 48, 0.1); */
+  border: 1px solid rgba(89, 66, 48, 0.1);
   background-image: none;
+  padding: 18px 20px;
 }
 
 .agd-root--light .agd-tile:hover {
@@ -280,7 +281,8 @@
 
 .agd-root--light .agd-tile--faq {
   background: rgba(89, 66, 48, 0.06);
-  /* border: 1px solid rgba(89, 66, 48, 0.15); */
+  border: 1px solid rgba(89, 66, 48, 0.15);
+  padding: 18px 20px;
 }
 
 .agd-root--light .agd-faq-text {

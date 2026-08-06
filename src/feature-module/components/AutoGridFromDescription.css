@@ -280,7 +280,7 @@
 
 .agd-root--light .agd-tile--faq {
   background: rgba(89, 66, 48, 0.06);
-  border: 1px solid rgba(89, 66, 48, 0.15);
+  /* border: 1px solid rgba(89, 66, 48, 0.15); */
 }
 
 .agd-root--light .agd-faq-text {

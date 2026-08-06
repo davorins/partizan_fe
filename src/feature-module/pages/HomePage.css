@@ -435,7 +435,7 @@
 }
 .hp-cut.hp-cut--light {
   background: #f5f0eb;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
+  clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%);
 }
 .hp-cut-light {
   height: 90px;

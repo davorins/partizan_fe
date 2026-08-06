@@ -434,7 +434,7 @@
   top: -1px;
 }
 .hp-cut.hp-cut--light {
-  background: #f5f0eb;
+  background: #f6f0ec;
   clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%);
   top: 0px;
 }
@@ -447,7 +447,7 @@
   top: -1px;
 }
 .hp-cut-light.hp-cut--light {
-  background: #f5f0eb;
+  background: #f6f0ec;
 }
 .hp-cut-reverse {
   height: 90px;

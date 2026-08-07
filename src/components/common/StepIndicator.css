@@ -151,6 +151,9 @@
   border-radius: 16px;
   padding: 1rem;
 }
+.form-content.dark-theme {
+  background: #1a1a2e !important;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -158,7 +161,6 @@
     min-width: 80px;
   }
 
-  
   .step-icon-wrapper {
     width: 40px;
     height: 40px;

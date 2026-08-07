@@ -152,7 +152,7 @@
   padding: 1rem;
 }
 .form-content.dark-theme {
-  background: #1a1a2e !important;
+  background: transparent !important;
 }
 
 /* Responsive adjustments */

@@ -722,7 +722,7 @@ const PlayerRegistrationForm: React.FC<PlayerRegistrationFormProps> = ({
     );
 
     return (
-      <div className='card border-0 shadow-sm'>
+      <div className='card border-0'>
         <div className='card-header'>
           <h4 className='mb-0'>🎉 Player Registration Complete!</h4>
         </div>

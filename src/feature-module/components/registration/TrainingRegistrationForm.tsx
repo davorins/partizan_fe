@@ -880,7 +880,7 @@ const TrainingRegistrationForm: React.FC<TrainingRegistrationFormProps> = ({
       (paymentSuccessData?.amount || calculatePaymentAmount()) / 100;
 
     return (
-      <div className='card border-0 shadow-sm'>
+      <div className='card border-0'>
         <div className='card-header'>
           <h4 className='mb-0'>🎉 Training Registration Complete!</h4>
         </div>

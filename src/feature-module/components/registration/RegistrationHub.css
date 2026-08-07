@@ -1230,6 +1230,10 @@
     gap: 10px;
   }
 
+  .reg-form-wrapper .form-content.dark-theme {
+    background: transparent !important;
+  }
+
   .reg-form-wrapper .form-content .mobile .mobile {
     width: 100%;
   }

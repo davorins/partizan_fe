@@ -151,9 +151,6 @@
   border-radius: 16px;
   padding: 1rem;
 }
-.form-content.dark-theme {
-  background: transparent !important;
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

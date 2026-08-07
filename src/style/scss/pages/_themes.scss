@@ -1965,7 +1965,7 @@ body {
     border-color: $dark-700;
   }
   .shadow-sm {
-    box-shadow: 0px 4.4px 12px -1px rgba(44, 44, 44, 0.361) !important;
+    // box-shadow: 0px 4.4px 12px -1px rgba(44, 44, 44, 0.361) !important;
   }
   .form-control {
     background: $dark-800;
@@ -2147,7 +2147,7 @@ body {
   .card {
     background-color: $dark-800;
     border-color: $dark-700;
-    box-shadow: 0px 4.4px 12px -1px rgba(44, 44, 44, 0.361);
+    // box-shadow: 0px 4.4px 12px -1px rgba(44, 44, 44, 0.361);
     .card-header {
       border-color: $dark-700;
     }

@@ -82,8 +82,8 @@
 
 /* ── Completed Step (dark, default) ── */
 .step.completed .step-icon-wrapper {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+  background-color: #000;
+  border-color: #000;
   color: #fff;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .step.completed .step-label {
-  color: #5cb85c;
+  color: #000;
   font-weight: 700;
 }
 
@@ -156,8 +156,8 @@
 
 .hp-section--reg.light-theme .step.completed .step-icon-wrapper,
 .light-theme .step-indicator .step.completed .step-icon-wrapper {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+  background-color: #000;
+  border-color: #000;
   color: #fff;
 }
 

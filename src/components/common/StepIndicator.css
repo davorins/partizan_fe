@@ -72,11 +72,11 @@
 }
 
 .step.active .step-icon-wrapper::before {
-  border-color: rgba(232, 200, 74, 0.3);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .step.active .step-label {
-  color: var(--gold-bright, #e8c84a);
+  color: #000;
   font-weight: 700;
 }
 
@@ -88,7 +88,7 @@
 }
 
 .step.completed .step-icon-wrapper::before {
-  border-color: rgba(92, 184, 92, 0.3);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .step.completed .step-label {
@@ -163,7 +163,7 @@
 
 .hp-section--reg.light-theme .step.completed .step-label,
 .light-theme .step-indicator .step.completed .step-label {
-  color: #4a8f4a;
+  color: #000;
 }
 
 .hp-section--reg.light-theme .step-connector,

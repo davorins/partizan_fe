@@ -1540,6 +1540,23 @@
   color: #ffffff !important;
 }
 
+.hp-section--reg
+  .reg-form-content
+  div.select__input-container
+  input[type='text'].select__input {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 2px !important;
+  min-width: 2px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
 .hp-section--reg.dark-theme .reg-form-content .form-control:focus,
 .hp-section--reg.dark-theme .reg-form-content input:focus,
 .hp-section--reg.dark-theme .reg-form-content select:focus,

@@ -1,100 +1,100 @@
 .card {
-    margin-bottom: 1.5rem;
-    background-color: $white;
-    transition: all .5s ease-in-out;
+  margin-bottom: 1.5rem;
+  background-color: $white;
+  transition: all 0.5s ease-in-out;
+  position: relative;
+  border-radius: 5px;
+  border: 1px solid $light-900;
+  // box-shadow: 0px 4.4px 12px -1px #DEDEDE5C;
+  color: inherit;
+  .card-body {
+    padding: 1.25rem;
+    @include respond-below(md) {
+      padding: 16px;
+    }
+  }
+  .card-title {
+    font-size: $font-size-18;
+    font-weight: $font-weight-semibold;
+    text-transform: capitalize;
+    color: $gray-900;
+    @include respond-below(md) {
+      font-size: $font-size-16;
+    }
+  }
+  .card-header {
+    border-color: $light-900;
     position: relative;
-    border-radius: 5px;
-    border:1px solid $light-900;    
-    box-shadow: 0px 4.4px 12px -1px #DEDEDE5C;
-    color: inherit;
-    .card-body {
-        padding: 1.25rem;
-        @include respond-below(md) {
-          padding: 16px;
-        }
+    background: transparent;
+    padding: 1rem 1.25rem 1rem;
+    @include respond-below(md) {
+      padding: 15px;
     }
     .card-title {
-        font-size: $font-size-18;
-        font-weight: $font-weight-semibold;
-        text-transform: capitalize;    
-        color: $gray-900;    
-        @include respond-below(md) {
-          font-size: $font-size-16;
-        }
+      margin-bottom: 0rem;
     }
-    .card-header {
-        border-color: $light-900;
-        position: relative;
-        background: transparent;
-        padding: 1rem 1.25rem 1rem;
-        @include respond-below(md) {
-          padding: 15px;
-        }
-        .card-title {
-            margin-bottom: 0rem;
-        }
-        .subtitle {
-            padding-top: 0.3125rem;
-            font-size: 0.875rem;
-            line-height: 1.5; 
-        }
+    .subtitle {
+      padding-top: 0.3125rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
     }
-    .card-footer {
-        border-color: $light-900;
-        background: transparent;
-        padding: 1rem 1.25rem 1rem;
-    }    
+  }
+  .card-footer {
+    border-color: $light-900;
+    background: transparent;
+    padding: 1rem 1.25rem 1rem;
+  }
 }
 .card-group {
-  .card {    
-      margin-bottom: 1.5rem;
+  .card {
+    margin-bottom: 1.5rem;
   }
 }
 .card {
   &.custom-card {
-  border-radius: $border-radius;
-  border: 0;
-  background-color: $white;
-  position: relative;
-  margin-block-end: 1.5rem;
-  width: 100%;
-  .card-header {
-    padding: 1rem 1.25rem;
-    background-color: transparent !important;
-    border-block-end: 1px solid $default-border;
-    display: flex;
-    align-items: center;
+    border-radius: $border-radius;
+    border: 0;
+    background-color: $white;
     position: relative;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    &:first-child {
-      border-radius: 0.625rem 0.625rem 0 0;
-    }
-    .card-title {
+    margin-block-end: 1.5rem;
+    width: 100%;
+    .card-header {
+      padding: 1rem 1.25rem;
+      background-color: transparent !important;
+      border-block-end: 1px solid $default-border;
+      display: flex;
+      align-items: center;
       position: relative;
-      margin-block-end: 0;
-      font-size: 0.9375rem;
-      font-weight: $font-weight-bold;
-      text-transform: capitalize;
-      .subtitle {
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      &:first-child {
+        border-radius: 0.625rem 0.625rem 0 0;
+      }
+      .card-title {
+        position: relative;
         margin-block-end: 0;
-        text-transform: initial;
+        font-size: 0.9375rem;
+        font-weight: $font-weight-bold;
+        text-transform: capitalize;
+        .subtitle {
+          margin-block-end: 0;
+          text-transform: initial;
+        }
       }
     }
-  }
-  .card-footer {
-    background-color: transparent !important;
-    border-block-start: 1px solid $default-border;
-    padding: 1rem 1.5rem;
-    font-size: $font-size-base;
-  }
-  .card-body {
-    padding: 1.5rem;
-    color: $text-color;
-  }
-  .card-link {
-    font-size: 0.75rem;
-  }
+    .card-footer {
+      background-color: transparent !important;
+      border-block-start: 1px solid $default-border;
+      padding: 1rem 1.5rem;
+      font-size: $font-size-base;
+    }
+    .card-body {
+      padding: 1.5rem;
+      color: $text-color;
+    }
+    .card-link {
+      font-size: 0.75rem;
+    }
   }
   .card-text {
     font-size: 0.813rem;
@@ -117,7 +117,7 @@
       top: auto;
     }
     &:before {
-      content: "";
+      content: '';
       inset-inline-start: 0;
       inset-inline-end: 0;
       inset-block-start: 0;
@@ -291,7 +291,7 @@
     inset-inline-start: 0;
     z-index: 1;
     pointer-events: auto;
-    content: "";
+    content: '';
   }
   .collapse-close {
     display: none;
@@ -315,8 +315,8 @@
   }
 }
 .cals-icon {
-    font-size: $font-size-50;
-    color: $gray-500;
+  font-size: $font-size-50;
+  color: $gray-500;
 }
 .callout {
   padding: 1.25rem;
@@ -399,31 +399,31 @@
   }
 }
 .btn-icon {
-    width: 2.313rem;
-    height: 2.313rem;
-    font-size: .95rem;
-    flex-shrink: 0;
+  width: 2.313rem;
+  height: 2.313rem;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 .btn-wave {
-    display: inline-block !important;
+  display: inline-block !important;
 }
 
 @media (max-width: 575px) {
   .overlay-card {
-      .card-text {
-          font-size: .613rem !important;
-      }
+    .card-text {
+      font-size: 0.613rem !important;
+    }
   }
 }
 @media (max-width: 400px) {
   .overlay-card {
-      .card-text {
-          font-size: .413rem !important;
-      }
+    .card-text {
+      font-size: 0.413rem !important;
+    }
   }
 }
 .card {
   .form-control-plaintext {
-      min-height: 38px;
+    min-height: 38px;
   }
 }

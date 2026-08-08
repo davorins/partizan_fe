@@ -66,7 +66,7 @@
 /* ── Active Step (dark, default) ── */
 .step.active .step-icon-wrapper {
   background-color: var(--gold, #594230);
-  border-color: var(--gold-bright, #e8c84a);
+  border-color: #000;
   color: #fff;
   transform: scale(1.05);
 }

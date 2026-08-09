@@ -1132,7 +1132,9 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                       aria-label='Toggle theme'
                     >
                       <span className='toggle-icon'>
-                        {isLightTheme ? 'ti ti-moon' : 'ti ti-sun'}
+                        {isLightTheme
+                          ? '<i class="ti ti-moon"></i>'
+                          : '<i class="ti ti-sun"></i>'}
                       </span>
                       <span>{isLightTheme ? 'Dark Mode' : 'Light Mode'}</span>
                     </button>

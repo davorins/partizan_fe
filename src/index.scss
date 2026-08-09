@@ -1,9 +1,10 @@
 @import './style/scss/main.scss';
-@import 'primereact/resources/themes/lara-light-indigo/theme.css'; /* deduplicated: was imported twice */
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
 @import 'primeicons/primeicons.css';
 @import 'primereact/resources/primereact.css';
 @import 'react-time-picker/dist/TimePicker.css';
 @import 'react-clock/dist/Clock.css';
+@import url('https://cdn.jsdelivr.net/npm/themify-icons@1.0.1/css/themify-icons.css');
 
 a {
   text-decoration: none;

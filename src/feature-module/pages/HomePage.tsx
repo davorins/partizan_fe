@@ -1120,7 +1120,9 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                     style={{
                       display: 'flex',
                       justifyContent: 'flex-end',
-                      marginBottom: '20px',
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
                     }}
                   >
                     <button

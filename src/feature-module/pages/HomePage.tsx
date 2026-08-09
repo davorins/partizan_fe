@@ -1115,28 +1115,27 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   <p className='hp-section__sub'>
                     Secure your spot in the program
                   </p>
-                </header>
-
-                {/* Theme Toggle Button - Positioned above the registration hub */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    marginBottom: '20px',
-                  }}
-                >
-                  <button
-                    type='button'
-                    className='hp-theme-toggle'
-                    onClick={toggleTheme}
-                    aria-label='Toggle theme'
+                  {/* Theme Toggle Button - Positioned above the registration hub */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      marginBottom: '20px',
+                    }}
                   >
-                    <span className='toggle-icon'>
-                      {isLightTheme ? '🌙' : '☀️'}
-                    </span>
-                    <span>{isLightTheme ? 'Dark Mode' : 'Light Mode'}</span>
-                  </button>
-                </div>
+                    <button
+                      type='button'
+                      className='hp-theme-toggle'
+                      onClick={toggleTheme}
+                      aria-label='Toggle theme'
+                    >
+                      <span className='toggle-icon'>
+                        {isLightTheme ? '🌙' : '☀️'}
+                      </span>
+                      <span>{isLightTheme ? 'Dark Mode' : 'Light Mode'}</span>
+                    </button>
+                  </div>
+                </header>
 
                 <RegistrationHub
                   playerConfig={formConfigs.player}

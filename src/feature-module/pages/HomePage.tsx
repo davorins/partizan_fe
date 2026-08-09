@@ -1125,6 +1125,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
                   }}
                 >
                   <button
+                    type='button'
                     className='hp-theme-toggle'
                     onClick={toggleTheme}
                     aria-label='Toggle theme'

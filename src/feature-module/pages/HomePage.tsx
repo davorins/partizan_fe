@@ -156,12 +156,13 @@ const HomePage: React.FC<HomePageProps> = ({ onSplashClose }) => {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setIsLightTheme((prev) => {
-      const newTheme = !prev;
-      localStorage.setItem('registrationTheme', newTheme ? 'light' : 'dark');
-      return newTheme;
-    });
-  }, []);
+    const newTheme = !isLightTheme;
+    localStorage.setItem('registrationTheme', newTheme ? 'light' : 'dark');
+    // Force a full reload so the new theme's CSS is guaranteed to apply
+    // correctly instead of relying on live class-swap styling, which is
+    // currently unreliable due to duplicate/conflicting theme rules.
+    window.location.reload();
+  }, [isLightTheme]);
 
   // ─── Contact form handlers ──────────────────────────────────────────────────
   const handleContactChange = (

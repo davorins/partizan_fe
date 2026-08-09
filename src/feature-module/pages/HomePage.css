@@ -448,6 +448,7 @@
 }
 .hp-cut-light.hp-cut--light {
   background: #f6f0ec;
+  top: -2px;
 }
 .hp-cut-reverse {
   height: 90px;

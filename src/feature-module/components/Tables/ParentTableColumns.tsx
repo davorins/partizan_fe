@@ -649,9 +649,8 @@ export const getParentTableColumns = ({
       title: 'Payment Status',
       key: 'status',
       render: (_: unknown, record: ExtendedTableRecord) => {
-        const status = record.players?.length
-          ? getParentStatus(record)
-          : record.status || 'Inactive';
+        // Use the status from the record (computed by useAllParents)
+        const status = record.status || 'Inactive';
         const badgeColor =
           status === 'Active'
             ? 'success'
@@ -668,9 +667,7 @@ export const getParentTableColumns = ({
         );
       },
       sorter: (a: ExtendedTableRecord, b: ExtendedTableRecord) => {
-        const statusA = a.players?.length ? getParentStatus(a) : a.status || '';
-        const statusB = b.players?.length ? getParentStatus(b) : b.status || '';
-        return statusA.localeCompare(statusB);
+        return (a.status || '').localeCompare(b.status || '');
       },
     },
 

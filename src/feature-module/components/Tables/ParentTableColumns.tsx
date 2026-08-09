@@ -649,6 +649,7 @@ export const getParentTableColumns = ({
       title: 'Payment Status',
       key: 'status',
       render: (_: unknown, record: ExtendedTableRecord) => {
+        // ✅ Use the pre-computed status from useAllParents
         const status = record.status || 'Inactive';
 
         const badgeColor =
@@ -667,8 +668,13 @@ export const getParentTableColumns = ({
         );
       },
       sorter: (a: ExtendedTableRecord, b: ExtendedTableRecord) => {
-        // Sort by the pre-computed status
-        return (a.status || '').localeCompare(b.status || '');
+        const order = { Active: 0, 'Pending Payment': 1, Inactive: 2 };
+        const statusA = a.status || 'Inactive';
+        const statusB = b.status || 'Inactive';
+        return (
+          (order[statusA as keyof typeof order] || 3) -
+          (order[statusB as keyof typeof order] || 3)
+        );
       },
     },
 

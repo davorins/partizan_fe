@@ -19,6 +19,9 @@ export const useAllParents = (
   const [error, setError] = useState<string | null>(null);
   const [totalParents, setTotalParents] = useState(0);
 
+  // Track previous activeEvents to detect changes
+  const prevActiveEventsRef = useRef<string>('');
+
   const fetchAllParents = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -58,11 +61,29 @@ export const useAllParents = (
         }
       });
 
+      // DEBUG: Log activeEvents and computed status
+      console.log('🏷️ Active Events in useAllParents:', activeEvents);
+      console.log('👪 First parent:', allParentsData[0]?.fullName);
+      console.log('📊 First parent players:', allParentsData[0]?.players);
+
       const flattenedData: any[] = [];
 
       allParentsData.forEach((parent: any) => {
+        // Compute status with current activeEvents
         const status = getParentStatusFromEvents(parent, activeEvents);
         const paymentStatus = getPaymentStatusFromEvents(parent, activeEvents);
+
+        // DEBUG: Log computed status
+        console.log(`📊 ${parent.fullName} status:`, {
+          status,
+          paymentStatus,
+          players: parent.players?.map((p: any) => ({
+            name: p.fullName,
+            seasons: p.seasons,
+            registrationComplete: p.registrationComplete,
+            paymentComplete: p.paymentComplete,
+          })),
+        });
 
         flattenedData.push({
           ...parent,
@@ -71,7 +92,7 @@ export const useAllParents = (
           fullName: parent.fullName || '',
           email: parent.email || '',
           phone: parent.phone || '',
-          status,
+          status, // ✅ This will now use computed status
           paymentStatus,
           type: parent.isCoach ? 'coach' : 'parent',
           isCoach: parent.isCoach || false,
@@ -89,6 +110,7 @@ export const useAllParents = (
           parentId: null,
         });
 
+        // Also compute status for guardians
         if (parent.additionalGuardians?.length > 0) {
           parent.additionalGuardians.forEach((guardian: any, index: number) => {
             const guardianWithPlayers = {
@@ -96,6 +118,15 @@ export const useAllParents = (
               players: parent.players || [],
               isCoach: guardian.isCoach || false,
             };
+            const guardianStatus = getParentStatusFromEvents(
+              guardianWithPlayers,
+              activeEvents,
+            );
+            const guardianPaymentStatus = getPaymentStatusFromEvents(
+              guardianWithPlayers,
+              activeEvents,
+            );
+
             flattenedData.push({
               _id: guardian._id || `${parent._id}_guardian_${index}`,
               id: guardian._id || `${parent._id}_guardian_${index}`,
@@ -105,14 +136,8 @@ export const useAllParents = (
               fullName: guardian.fullName || '',
               email: guardian.email || '',
               phone: guardian.phone || '',
-              status: getParentStatusFromEvents(
-                guardianWithPlayers,
-                activeEvents,
-              ),
-              paymentStatus: getPaymentStatusFromEvents(
-                guardianWithPlayers,
-                activeEvents,
-              ),
+              status: guardianStatus, // ✅ Computed status for guardian
+              paymentStatus: guardianPaymentStatus,
               type: 'guardian',
               isCoach: guardian.isCoach || false,
               players: parent.players || [],
@@ -141,11 +166,23 @@ export const useAllParents = (
     } finally {
       setLoading(false);
     }
-  }, [filters, activeEvents]); // activeEvents in deps so it refetches when events load
+  }, [filters, activeEvents]); // ✅ activeEvents is in deps
 
+  // Re-fetch when activeEvents changes
   useEffect(() => {
-    fetchAllParents();
-  }, [fetchAllParents]);
+    const eventsKey = JSON.stringify(activeEvents);
+    if (prevActiveEventsRef.current !== eventsKey) {
+      prevActiveEventsRef.current = eventsKey;
+      fetchAllParents();
+    }
+  }, [activeEvents, fetchAllParents]);
+
+  // Initial fetch
+  useEffect(() => {
+    if (activeEvents.length > 0 || !prevActiveEventsRef.current) {
+      fetchAllParents();
+    }
+  }, [fetchAllParents, activeEvents]);
 
   const refresh = useCallback(() => {
     fetchAllParents();

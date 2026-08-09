@@ -18,63 +18,9 @@ export const useAllParents = (
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalParents, setTotalParents] = useState(0);
-  const [isEnriching, setIsEnriching] = useState(false);
 
+  // Track previous activeEvents to detect changes
   const prevActiveEventsRef = useRef<string>('');
-
-  // Helper to enrich parents with player data
-  const enrichParentsWithPlayers = useCallback(
-    async (parents: any[]): Promise<any[]> => {
-      if (!parents.length) return parents;
-
-      const token = localStorage.getItem('token');
-      if (!token) return parents;
-
-      const enrichedParents: any[] = [];
-      const batchSize = 3; // Process 3 at a time to avoid rate limiting
-
-      console.log(`🔄 Enriching ${parents.length} parents with player data...`);
-      setIsEnriching(true);
-
-      for (let i = 0; i < parents.length; i += batchSize) {
-        const batch = parents.slice(i, i + batchSize);
-        const batchResults = await Promise.all(
-          batch.map(async (parent) => {
-            try {
-              const response = await axios.get(
-                `${API_BASE_URL}/parent/${parent._id}`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                  timeout: 10000,
-                },
-              );
-              return {
-                ...parent,
-                players: response.data.players || [],
-                additionalGuardians: response.data.additionalGuardians || [],
-              };
-            } catch (err: any) {
-              console.warn(
-                `⚠️ Failed to fetch players for parent ${parent._id}:`,
-                err.message,
-              );
-              return {
-                ...parent,
-                players: [],
-                additionalGuardians: parent.additionalGuardians || [],
-              };
-            }
-          }),
-        );
-        enrichedParents.push(...batchResults);
-      }
-
-      console.log(`✅ Enriched ${enrichedParents.length} parents`);
-      setIsEnriching(false);
-      return enrichedParents;
-    },
-    [],
-  );
 
   const fetchAllParents = useCallback(async () => {
     setLoading(true);
@@ -86,7 +32,6 @@ export const useAllParents = (
 
       const params: any = { ...filters };
 
-      // Fetch total count
       const countResponse = await axios.get(`${API_BASE_URL}/parents`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { ...params, limit: 1 },
@@ -95,7 +40,6 @@ export const useAllParents = (
       const total = countResponse.data.pagination?.total || 0;
       setTotalParents(total);
 
-      // Fetch all parents
       const limit = Math.min(total, 500);
       const requests = [];
 
@@ -117,20 +61,30 @@ export const useAllParents = (
         }
       });
 
-      console.log(`📦 Fetched ${allParentsData.length} parents from API`);
+      // DEBUG: Log activeEvents and computed status
+      console.log('🏷️ Active Events in useAllParents:', activeEvents);
+      console.log('👪 First parent:', allParentsData[0]?.fullName);
+      console.log('📊 First parent players:', allParentsData[0]?.players);
 
-      // Enrich parents with player data
-      const enrichedParents = await enrichParentsWithPlayers(allParentsData);
-
-      // Flatten data with computed statuses
       const flattenedData: any[] = [];
 
-      enrichedParents.forEach((parent: any) => {
+      allParentsData.forEach((parent: any) => {
         // Compute status with current activeEvents
         const status = getParentStatusFromEvents(parent, activeEvents);
         const paymentStatus = getPaymentStatusFromEvents(parent, activeEvents);
 
-        // Push parent
+        // DEBUG: Log computed status
+        console.log(`📊 ${parent.fullName} status:`, {
+          status,
+          paymentStatus,
+          players: parent.players?.map((p: any) => ({
+            name: p.fullName,
+            seasons: p.seasons,
+            registrationComplete: p.registrationComplete,
+            paymentComplete: p.paymentComplete,
+          })),
+        });
+
         flattenedData.push({
           ...parent,
           _id: parent._id,
@@ -138,7 +92,7 @@ export const useAllParents = (
           fullName: parent.fullName || '',
           email: parent.email || '',
           phone: parent.phone || '',
-          status,
+          status, // ✅ This will now use computed status
           paymentStatus,
           type: parent.isCoach ? 'coach' : 'parent',
           isCoach: parent.isCoach || false,
@@ -156,7 +110,7 @@ export const useAllParents = (
           parentId: null,
         });
 
-        // Push guardians
+        // Also compute status for guardians
         if (parent.additionalGuardians?.length > 0) {
           parent.additionalGuardians.forEach((guardian: any, index: number) => {
             const guardianWithPlayers = {
@@ -182,7 +136,7 @@ export const useAllParents = (
               fullName: guardian.fullName || '',
               email: guardian.email || '',
               phone: guardian.phone || '',
-              status: guardianStatus,
+              status: guardianStatus, // ✅ Computed status for guardian
               paymentStatus: guardianPaymentStatus,
               type: 'guardian',
               isCoach: guardian.isCoach || false,
@@ -204,9 +158,6 @@ export const useAllParents = (
         }
       });
 
-      console.log(
-        `📊 Flattened ${flattenedData.length} records (parents + guardians)`,
-      );
       setAllParents(flattenedData);
     } catch (err: any) {
       console.error('❌ Error fetching all parents:', err);
@@ -215,7 +166,7 @@ export const useAllParents = (
     } finally {
       setLoading(false);
     }
-  }, [filters, activeEvents, enrichParentsWithPlayers]);
+  }, [filters, activeEvents]); // ✅ activeEvents is in deps
 
   // Re-fetch when activeEvents changes
   useEffect(() => {
@@ -239,7 +190,7 @@ export const useAllParents = (
 
   return {
     data: allParents,
-    loading: loading || isEnriching,
+    loading,
     error,
     total: allParents.length,
     parentTotal: totalParents,

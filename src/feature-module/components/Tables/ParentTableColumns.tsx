@@ -1,11 +1,8 @@
 // components/Tables/ParentTableColumns.tsx
 import React from 'react';
-import { all_routes } from '../../router/all_routes';
 import { TableProps, Skeleton } from 'antd';
-import { Link } from 'react-router-dom';
 import { formatPhoneNumber } from '../../../utils/phone';
 import { formatDate } from '../../../utils/dateFormatter';
-import { FormattedAddress } from '../../../types/types';
 import { ExtendedTableRecord } from '../../../types/table.types';
 import { getCurrentYear } from '../../../utils/season';
 import jsPDF from 'jspdf';
@@ -119,7 +116,7 @@ export const ParentTableSkeleton: React.FC<{ rows?: number }> = ({
   );
 };
 
-// Helper: is player registered for current season
+// Helper: is player registered for current season (for exports)
 const isPlayerRegisteredForCurrentSeason = (player: any): boolean => {
   const currentYear = getCurrentYear();
   if (player.seasons && Array.isArray(player.seasons)) {
@@ -129,8 +126,8 @@ const isPlayerRegisteredForCurrentSeason = (player: any): boolean => {
   return player.season && player.registrationYear === currentYear;
 };
 
-// Helper: parent status
-const getParentStatus = <T extends ExtendedTableRecord>(
+// Helper: parent status (for exports only)
+const getParentStatusForExport = <T extends ExtendedTableRecord>(
   record: T,
 ): 'active' | 'inactive' | 'pending' => {
   if (record.isCoach) return 'active';
@@ -144,26 +141,6 @@ const getParentStatus = <T extends ExtendedTableRecord>(
   return hasPendingPayments ? 'pending' : 'inactive';
 };
 
-const getVisibleFieldsFromConfig = (visibleFields: string[] = []) => {
-  return {
-    showName: true,
-    showEmail: visibleFields.includes('email'),
-    showPhone: visibleFields.includes('phone'),
-    showAddress:
-      visibleFields.includes('address') ||
-      visibleFields.includes('city') ||
-      visibleFields.includes('state') ||
-      visibleFields.includes('zip'),
-    showType: true,
-    showStatus: true,
-    showDateJoined: true,
-  };
-};
-
-const getVisibleFieldNames = (visibleFields: string[] = []): string[] => {
-  return visibleFields;
-};
-
 // Export to PDF
 export const exportParentsToPDF = <T extends ExtendedTableRecord>(
   data: T[],
@@ -173,12 +150,11 @@ export const exportParentsToPDF = <T extends ExtendedTableRecord>(
     state: true,
     zip: true,
   },
-  visibleFields?: string[], // Add this parameter
+  visibleFields?: string[],
 ) => {
   const doc = new jsPDF();
   doc.text('Parents List', 14, 15);
 
-  // Define which fields to show based on visibility
   const showEmail = !visibleFields || visibleFields.includes('email');
   const showPhone = !visibleFields || visibleFields.includes('phone');
   const showAddress =
@@ -188,7 +164,6 @@ export const exportParentsToPDF = <T extends ExtendedTableRecord>(
     visibleFields.includes('state') ||
     visibleFields.includes('zip');
 
-  // Build dynamic columns - always show Name, Type, Status, Date Joined
   const tableColumn: string[] = ['Name'];
   const tableRows = data.map((item) => {
     const row: any[] = [item.fullName];
@@ -197,17 +172,16 @@ export const exportParentsToPDF = <T extends ExtendedTableRecord>(
     if (showPhone) row.push(item.phone ? formatPhoneNumber(item.phone) : 'N/A');
     if (showAddress) row.push(fmtAddr(item.address, addrShow) || 'N/A');
 
-    // Always show these core fields
     row.push(
       item.isCoach ? 'Coach' : item.type === 'guardian' ? 'Guardian' : 'Parent',
     );
-    row.push(getParentStatus(item) === 'active' ? 'Active' : 'Inactive');
+    // Use the record's status for exports
+    row.push(item.status || 'Inactive');
     row.push(formatDate(item.createdAt));
 
     return row;
   });
 
-  // Add headers based on visibility
   if (showEmail) tableColumn.push('Email');
   if (showPhone) tableColumn.push('Phone');
   if (showAddress) tableColumn.push('Address');
@@ -228,7 +202,7 @@ export const exportParentsToPDF = <T extends ExtendedTableRecord>(
   doc.save(`parents_${new Date().toISOString().slice(0, 10)}.pdf`);
 };
 
-// exportParentsToExcel
+// Export to Excel
 export const exportParentsToExcel = <T extends ExtendedTableRecord>(
   data: T[],
   addrShow: AddressShowConfig = {
@@ -258,13 +232,12 @@ export const exportParentsToExcel = <T extends ExtendedTableRecord>(
       obj.Phone = item.phone ? formatPhoneNumber(item.phone) : 'N/A';
     if (showAddress) obj.Address = fmtAddr(item.address, addrShow) || 'N/A';
 
-    // Always show these core fields
     obj.Type = item.isCoach
       ? 'Coach'
       : item.type === 'guardian'
         ? 'Guardian'
         : 'Parent';
-    obj.Status = getParentStatus(item) === 'active' ? 'Active' : 'Inactive';
+    obj.Status = item.status || 'Inactive';
     obj['Date Joined'] = formatDate(item.createdAt);
 
     return obj;
@@ -403,8 +376,6 @@ export const getParentTableColumns = ({
   onDeleteSuccess,
   visibleFields = [],
 }: ParentTableColumnsProps): TableProps<ExtendedTableRecord>['columns'] => {
-  // No length===0 fallback — if visibleFields is empty the caller hasn't loaded
-  // config yet; columns are simply not rendered until fields arrive.
   const isFieldVisible = (fieldName: string): boolean =>
     visibleFields.includes(fieldName);
 
@@ -645,11 +616,12 @@ export const getParentTableColumns = ({
       },
     },
 
+    // ⭐ UPDATED: Use the pre-computed status from the record
     {
       title: 'Payment Status',
       key: 'status',
       render: (_: unknown, record: ExtendedTableRecord) => {
-        // Use the status from the record (computed by useAllParents)
+        // Use the status already computed by useAllParents
         const status = record.status || 'Inactive';
         const badgeColor =
           status === 'Active'
@@ -736,66 +708,6 @@ export const getParentTableColumns = ({
                   )}
                 </div>
               );
-              {
-                /* Dropdown Menu - Preserved for future use */
-              }
-              {
-                /* <div className='dropdown'>
-                    <Link
-                      to='#'
-                      className='btn btn-white btn-icon btn-sm d-flex align-items-center justify-content-center rounded-circle p-0'
-                      data-bs-toggle='dropdown'
-                      aria-expanded='false'
-                    >
-                      <i className='ti ti-dots-vertical fs-14' />
-                    </Link>
-                    <ul className='dropdown-menu dropdown-menu-right p-3'>
-                      <li>
-                        <div
-                          className='dropdown-item rounded-1 cursor-pointer'
-                          onClick={() => handleParentClick(targetRecord)}
-                        >
-                          <i className='ti ti-menu me-2' />
-                          View
-                        </div>
-                      </li>
-                      <li>
-                        <div
-                          className='dropdown-item rounded-1 cursor-pointer'
-                          onClick={() => handleEditClick?.(record)}
-                        >
-                          <i className='ti ti-edit me-2' />
-                          Edit
-                        </div>
-                      </li>
-                      {canDelete && (
-                        <li>
-                          <div
-                            className='dropdown-item rounded-1 cursor-pointer text-danger'
-                            onClick={() =>
-                              showDeleteConfirm(
-                                {
-                                  _id: targetRecord._id,
-                                  fullName: targetRecord.fullName,
-                                  email: targetRecord.email,
-                                  parentId: targetRecord.parentId,
-                                  type: targetRecord.type,
-                                  isCoach: targetRecord.isCoach,
-                                },
-                                {
-                                  onDeleteSuccess: onDeleteSuccess,
-                                },
-                              )
-                            }
-                          >
-                            <i className='ti ti-trash me-2' />
-                            Delete
-                          </div>
-                        </li>
-                      )}
-                    </ul>
-                  </div> */
-              }
             },
           },
         ]

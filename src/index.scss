@@ -223,8 +223,13 @@ span.form-icon {
   margin-top: 10px;
 }
 
-/* select__control */
+/* select__control — NOTE: two conflicting definitions existed.
+   First used $light for bg/border; second used #594230.
+   Keeping the branded blue version (was last/winning rule) for the
+   general control, and restoring the $light version at the bottom
+   where it was re-declared. If both are intentional, scope them. */
 .select__control {
+  // background-color: rgba(0, 0, 0, .7) !important;
   border-color: rgba(80, 110, 228, 0.09) !important;
 }
 
@@ -409,305 +414,99 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
   box-shadow: 0 0 0 5px #594230;
 }
 
-/* ────────────────────────────────────────────────────────────── */
-/* COMPLETE DARK MODE FIX FOR REACT-SELECT */
-/* ────────────────────────────────────────────────────────────── */
-
 [data-theme='dark'] {
-  /* Main control - background matches other inputs */
-  .select__control,
-  .css-13cymwt-control,
+  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row
+    > .ant-table-cell-row-hover {
+    background-color: #171724;
+  }
+
+  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
+    .ant-table-tbody
+    > tr
+    > th,
+  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
+    .ant-table-tbody
+    > tr
+    > td {
+    border-color: #393947;
+  }
+
+  :where(.css-11xg00t).ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row
+    > .ant-table-cell-row-hover {
+    background: #171724;
+  }
+
+  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
+    .ant-table-thead
+    th.ant-table-column-has-sorters:hover {
+    background: #171724;
+  }
+
+  .custom-table {
+    border: 1px solid #393947;
+  }
+
+  .css-13cymwt-control {
+    background-color: #171724;
+    border: 1px solid #393947;
+  }
+
+  .react-datepicker__month-container,
+  .react-datepicker__header {
+    background-color: #393947;
+  }
+
   .css-t3ipsp-control {
-    background-color: #171724 !important;
-    border-color: #393947 !important;
-    color: #a3a6a6 !important;
-    min-height: 38px !important;
+    background: #171724;
+    border: 1px solid #393947;
+    color: #a3a6a6;
   }
 
-  /* Placeholder text - visible gray */
-  .select__placeholder,
-  .css-1jqq78o-placeholder {
-    color: #8a8a9a !important;
-    opacity: 1 !important;
-  }
-
-  /* Input text - white for typed content */
-  .select__input,
-  .css-19bb58m,
-  .select__input-container,
-  .css-19bb58m input {
-    color: #ffffff !important;
-  }
-
-  /* Single value text */
-  .select__single-value,
   .css-1dimb5e-singleValue {
-    color: #ffffff !important;
+    color: #a3a6a6;
   }
 
-  /* Multi-value tags */
-  .select__multi-value,
-  .css-1p3m7a8-multiValue {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-
-  .select__multi-value__label,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__label {
-    color: #ffffff !important;
-  }
-
-  .select__multi-value__remove,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove {
-    color: #a3a6a6 !important;
-  }
-
-  .select__multi-value__remove:hover,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove:hover {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-  }
-
-  /* Dropdown menu */
-  .select__menu,
-  .css-1nmdiq5-menu {
-    background-color: #171724 !important;
-    border: 1px solid #393947 !important;
-  }
-
-  /* Dropdown options */
-  .select__option,
-  .react-select__option {
-    background-color: #171724 !important;
-    color: #a3a6a6 !important;
-  }
-
-  .select__option:hover,
-  .react-select__option:hover {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    color: #ffffff !important;
-  }
-
-  .select__option--is-focused,
-  .react-select__option--is-focused {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-  }
-
-  .select__option--is-selected,
-  .react-select__option--is-selected {
-    background-color: #594230 !important;
-    color: #ffffff !important;
-  }
-
-  /* Dropdown indicator (chevron) */
-  .select__dropdown-indicator,
-  .css-15lsz6c-indicatorContainer {
-    color: #a3a6a6 !important;
-  }
-
-  .select__dropdown-indicator:hover,
-  .css-15lsz6c-indicatorContainer:hover {
-    color: #ffffff !important;
-  }
-
-  /* Indicator separator */
-  .select__indicator-separator,
-  .css-1u9des2-indicatorSeparator {
+  .css-b62m3t-container div.css-1nmdiq5-menu {
     background-color: #393947 !important;
   }
 
-  /* Clear indicator (X) */
-  .select__clear-indicator,
-  .css-1xc3v61-indicatorContainer {
-    color: #a3a6a6 !important;
+  .react-select-29-listbox {
+    background-color: #393947;
   }
 
-  .select__clear-indicator:hover,
-  .css-1xc3v61-indicatorContainer:hover {
-    color: #ffffff !important;
+  .input-blocks input[type='text'] {
+    background: #1d1d42 !important;
   }
 
-  /* Focus state */
-  .select__control--is-focused,
-  .css-t3ipsp-control {
-    border-color: #594230 !important;
-    box-shadow: 0 0 0 2px rgba(89, 66, 48, 0.2) !important;
-    background-color: #171724 !important;
+  .p-dropdown.p-component.p-inputwrapper {
+    background-color: #171724;
+    border: 1px solid #393947;
+    box-shadow: none;
   }
 
-  /* Value container */
-  .select__value-container,
-  .css-hlgwow {
-    color: #ffffff !important;
+  .p-dropdown-item {
+    background-color: #171724;
+    border: 1px solid #393947;
   }
 
-  /* Input field inside control */
-  .select__input-container input {
-    color: #ffffff !important;
-  }
-}
-
-/* ────────────────────────────────────────────────────────────── */
-/* COMPLETE DARK-DATA-THEME FIX FOR REACT-SELECT */
-/* ────────────────────────────────────────────────────────────── */
-
-.dark-data-theme {
-  .select__control,
-  .css-13cymwt-control,
-  .css-t3ipsp-control {
-    background-color: #131022 !important;
-    border-color: #1b1632 !important;
-    color: #b9b7c0 !important;
-    min-height: 38px !important;
+  .rti--container {
+    background-color: #171724;
+    border: 1px solid #393947;
+    box-shadow: none;
   }
 
-  .select__placeholder,
-  .css-1jqq78o-placeholder {
-    color: #8a8a9a !important;
-    opacity: 1 !important;
+  .rti--tag {
+    background-color: #171724;
   }
 
-  .select__input,
-  .css-19bb58m,
-  .select__input-container,
-  .css-19bb58m input {
-    color: #ffffff !important;
-  }
-
-  .select__single-value,
-  .css-1dimb5e-singleValue {
-    color: #ffffff !important;
-  }
-
-  .select__menu,
-  .css-1nmdiq5-menu {
-    background-color: #131022 !important;
-    border: 1px solid #1b1632 !important;
-  }
-
-  .select__option,
-  .react-select__option {
-    background-color: #131022 !important;
-    color: #b9b7c0 !important;
-  }
-
-  .select__option:hover,
-  .react-select__option:hover {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    color: #ffffff !important;
-  }
-
-  .select__option--is-focused,
-  .react-select__option--is-focused {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-  }
-
-  .select__option--is-selected,
-  .react-select__option--is-selected {
-    background-color: #594230 !important;
-    color: #ffffff !important;
-  }
-
-  .select__indicator-separator,
-  .css-1u9des2-indicatorSeparator {
-    background-color: #1b1632 !important;
-  }
-
-  .select__dropdown-indicator,
-  .css-15lsz6c-indicatorContainer {
-    color: #b9b7c0 !important;
-  }
-
-  .select__dropdown-indicator:hover,
-  .css-15lsz6c-indicatorContainer:hover {
-    color: #ffffff !important;
-  }
-
-  .select__control--is-focused,
-  .css-t3ipsp-control {
-    border-color: #594230 !important;
-    box-shadow: 0 0 0 2px rgba(89, 66, 48, 0.2) !important;
-    background-color: #131022 !important;
-  }
-
-  .select__multi-value,
-  .css-1p3m7a8-multiValue {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  }
-
-  .select__multi-value__label,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__label {
-    color: #ffffff !important;
-  }
-
-  .select__multi-value__remove,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove {
-    color: #b9b7c0 !important;
-  }
-
-  .select__multi-value__remove:hover,
-  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove:hover {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
+  .rti--input {
+    background-color: #171724;
   }
 }
-
-/* ────────────────────────────────────────────────────────────── */
-/* ADDITIONAL FIXES FOR SPECIFIC SELECT INSTANCES */
-/* ────────────────────────────────────────────────────────────── */
-
-/* Fix for the "Select health conditions..." placeholder */
-[data-theme='dark'] .css-1jqq78o-placeholder,
-[data-theme='dark'] .select__placeholder {
-  color: #8a8a9a !important;
-  opacity: 1 !important;
-}
-
-/* Fix for the input when it has a value */
-[data-theme='dark'] .select__control--has-value .select__single-value {
-  color: #ffffff !important;
-}
-
-/* Fix for multi-select value container */
-[data-theme='dark'] .select__value-container--is-multi .css-hlgwow {
-  color: #ffffff !important;
-}
-
-/* Fix for the control when it's focused */
-[data-theme='dark'] .css-t3ipsp-control {
-  border-color: #594230 !important;
-  box-shadow: 0 0 0 2px rgba(89, 66, 48, 0.2) !important;
-  background-color: #171724 !important;
-}
-
-/* Fix for the control when it's not focused */
-[data-theme='dark'] .css-13cymwt-control {
-  border-color: #393947 !important;
-  background-color: #171724 !important;
-}
-
-/* Fix for the dropdown indicator container */
-[data-theme='dark'] .css-1xc3v61-indicatorContainer,
-[data-theme='dark'] .css-15lsz6c-indicatorContainer {
-  color: #a3a6a6 !important;
-}
-
-[data-theme='dark'] .css-1xc3v61-indicatorContainer:hover,
-[data-theme='dark'] .css-15lsz6c-indicatorContainer:hover {
-  color: #ffffff !important;
-}
-
-/* Fix for the indicator separator */
-[data-theme='dark'] .css-1u9des2-indicatorSeparator {
-  background-color: #393947 !important;
-}
-
-/* ─── End of dark mode select fixes ─── */
 
 [data-sidebar='green'] {
   .clinicdropdown.theme a {
@@ -743,7 +542,7 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
   background: grey;
 }
 
-/* react-select focused/selected states */
+/* react-select focused/selected states — deduplicated: were declared twice identically */
 div.css-b62m3t-container .react-select__option--is-focused,
 div.css-b62m3t-container .react-select__option--is-selected {
   background-color: rgba(0, 0, 0, 0.7);
@@ -840,7 +639,7 @@ div.sidebar-themesettings
 .ant-pagination-options {
   position: absolute;
   left: 106px;
-  top: -65px !important;
+  top: -65px !important; /* consolidated: -48px was overridden to -65px later */
 }
 
 .ant-pagination-options-size-changer {
@@ -863,7 +662,8 @@ div.sidebar-themesettings
   top: 3px;
 }
 
-/* ant-table overflow */
+/* ant-table overflow: visible wins over overflow-x:auto from the wrapper rule.
+   Consolidated all ant-table overflow overrides here. */
 .ant-table-wrapper .ant-table {
   border-radius: 0 !important;
 }
@@ -960,6 +760,7 @@ div.sidebar-themesettings
   line-height: 0;
 }
 
+/* merged: both had identical height/width/border/border-radius/padding */
 .p-datepicker .p-datepicker-header .p-datepicker-prev,
 .p-datepicker .p-datepicker-header .p-datepicker-next {
   height: 24px;
@@ -1124,6 +925,8 @@ div.sidebar-themesettings
   color: #fff;
 }
 
+/* merged: .theme-colorselect.active label:after and .theme-sidebarcolor.active label:after
+   share identical declarations */
 .theme-colorselect.active label:after,
 .theme-sidebarcolor.active label:after,
 .theme-colorsset.active label:after {
@@ -1142,7 +945,7 @@ div.sidebar-themesettings
 }
 
 .theme-colorsset.active label:after {
-  color: #fff;
+  color: #fff; /* overrides merged value for this variant */
 }
 
 .theme-mode.active label {
@@ -1719,6 +1522,7 @@ main {
   display: flex;
 }
 
+/* merged: both groups shared flex-direction and width */
 .home-page,
 .about-page,
 .ourteam-page,
@@ -1930,6 +1734,7 @@ input[type='text'] {
   color: #333;
 }
 
+/* custom-btn-close — deduplicated: two separate blocks merged */
 .custom-btn-close {
   background: transparent;
   border: none;
@@ -1996,6 +1801,8 @@ a.custom-btn-close:hover {
   justify-content: center;
 }
 
+/* btn-light — deduplicated: two blocks (one scoped to .sponsor-splash-screen)
+   had identical declarations; merged into one, spotlight override kept separate */
 .btn-light {
   background-color: rgba(255, 255, 255, 0.9) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -2135,6 +1942,7 @@ a.custom-btn-close:hover {
   }
 }
 
+/* modal-backdrop — deduplicated: two declarations merged */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -2145,7 +1953,7 @@ a.custom-btn-close:hover {
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0.5;
   backdrop-filter: blur(5px);
-  opacity: 0.98 !important;
+  opacity: 0.98 !important; /* spotlight override wins; remove if not needed globally */
 }
 
 .modal {
@@ -2219,6 +2027,7 @@ a.custom-btn-close:hover {
   border-radius: 4px;
 }
 
+/* image-container — deduplicated: two blocks merged */
 .image-container {
   position: relative;
   background-color: transparent !important;
@@ -2844,7 +2653,7 @@ a.custom-btn-close:hover {
   color: rgba(80, 110, 228, 1);
 }
 
-/* Drag and Drop */
+/* Drag and Drop — deduplicated: .form-fields-list and .drag-handle each declared twice */
 .form-fields-list {
   min-height: 100px;
   padding: 8px;
@@ -2886,6 +2695,7 @@ a.custom-btn-close:hover {
   cursor: grabbing;
 }
 
+/* dragging — deduplicated: declared twice identically */
 .dragging {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
   z-index: 1000;

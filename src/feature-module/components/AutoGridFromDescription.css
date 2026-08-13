@@ -162,6 +162,7 @@
 
 /* ── Light Theme ── */
 .agd-root--light {
+  border-radius: 16px;
   color: #1a1a2e;
 }
 
@@ -1044,4 +1045,80 @@
 
 .hp-section--reg.light-theme .step-indicator .step-connector {
   background-color: rgba(89, 66, 48, 0.2) !important;
+}
+
+/* ── Prevent Blinking on CTAs ── */
+
+/* Disable all animations on CTA buttons */
+.agd-cta,
+.agd-cta-bottom {
+  animation: none !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition: none !important;
+}
+
+/* Override any hover effects that might cause blinking */
+.agd-cta:hover,
+.agd-cta-bottom:hover {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Remove pulse/glow effects */
+.agd-cta:focus,
+.agd-cta-bottom:focus,
+.agd-cta:active,
+.agd-cta-bottom:active {
+  animation: none !important;
+  transition: none !important;
+  outline: none !important;
+}
+
+/* Specifically target the bottom CTA */
+.agd-cta-bottom {
+  transform: none !important;
+  box-shadow: 0 4px 15px rgba(89, 66, 48, 0.3) !important;
+}
+
+.agd-cta-bottom:hover {
+  transform: none !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Remove any potential infinite animations on containers */
+.agd-tile--cta,
+.agd-tile--cta-bottom {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Disable the fade-in animation if it's causing issues */
+.agd-event {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Light theme FAQ link text color fix */
+.agd-root--light .agd-faq-link {
+  color: #ffffff !important;
+}
+
+.agd-root--light .agd-faq-link i {
+  color: #ffffff !important;
+}
+
+.agd-root--light .agd-faq-link:hover {
+  color: #ffffff !important;
+  opacity: 0.9;
+}
+
+/* Dark theme FAQ link (keep as is) */
+.agd-root--dark .agd-faq-link {
+  color: #ffffff !important;
+}
+
+.agd-root--dark .agd-faq-link i {
+  color: #ffffff !important;
 }

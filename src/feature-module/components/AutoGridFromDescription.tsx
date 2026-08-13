@@ -107,7 +107,7 @@ interface RegistrationFormConfig {
 interface AutoGridFromDescriptionProps {
   config: RegistrationFormConfig;
   onRegister?: () => void;
-  isLightTheme?: boolean; // <-- added
+  isLightTheme?: boolean;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -210,11 +210,16 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
   onRegister,
   isLightTheme = false,
 }) => {
-  // Remove theme detection logic – use isLightTheme directly
-
   const trainingDetails = config?.trainingDetails;
   const tryoutDetails = config?.tryoutDetails;
   const isTryout = !!tryoutDetails;
+
+  // Button style override to prevent blinking
+  const noBlinkStyle = {
+    animation: 'none !important' as any,
+    transition: 'none !important' as any,
+    opacity: 1,
+  };
 
   const getTryoutLocations = (): TryoutLocation[] => {
     if (!tryoutDetails) return [];
@@ -356,6 +361,12 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
         <a
           href='/faq'
           className={`agd-faq-link ${isLightTheme ? 'agd-faq-link--light' : ''}`}
+          style={{
+            color: isLightTheme ? '#ffffff' : '#ffffff',
+            background: isLightTheme
+              ? 'rgba(89, 66, 48, 0.9)'
+              : 'rgba(89, 66, 48, 0.8)',
+          }}
         >
           <i className='ti ti-message-question' />
           Visit our FAQ page for answers to common questions
@@ -422,6 +433,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
                 style={{
                   background: accent,
                   boxShadow: `0 6px 20px ${accent}44`,
+                  ...noBlinkStyle,
                 }}
                 onClick={() => onRegister?.()}
               >
@@ -431,7 +443,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
             <FAQSection />
             <div className='agd-tile agd-tile--cta-bottom'>
-              <button className='agd-cta-bottom' onClick={() => onRegister?.()}>
+              <button
+                className='agd-cta-bottom'
+                onClick={() => onRegister?.()}
+                style={noBlinkStyle}
+              >
                 <i className='ti ti-user-plus' /> Register Now{' '}
                 <i className='ti ti-arrow-right' />
               </button>
@@ -512,6 +528,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
               style={{
                 background: accent,
                 boxShadow: `0 6px 20px ${accent}44`,
+                ...noBlinkStyle,
               }}
               onClick={handleRegister}
             >
@@ -736,7 +753,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
           <FAQSection />
 
           <div className='agd-tile agd-tile--cta-bottom'>
-            <button className='agd-cta-bottom' onClick={handleRegister}>
+            <button
+              className='agd-cta-bottom'
+              onClick={handleRegister}
+              style={noBlinkStyle}
+            >
               <i className='ti ti-user-plus' /> Register Now{' '}
               <i className='ti ti-arrow-right' />
             </button>
@@ -795,6 +816,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
                 style={{
                   background: accent,
                   boxShadow: `0 6px 20px ${accent}44`,
+                  ...noBlinkStyle,
                 }}
                 onClick={() => onRegister?.()}
               >
@@ -804,7 +826,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
             </div>
             <FAQSection />
             <div className='agd-tile agd-tile--cta-bottom'>
-              <button className='agd-cta-bottom' onClick={() => onRegister?.()}>
+              <button
+                className='agd-cta-bottom'
+                onClick={() => onRegister?.()}
+                style={noBlinkStyle}
+              >
                 <i className='ti ti-user-plus' /> Register for Tryout{' '}
                 <i className='ti ti-arrow-right' />
               </button>
@@ -883,6 +909,7 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
               style={{
                 background: accent,
                 boxShadow: `0 6px 20px ${accent}44`,
+                ...noBlinkStyle,
               }}
               onClick={handleRegister}
             >
@@ -1102,7 +1129,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
           <FAQSection />
 
           <div className='agd-tile agd-tile--cta-bottom'>
-            <button className='agd-cta-bottom' onClick={handleRegister}>
+            <button
+              className='agd-cta-bottom'
+              onClick={handleRegister}
+              style={noBlinkStyle}
+            >
               <i className='ti ti-user-plus' /> Register for Tryout{' '}
               <i className='ti ti-arrow-right' />
             </button>
@@ -1148,7 +1179,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
         <div className='agd-tile agd-tile--cta'>
           <button
             className='agd-cta'
-            style={{ background: '#594230', boxShadow: `0 6px 20px #59423044` }}
+            style={{
+              background: '#594230',
+              boxShadow: `0 6px 20px #59423044`,
+              ...noBlinkStyle,
+            }}
             onClick={() => onRegister?.()}
           >
             <i className='ti ti-user-plus' /> Register Now{' '}
@@ -1157,7 +1192,11 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
         </div>
         <FAQSection />
         <div className='agd-tile agd-tile--cta-bottom'>
-          <button className='agd-cta-bottom' onClick={() => onRegister?.()}>
+          <button
+            className='agd-cta-bottom'
+            onClick={() => onRegister?.()}
+            style={noBlinkStyle}
+          >
             <i className='ti ti-user-plus' /> Register Now{' '}
             <i className='ti ti-arrow-right' />
           </button>

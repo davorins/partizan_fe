@@ -362,15 +362,26 @@ const AutoGridFromDescription: React.FC<AutoGridFromDescriptionProps> = ({
           href='/faq'
           className={`agd-faq-link ${isLightTheme ? 'agd-faq-link--light' : ''}`}
           style={{
-            color: isLightTheme ? '#ffffff' : '#ffffff',
+            color: '#ffffff',
             background: isLightTheme
               ? 'rgba(89, 66, 48, 0.9)'
               : 'rgba(89, 66, 48, 0.8)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            fontSize: '0.85rem',
+            fontWeight: '600',
+            textDecoration: 'none',
+            transition: 'none',
           }}
         >
-          <i className='ti ti-message-question' />
-          Visit our FAQ page for answers to common questions
-          <i className='ti ti-arrow-right' />
+          <i className='ti ti-message-question' style={{ color: '#ffffff' }} />
+          <span style={{ color: '#ffffff' }}>
+            Visit our FAQ page for answers to common questions
+          </span>
+          <i className='ti ti-arrow-right' style={{ color: '#ffffff' }} />
         </a>
       </div>
     </div>

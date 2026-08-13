@@ -1047,78 +1047,180 @@
   background-color: rgba(89, 66, 48, 0.2) !important;
 }
 
-/* ── Prevent Blinking on CTAs ── */
+/* ── Prevent Blinking on CTAs and Active States ── */
 
-/* Disable all animations on CTA buttons */
+/* Disable ALL animations on CTA buttons and their children */
 .agd-cta,
-.agd-cta-bottom {
+.agd-cta-bottom,
+.agd-cta *,
+.agd-cta-bottom *,
+button.agd-cta,
+button.agd-cta-bottom {
   animation: none !important;
   animation-delay: 0s !important;
   animation-iteration-count: 1 !important;
   transition: none !important;
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
 }
 
-/* Override any hover effects that might cause blinking */
+/* Remove hover/active/focus animations */
 .agd-cta:hover,
-.agd-cta-bottom:hover {
-  animation: none !important;
-  transition: none !important;
-}
-
-/* Remove pulse/glow effects */
+.agd-cta-bottom:hover,
 .agd-cta:focus,
 .agd-cta-bottom:focus,
 .agd-cta:active,
-.agd-cta-bottom:active {
+.agd-cta-bottom:active,
+.agd-cta.active,
+.agd-cta-bottom.active {
   animation: none !important;
   transition: none !important;
-  outline: none !important;
-}
-
-/* Specifically target the bottom CTA */
-.agd-cta-bottom {
   transform: none !important;
-  box-shadow: 0 4px 15px rgba(89, 66, 48, 0.3) !important;
+  -webkit-transform: none !important;
 }
 
-.agd-cta-bottom:hover {
-  transform: none !important;
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+/* Remove any pulse, glow, or shimmer animations */
+.agd-cta::before,
+.agd-cta::after,
+.agd-cta-bottom::before,
+.agd-cta-bottom::after {
+  animation: none !important;
+  display: none !important;
 }
 
-/* Remove any potential infinite animations on containers */
+/* Disable animations on parent containers that might affect buttons */
 .agd-tile--cta,
-.agd-tile--cta-bottom {
+.agd-tile--cta-bottom,
+.agd-tile--cta *,
+.agd-tile--cta-bottom * {
   animation: none !important;
   transition: none !important;
 }
 
-/* Disable the fade-in animation if it's causing issues */
+/* Disable the global event animation */
 .agd-event {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
+  -webkit-animation: none !important;
 }
 
-/* Light theme FAQ link text color fix */
-.agd-root--light .agd-faq-link {
+/* ── FAQ Link Text Color Fix ── */
+
+/* Light theme - FAQ link with white text */
+.agd-root--light .agd-faq-link,
+.agd-root--light .agd-faq-link i,
+.agd-root--light .agd-faq-link span,
+.agd-root--light .agd-faq-link .ti,
+.agd-root--light .agd-faq-link .ti-message-question,
+.agd-root--light .agd-faq-link .ti-arrow-right {
   color: #ffffff !important;
 }
 
-.agd-root--light .agd-faq-link i {
-  color: #ffffff !important;
-}
-
-.agd-root--light .agd-faq-link:hover {
+.agd-root--light .agd-faq-link:hover,
+.agd-root--light .agd-faq-link:hover i,
+.agd-root--light .agd-faq-link:hover span,
+.agd-root--light .agd-faq-link:hover .ti {
   color: #ffffff !important;
   opacity: 0.9;
 }
 
-/* Dark theme FAQ link (keep as is) */
-.agd-root--dark .agd-faq-link {
+/* Dark theme - FAQ link with white text */
+.agd-root--dark .agd-faq-link,
+.agd-root--dark .agd-faq-link i,
+.agd-root--dark .agd-faq-link span,
+.agd-root--dark .agd-faq-link .ti,
+.agd-root--dark .agd-faq-link .ti-message-question,
+.agd-root--dark .agd-faq-link .ti-arrow-right {
   color: #ffffff !important;
 }
 
-.agd-root--dark .agd-faq-link i {
+.agd-root--dark .agd-faq-link:hover,
+.agd-root--dark .agd-faq-link:hover i,
+.agd-root--dark .agd-faq-link:hover span,
+.agd-root--dark .agd-faq-link:hover .ti {
   color: #ffffff !important;
+  opacity: 0.9;
+}
+
+/* Override any theme-specific text colors */
+.agd-faq-link,
+.agd-faq-link i,
+.agd-faq-link .ti,
+.agd-faq-link .ti-message-question,
+.agd-faq-link .ti-arrow-right {
+  color: #ffffff !important;
+}
+
+/* Ensure FAQ link background stays consistent */
+.agd-faq-link {
+  background: rgba(89, 66, 48, 0.9) !important;
+}
+
+.agd-root--light .agd-faq-link {
+  background: rgba(89, 66, 48, 0.9) !important;
+}
+
+.agd-root--dark .agd-faq-link {
+  background: rgba(89, 66, 48, 0.8) !important;
+}
+
+/* ── Fix for section selection blinking ── */
+
+/* Disable animations on active/selected states */
+.agd-tab.active,
+.agd-tab.is-active,
+.agd-tab:active,
+.agd-tab:focus,
+.agd-tab:hover {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Disable any tab switching animations */
+.agd-tabs .agd-tab {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Disable section content animations */
+.agd-section,
+.agd-panel,
+.agd-content,
+.agd-content * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ── Additional button fixes ── */
+
+/* Override any box-shadow animations */
+.agd-cta,
+.agd-cta-bottom {
+  box-shadow: 0 4px 15px rgba(89, 66, 48, 0.3) !important;
+}
+
+.agd-cta:hover,
+.agd-cta-bottom:hover {
+  box-shadow: 0 6px 20px rgba(89, 66, 48, 0.4) !important;
+}
+
+/* Fix any opacity animations */
+.agd-cta,
+.agd-cta-bottom,
+.agd-tile--cta,
+.agd-tile--cta-bottom {
+  opacity: 1 !important;
+}
+
+/* Remove any keyframe animations */
+@keyframes none {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -162,7 +162,6 @@
 
 /* ── Light Theme ── */
 .agd-root--light {
-  border-radius: 16px;
   color: #1a1a2e;
 }
 
@@ -171,6 +170,7 @@
   border: 1px solid rgba(89, 66, 48, 0.1);
   background-image: none;
   padding: 18px 20px;
+  border-radius: 16px;
 }
 
 .agd-root--light .agd-tile:hover {

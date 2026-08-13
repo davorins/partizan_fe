@@ -415,96 +415,211 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
 }
 
 [data-theme='dark'] {
-  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
-    .ant-table-tbody
-    .ant-table-row
-    > .ant-table-cell-row-hover {
-    background-color: #171724;
-  }
-
-  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
-    .ant-table-tbody
-    > tr
-    > th,
-  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
-    .ant-table-tbody
-    > tr
-    > td {
-    border-color: #393947;
-  }
-
-  :where(.css-11xg00t).ant-table-wrapper
-    .ant-table-tbody
-    .ant-table-row
-    > .ant-table-cell-row-hover {
-    background: #171724;
-  }
-
-  :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
-    .ant-table-thead
-    th.ant-table-column-has-sorters:hover {
-    background: #171724;
-  }
-
-  .custom-table {
-    border: 1px solid #393947;
-  }
-
-  .css-13cymwt-control {
-    background-color: #171724;
-    border: 1px solid #393947;
-  }
-
-  .react-datepicker__month-container,
-  .react-datepicker__header {
-    background-color: #393947;
-  }
-
+  .select__control,
+  .css-13cymwt-control,
   .css-t3ipsp-control {
-    background: #171724;
-    border: 1px solid #393947;
-    color: #a3a6a6;
+    background-color: #1d1d42 !important;
+    border-color: #393947 !important;
   }
 
+  /* Fix the placeholder text color */
+  .select__placeholder,
+  .css-1jqq78o-placeholder {
+    color: #a3a6a6 !important;
+  }
+
+  /* Fix the input text color */
+  .select__input,
+  .css-19bb58m {
+    color: #ffffff !important;
+  }
+
+  /* Fix the single value text color */
+  .select__single-value,
   .css-1dimb5e-singleValue {
-    color: #a3a6a6;
+    color: #ffffff !important;
   }
 
-  .css-b62m3t-container div.css-1nmdiq5-menu {
+  /* Fix the multi-value text color */
+  .select__multi-value,
+  .css-1p3m7a8-multiValue {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+  }
+
+  .select__multi-value__label,
+  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue {
+    color: #ffffff !important;
+  }
+
+  /* Fix the dropdown indicator icon */
+  .select__dropdown-indicator,
+  .css-15lsz6c-indicatorContainer {
+    color: #a3a6a6 !important;
+  }
+
+  .select__dropdown-indicator:hover,
+  .css-15lsz6c-indicatorContainer:hover {
+    color: #ffffff !important;
+  }
+
+  /* Fix the menu/options background */
+  .select__menu,
+  .css-1nmdiq5-menu {
+    background-color: #1d1d42 !important;
+    border-color: #393947 !important;
+  }
+
+  .select__option,
+  .react-select__option {
+    background-color: #1d1d42 !important;
+    color: #a3a6a6 !important;
+  }
+
+  .select__option:hover,
+  .react-select__option:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+  }
+
+  .select__option--is-focused,
+  .react-select__option--is-focused {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+  }
+
+  .select__option--is-selected,
+  .react-select__option--is-selected {
+    background-color: rgba(89, 66, 48, 0.8) !important;
+    color: #ffffff !important;
+  }
+
+  /* Fix the indicator separator */
+  .select__indicator-separator,
+  .css-1u9des2-indicatorSeparator {
     background-color: #393947 !important;
   }
 
-  .react-select-29-listbox {
-    background-color: #393947;
+  /* Fix the multi-value remove button */
+  .select__multi-value__remove,
+  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove {
+    color: #a3a6a6 !important;
   }
 
-  .input-blocks input[type='text'] {
-    background: #1d1d42 !important;
+  .select__multi-value__remove:hover,
+  .css-1p3m7a8-multiValue .css-1p3m7a8-multiValue__remove:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
   }
 
-  .p-dropdown.p-component.p-inputwrapper {
-    background-color: #171724;
-    border: 1px solid #393947;
-    box-shadow: none;
+  /* Fix the clear indicator */
+  .select__clear-indicator,
+  .css-1xc3v61-indicatorContainer {
+    color: #a3a6a6 !important;
   }
 
-  .p-dropdown-item {
-    background-color: #171724;
-    border: 1px solid #393947;
+  .select__clear-indicator:hover,
+  .css-1xc3v61-indicatorContainer:hover {
+    color: #ffffff !important;
   }
 
-  .rti--container {
-    background-color: #171724;
-    border: 1px solid #393947;
-    box-shadow: none;
+  /* Fix the loading indicator */
+  .select__loading-indicator {
+    color: #a3a6a6 !important;
   }
 
-  .rti--tag {
-    background-color: #171724;
+  /* Fix focused state */
+  .select__control--is-focused,
+  .css-t3ipsp-control {
+    border-color: #594230 !important;
+    box-shadow: 0 0 0 1px #594230 !important;
   }
 
-  .rti--input {
-    background-color: #171724;
+  /* Fix the input container inside the control */
+  .select__input-container,
+  .css-19bb58m {
+    color: #ffffff !important;
+  }
+
+  /* Fix the multi-value container */
+  .select__value-container,
+  .css-hlgwow {
+    color: #ffffff !important;
+  }
+
+  /* Fix the multi-value label */
+  .select__multi-value__label {
+    color: #ffffff !important;
+  }
+}
+
+.dark-data-theme {
+  .select__control,
+  .css-13cymwt-control,
+  .css-t3ipsp-control {
+    background-color: #131022 !important;
+    border-color: #1b1632 !important;
+  }
+
+  .select__placeholder,
+  .css-1jqq78o-placeholder {
+    color: #b9b7c0 !important;
+  }
+
+  .select__single-value,
+  .css-1dimb5e-singleValue {
+    color: #b9b7c0 !important;
+  }
+
+  .select__input,
+  .css-19bb58m {
+    color: #ffffff !important;
+  }
+
+  .select__menu,
+  .css-1nmdiq5-menu {
+    background-color: #131022 !important;
+    border-color: #1b1632 !important;
+  }
+
+  .select__option,
+  .react-select__option {
+    background-color: #131022 !important;
+    color: #b9b7c0 !important;
+  }
+
+  .select__option:hover,
+  .react-select__option:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+  }
+
+  .select__option--is-selected,
+  .react-select__option--is-selected {
+    background-color: rgba(89, 66, 48, 0.8) !important;
+    color: #ffffff !important;
+  }
+
+  .select__indicator-separator,
+  .css-1u9des2-indicatorSeparator {
+    background-color: #1b1632 !important;
+  }
+
+  .select__dropdown-indicator,
+  .css-15lsz6c-indicatorContainer {
+    color: #b9b7c0 !important;
+  }
+
+  .select__control--is-focused,
+  .css-t3ipsp-control {
+    border-color: #594230 !important;
+    box-shadow: 0 0 0 1px #594230 !important;
+  }
+
+  .select__multi-value,
+  .css-1p3m7a8-multiValue {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
   }
 }
 

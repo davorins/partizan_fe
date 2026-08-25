@@ -45,7 +45,7 @@ type ElementType =
   | 'social'
   | 'html'
   | 'features'
-  | 'list'; // Added list type
+  | 'list';
 
 // Use React.CSSProperties for proper CSS typing
 interface ElementStyle extends React.CSSProperties {
@@ -1009,6 +1009,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       return elements.map((el) => renderElement(el)).join('');
     };
 
+    // Partizan logo URL
     const logoUrl =
       'https://pub-3eb0901007e24e51b6ed1bde149cb0bb.r2.dev/logo/logo.png';
     const bodyContent = renderElements(elements);
@@ -1171,17 +1172,93 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
     setState((prev) => ({ ...prev, elements: items }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ─── Image Upload ──────────────────────────────────────────────────────
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+
+      const response = await fetch('/api/email-templates/upload-temp-image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      if (result.success && result.data?.url) {
+        return result.data.url;
+      }
+      return null;
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (selectedElementId) {
-        updateElement(selectedElementId, { src: dataUrl });
+
+    // Validate file type
+    const validTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/svg+xml',
+    ];
+    if (!validTypes.includes(file.type)) {
+      setError(
+        'Invalid file type. Please upload a JPEG, PNG, GIF, WEBP, or SVG image.',
+      );
+      if (imageFileInputRef.current) {
+        imageFileInputRef.current.value = '';
       }
-    };
-    reader.readAsDataURL(file);
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File is too large. Maximum size is 5MB.');
+      if (imageFileInputRef.current) {
+        imageFileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    setError(null);
+    setIsSaving(true);
+
+    try {
+      const url = await uploadImage(file);
+      if (url && selectedElementId) {
+        updateElement(selectedElementId, { src: url });
+        setSuccess('Image uploaded successfully!');
+        setTimeout(() => setSuccess(null), 3000);
+      } else {
+        setError('Failed to upload image');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload image');
+    } finally {
+      setIsSaving(false);
+      if (imageFileInputRef.current) {
+        imageFileInputRef.current.value = '';
+      }
+    }
   };
 
   // ─── Save ──────────────────────────────────────────────────────────────
@@ -1252,7 +1329,7 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
       bulletSize: 'medium',
       showBullets: true,
       iconSize: 'medium',
-      gap: 2,
+      gap: 8,
     };
 
     const bulletTypeOptions: {
@@ -2800,13 +2877,13 @@ const EmailTemplateBuilder: React.FC<EmailTemplateBuilderProps> = ({
     };
 
     const iconSizeMap: Record<string, string> = {
-      small: '12px',
-      medium: '16px',
-      large: '20px',
+      small: '16px',
+      medium: '24px',
+      large: '32px',
     };
 
-    const bulletSizeStr = sizeMap[bulletSize] || '12px';
-    const iconSizeStr = iconSizeMap[iconSize] || '20px';
+    const bulletSizeStr = sizeMap[bulletSize] || '16px';
+    const iconSizeStr = iconSizeMap[iconSize] || '24px';
 
     const getBulletElement = (item: ListItem, index: number) => {
       if (!showBullets) return null;

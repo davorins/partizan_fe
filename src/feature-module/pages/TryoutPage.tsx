@@ -20,7 +20,6 @@ interface TryoutEvent {
     state: string;
     zip: string;
   };
-  backgroundColor?: string;
 }
 
 interface FormConfig {
@@ -111,24 +110,20 @@ const TryoutPage: React.FC = () => {
       ?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Helper for images with fallback
   const getImageSrc = (path: string) => {
-    // If path already starts with http, return as-is
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    // If path starts with /assets, use as-is (public folder)
     if (path.startsWith('/assets')) {
       return path;
     }
-    // Otherwise, assume it's relative to public/assets
     return `/assets/${path}`;
   };
 
   if (loading) {
     return (
-      <div className='tryout-root'>
-        <div className='tryout-wrap'>
+      <div className='tryout-white-root'>
+        <div className='tryout-white-wrap'>
           <div className='text-center py-5'>
             <LoadingSpinner />
             <p className='mt-3 text-muted'>Loading tryout information...</p>
@@ -140,15 +135,15 @@ const TryoutPage: React.FC = () => {
 
   if (error || !event) {
     return (
-      <div className='tryout-root'>
-        <div className='tryout-wrap'>
+      <div className='tryout-white-root'>
+        <div className='tryout-white-wrap'>
           <div className='text-center py-5'>
             <div className='display-1 text-muted mb-4'>🏀</div>
-            <h3 className='text-white'>No Active Tryouts</h3>
+            <h3 className='text-dark'>No Active Tryouts</h3>
             <p className='text-muted'>
               {error || 'Check back soon for upcoming tryout dates.'}
             </p>
-            <Link to='/' className='btn-primary-glass mt-3'>
+            <Link to='/' className='btn-primary-white mt-3'>
               Return Home <i className='ti ti-arrow-right' />
             </Link>
           </div>
@@ -170,80 +165,76 @@ const TryoutPage: React.FC = () => {
   });
 
   return (
-    <div className='tryout-root'>
-      {/* Background Effects - Matches AboutUsPage */}
-      <div className='tryout-bg' />
-      <div className='tryout-orb tryout-orb-1' />
-      <div className='tryout-orb tryout-orb-2' />
-      <div className='tryout-orb tryout-orb-3' />
+    <div className='tryout-white-root'>
+      <div className='tryout-white-bg' />
 
-      <div className='tryout-wrap'>
+      <div className='tryout-white-wrap'>
         {/* ─── HERO SECTION ──────────────────────────────────────── */}
-        <section className='tryout-hero'>
-          <div className='hero-grid'>
-            <div className='hero-text'>
-              <div className='hero-eyebrow'>
-                <span className='eyebrow-dot' />
+        <section className='tryout-white-hero'>
+          <div className='hero-white-grid'>
+            <div className='hero-white-text'>
+              <div className='hero-white-eyebrow'>
+                <span className='eyebrow-white-dot' />
                 {event.category || 'Tryout'} • {new Date().getFullYear()}
               </div>
-              <h1 className='hero-title'>
-                <span className='hero-accent'>{event.title}</span>
+              <h1 className='hero-white-title'>
+                <span className='hero-white-accent'>{event.title}</span>
               </h1>
-              <p className='hero-lead'>
+              <p className='hero-white-lead'>
                 {event.description ||
                   'Join Partizan AAU for the upcoming season'}
               </p>
 
-              <div className='hero-info-grid'>
-                <div className='hero-info-item'>
+              <div className='hero-white-info-grid'>
+                <div className='hero-white-info-item'>
                   <i className='ti ti-calendar-event' />
                   <div>
                     <span className='label'>Date</span>
                     <span className='value'>{formattedDate}</span>
                   </div>
                 </div>
-                <div className='hero-info-item'>
+                <div className='hero-white-info-item'>
                   <i className='ti ti-clock' />
                   <div>
                     <span className='label'>Time</span>
                     <span className='value'>{formattedTime}</span>
                   </div>
                 </div>
-                <div className='hero-info-item'>
+                <div className='hero-white-info-item'>
                   <i className='ti ti-map-pin' />
                   <div>
                     <span className='label'>Location</span>
                     <span className='value'>
-                      {event.school?.name || 'Bothell High School'}
+                      {event.school?.name || 'Partizan AAU Gym'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className='hero-actions'>
-                <button className='btn-primary-glass' onClick={handleRegister}>
+              <div className='hero-white-actions'>
+                <button className='btn-primary-white' onClick={handleRegister}>
                   Register Now <i className='ti ti-arrow-right' />
                 </button>
-                <a href='#details' className='btn-ghost-glass'>
+                <a href='#details' className='btn-ghost-white'>
                   Learn More <i className='ti ti-chevron-down' />
                 </a>
               </div>
             </div>
 
-            <div className='hero-img-col'>
-              <div className='hero-img-glass'>
-                <div className='hero-glow' />
+            <div className='hero-white-img-col'>
+              <div className='hero-white-img-glass'>
+                <div className='hero-white-glow' />
                 <img
                   src={getImageSrc('assets/img/tryout-hero.png')}
                   alt='Partizan AAU Tryouts'
-                  className='hero-img'
+                  className='hero-white-img'
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%231a1a2e"/%3E%3Ctext x="200" y="150" text-anchor="middle" fill="%23506ee4" font-size="24" font-family="Arial"%3E🏀 Tryouts%3C/text%3E%3C/svg%3E';
+                      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23f8fafc"/%3E%3Ctext x="200" y="150" text-anchor="middle" fill="%23594230" font-size="24" font-family="Arial"%3E🏀 Tryouts%3C/text%3E%3C/svg%3E';
                   }}
                 />
               </div>
-              <div className='hero-badge'>
+              <div className='hero-white-badge'>
                 <i className='ti ti-award' />
                 <span>
                   Limited Spots
@@ -256,23 +247,23 @@ const TryoutPage: React.FC = () => {
         </section>
 
         {/* ─── DETAILS SECTION ────────────────────────────────────── */}
-        <section className='tryout-details' id='details'>
-          <div className='section-hdr'>
-            <div className='section-tag'>Everything You Need to Know</div>
-            <h2 className='section-title'>Tryout Details</h2>
-            <p className='section-sub'>
+        <section className='tryout-white-details' id='details'>
+          <div className='section-white-hdr'>
+            <div className='section-white-tag'>Everything You Need to Know</div>
+            <h2 className='section-white-title'>Tryout Details</h2>
+            <p className='section-white-sub'>
               Come prepared and ready to showcase your skills
             </p>
           </div>
 
-          <div className='details-grid'>
+          <div className='details-white-grid'>
             {/* What to Bring */}
-            <div className='details-card'>
-              <div className='details-icon'>
+            <div className='details-white-card'>
+              <div className='details-white-icon'>
                 <i className='ti ti-package' />
               </div>
-              <h3 className='details-title'>What to Bring</h3>
-              <ul className='details-list'>
+              <h3 className='details-white-title'>What to Bring</h3>
+              <ul className='details-white-list'>
                 <li>
                   <i className='ti ti-check' /> Basketball shoes
                 </li>
@@ -289,12 +280,12 @@ const TryoutPage: React.FC = () => {
             </div>
 
             {/* What to Expect */}
-            <div className='details-card'>
-              <div className='details-icon'>
+            <div className='details-white-card'>
+              <div className='details-white-icon'>
                 <i className='ti ti-info-circle' />
               </div>
-              <h3 className='details-title'>What to Expect</h3>
-              <p className='details-body'>
+              <h3 className='details-white-title'>What to Expect</h3>
+              <p className='details-white-body'>
                 Tryouts will consist of skill demonstrations, drills, and
                 scrimmages. Players will be evaluated on their basketball
                 fundamentals, athleticism, and teamwork.
@@ -302,12 +293,12 @@ const TryoutPage: React.FC = () => {
             </div>
 
             {/* Who Can Tryout */}
-            <div className='details-card'>
-              <div className='details-icon'>
+            <div className='details-white-card'>
+              <div className='details-white-icon'>
                 <i className='ti ti-users' />
               </div>
-              <h3 className='details-title'>Who Can Tryout</h3>
-              <ul className='details-list'>
+              <h3 className='details-white-title'>Who Can Tryout</h3>
+              <ul className='details-white-list'>
                 <li>
                   <i className='ti ti-check' /> Boys &amp; Girls
                 </li>
@@ -321,20 +312,20 @@ const TryoutPage: React.FC = () => {
             </div>
 
             {/* Location */}
-            <div className='details-card'>
-              <div className='details-icon'>
+            <div className='details-white-card'>
+              <div className='details-white-icon'>
                 <i className='ti ti-map-pin' />
               </div>
-              <h3 className='details-title'>Location</h3>
-              <p className='details-body'>
-                <strong>{event.school?.name || 'Bothell High School'}</strong>
+              <h3 className='details-white-title'>Location</h3>
+              <p className='details-white-body'>
+                <strong>{event.school?.name || 'Partizan AAU Gym'}</strong>
                 <br />
-                {event.school?.address || '18100 92nd Ave NE'}
+                {event.school?.address || '1234 Main St'}
                 <br />
-                {event.school?.city || 'Bothell'}, {event.school?.state || 'WA'}{' '}
-                {event.school?.zip || '98011'}
+                {event.school?.city || 'Seattle'}, {event.school?.state || 'WA'}{' '}
+                {event.school?.zip || '98101'}
               </p>
-              <p className='details-note'>
+              <p className='details-white-note'>
                 <i className='ti ti-clock' /> Please arrive 30 minutes early for
                 check-in
               </p>
@@ -343,42 +334,42 @@ const TryoutPage: React.FC = () => {
         </section>
 
         {/* ─── PRICING / CTA SECTION ────────────────────────────── */}
-        <section className='tryout-cta'>
-          <div className='cta-card'>
-            <div className='cta-glow' />
-            <div className='section-tag'>Secure Your Spot</div>
-            <h2 className='cta-title'>
+        <section className='tryout-white-cta'>
+          <div className='cta-white-card'>
+            <div className='cta-white-glow' />
+            <div className='section-white-tag'>Secure Your Spot</div>
+            <h2 className='cta-white-title'>
               ${event.price || 50}{' '}
-              <span className='cta-subtitle'>per player</span>
+              <span className='cta-white-subtitle'>per player</span>
             </h2>
-            <p className='cta-body'>
+            <p className='cta-white-body'>
               Registration closes 24 hours before tryouts. Don't miss your
-              chance to join Partizan AAU Basketball.
+              chance to join Partizan AAU.
             </p>
 
-            <div className='cta-features'>
-              <div className='cta-feature'>
+            <div className='cta-white-features'>
+              <div className='cta-white-feature'>
                 <i className='ti ti-check-circle' />
                 <span>Expert Coaching</span>
               </div>
-              <div className='cta-feature'>
+              <div className='cta-white-feature'>
                 <i className='ti ti-check-circle' />
                 <span>Skill Development</span>
               </div>
-              <div className='cta-feature'>
+              <div className='cta-white-feature'>
                 <i className='ti ti-check-circle' />
                 <span>Competitive Play</span>
               </div>
             </div>
 
-            <div className='cta-actions'>
+            <div className='cta-white-actions'>
               <button
-                className='btn-primary-glass btn-large'
+                className='btn-primary-white btn-white-large'
                 onClick={handleRegister}
               >
                 Register Now <i className='ti ti-arrow-right' />
               </button>
-              <p className='cta-note'>
+              <p className='cta-white-note'>
                 <i className='ti ti-info-circle' /> Limited spots available
               </p>
             </div>
@@ -387,8 +378,8 @@ const TryoutPage: React.FC = () => {
 
         {/* ─── UTM Debug (Development Only) ────────────────────── */}
         {process.env.NODE_ENV === 'development' && (
-          <div className='tryout-debug'>
-            <div className='debug-card'>
+          <div className='tryout-white-debug'>
+            <div className='debug-white-card'>
               <strong>🔍 UTM Debug:</strong>
               <pre>{JSON.stringify(getMarketingAttribution(), null, 2)}</pre>
             </div>
@@ -399,365 +390,546 @@ const TryoutPage: React.FC = () => {
       {/* ─── STYLES ────────────────────────────────────────────────── */}
       <style>{`
         /* ── Root & Background ──────────────────────────────────── */
-        .tryout-root {
+        .tryout-white-root {
           min-height: 100vh;
-          background: #000;
+          background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
           position: relative;
           overflow-x: hidden;
-          font-family: 'DM Sans', sans-serif;
-          color: #fff;
+          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+          color: #1e293b;
         }
 
-        .tryout-bg {
-          position: fixed; inset: 0;
+        .tryout-white-bg {
+          position: fixed;
+          inset: 0;
           background:
-            radial-gradient(circle at 15% 40%, rgba(80,110,228,.18) 0%, transparent 55%),
-            radial-gradient(circle at 85% 70%, rgba(120,140,255,.12) 0%, transparent 55%);
-          pointer-events: none; z-index: 0;
-        }
-
-        .tryout-orb {
-          position: fixed; border-radius: 50%;
-          filter: blur(90px); pointer-events: none;
-          animation: tryoutOrbFloat 22s ease-in-out infinite; z-index: 0;
-        }
-        .tryout-orb-1 { width:420px; height:420px; background:rgba(80,110,228,.18); top:-120px; left:-120px; animation-delay:0s; }
-        .tryout-orb-2 { width:520px; height:520px; background:rgba(120,140,255,.13); bottom:-160px; right:-160px; animation-delay:6s; }
-        .tryout-orb-3 { width:320px; height:320px; background:rgba(80,110,228,.13); top:45%; left:42%; animation-delay:12s; }
-
-        @keyframes tryoutOrbFloat {
-          0%,100% { transform: translate(0,0) rotate(0deg); }
-          33%      { transform: translate(28px,-28px) rotate(120deg); }
-          66%      { transform: translate(-18px,18px) rotate(240deg); }
+            radial-gradient(circle at 15% 40%, rgba(89, 66, 48, 0.04) 0%, transparent 55%),
+            radial-gradient(circle at 85% 70%, rgba(89, 66, 48, 0.03) 0%, transparent 55%);
+          pointer-events: none;
+          z-index: 0;
         }
 
         /* ── Wrapper ──────────────────────────────────────────── */
-        .tryout-wrap {
-          position: relative; z-index: 1;
-          max-width: 1200px; margin: 0 auto;
+        .tryout-white-wrap {
+          position: relative;
+          z-index: 1;
+          max-width: 1200px;
+          margin: 0 auto;
           padding: 60px 24px 80px;
-          display: flex; flex-direction: column; gap: 80px;
+          display: flex;
+          flex-direction: column;
+          gap: 80px;
         }
 
         /* ── Shared Components ────────────────────────────────── */
-        .section-tag {
+        .section-white-tag {
           display: inline-block;
-          font-size: .73rem; font-weight: 700;
-          letter-spacing: .12em; text-transform: uppercase;
-          color: #506ee4;
-          background: rgba(80,110,228,.12);
-          border: 1px solid rgba(80,110,228,.28);
-          padding: 4px 14px; border-radius: 40px; margin-bottom: 12px;
+          font-size: 0.73rem;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #594230;
+          background: rgba(89, 66, 48, 0.1);
+          border: 1px solid rgba(89, 66, 48, 0.2);
+          padding: 4px 14px;
+          border-radius: 40px;
+          margin-bottom: 12px;
         }
 
-        .section-title {
+        .section-white-title {
           font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-          font-weight: 800; letter-spacing: -.025em; line-height: 1.15;
+          font-weight: 800;
+          letter-spacing: -0.025em;
+          line-height: 1.15;
           margin: 0 0 12px;
-          background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,.55));
-          -webkit-background-clip: text; background-clip: text; color: transparent;
+          background: linear-gradient(135deg, #1e293b 0%, #594230 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
         }
 
-        .section-sub {
-          font-size: 1rem; color: rgba(255,255,255,.6);
-          line-height: 1.65; max-width: 520px; margin: 0;
+        .section-white-sub {
+          font-size: 1rem;
+          color: #64748b;
+          line-height: 1.65;
+          max-width: 520px;
+          margin: 0;
         }
 
-        .section-hdr { text-align: center; margin-bottom: 48px; }
-        .section-hdr .section-sub { margin: 0 auto; }
+        .section-white-hdr {
+          text-align: center;
+          margin-bottom: 48px;
+        }
+        .section-white-hdr .section-white-sub {
+          margin: 0 auto;
+        }
 
         /* ── Buttons ──────────────────────────────────────────── */
-        .btn-primary-glass {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: linear-gradient(135deg, #506ee4, #3f5cd6);
-          color: #fff; padding: 13px 28px; border-radius: 40px;
-          font-size: .95rem; font-weight: 600; text-decoration: none;
-          border: none; cursor: pointer;
-          transition: all .25s ease;
+        .btn-primary-white {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: linear-gradient(135deg, #594230 0%, #8b7355 100%);
+          color: #fff;
+          padding: 13px 28px;
+          border-radius: 40px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-decoration: none;
+          border: none;
+          cursor: pointer;
+          transition: all 0.25s ease;
         }
-        .btn-primary-glass:hover {
+        .btn-primary-white:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 28px rgba(80,110,228,.45);
+          box-shadow: 0 8px 28px rgba(89, 66, 48, 0.3);
           color: #fff;
         }
-        .btn-primary-glass.btn-large {
+        .btn-primary-white.btn-white-large {
           padding: 16px 40px;
           font-size: 1.05rem;
         }
 
-        .btn-ghost-glass {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: rgba(255,255,255,.07); color: rgba(255,255,255,.85);
-          padding: 13px 28px; border-radius: 40px;
-          font-size: .95rem; font-weight: 600; text-decoration: none;
-          border: 1px solid rgba(255,255,255,.15);
-          transition: all .25s ease;
+        .btn-ghost-white {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #f8fafc;
+          color: #475569;
+          padding: 13px 28px;
+          border-radius: 40px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-decoration: none;
+          border: 1px solid #e2e8f0;
+          transition: all 0.25s ease;
         }
-        .btn-ghost-glass:hover {
-          background: rgba(255,255,255,.12);
-          border-color: rgba(255,255,255,.3);
-          color: #fff; transform: translateY(-2px);
+        .btn-ghost-white:hover {
+          background: #f1f5f9;
+          border-color: #594230;
+          color: #594230;
+          transform: translateY(-2px);
         }
 
         /* ─── HERO ─────────────────────────────────────────────── */
-        .hero-grid {
-          display: grid; grid-template-columns: 1fr 1fr;
-          gap: 56px; align-items: center;
+        .hero-white-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 56px;
+          align-items: center;
         }
 
-        .hero-eyebrow {
-          display: flex; align-items: center; gap: 8px;
-          font-size: .78rem; font-weight: 600; letter-spacing: .1em;
-          text-transform: uppercase; color: rgba(255,255,255,.5);
+        .hero-white-eyebrow {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #64748b;
           margin-bottom: 18px;
         }
-        .eyebrow-dot {
-          width: 6px; height: 6px; border-radius: 50%;
-          background: #506ee4; box-shadow: 0 0 8px #506ee4; flex-shrink: 0;
+
+        .eyebrow-white-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #594230;
+          box-shadow: 0 0 8px rgba(89, 66, 48, 0.3);
+          flex-shrink: 0;
         }
 
-        .hero-title {
+        .hero-white-title {
           font-size: clamp(2.2rem, 4.5vw, 3.6rem);
-          font-weight: 900; letter-spacing: -.035em; line-height: 1.1;
-          margin: 0 0 18px; color: #fff;
-        }
-        .hero-accent {
-          background: linear-gradient(135deg, #506ee4, #7b94f5);
-          -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-
-        .hero-lead {
-          font-size: 1rem; color: rgba(255,255,255,.65);
-          line-height: 1.72; margin-bottom: 32px;
+          font-weight: 900;
+          letter-spacing: -0.035em;
+          line-height: 1.1;
+          margin: 0 0 18px;
+          color: #1e293b;
         }
 
-        .hero-info-grid {
-          display: grid; grid-template-columns: repeat(3, 1fr);
-          gap: 16px; margin-bottom: 32px;
+        .hero-white-accent {
+          background: linear-gradient(135deg, #594230, #8b7355);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
         }
 
-        .hero-info-item {
-          display: flex; align-items: center; gap: 12px;
-          background: rgba(255,255,255,.05);
-          border: 1px solid rgba(255,255,255,.08);
+        .hero-white-lead {
+          font-size: 1rem;
+          color: #475569;
+          line-height: 1.72;
+          margin-bottom: 32px;
+        }
+
+        .hero-white-info-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-bottom: 32px;
+        }
+
+        .hero-white-info-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 12px 16px;
         }
-        .hero-info-item i {
-          color: #506ee4; font-size: 1.2rem;
+        .hero-white-info-item i {
+          color: #594230;
+          font-size: 1.2rem;
           flex-shrink: 0;
         }
-        .hero-info-item .label {
-          font-size: .7rem; font-weight: 600;
-          text-transform: uppercase; letter-spacing: .06em;
-          color: rgba(255,255,255,.4);
+        .hero-white-info-item .label {
+          font-size: 0.7rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #94a3b8;
           display: block;
         }
-        .hero-info-item .value {
-          font-size: .85rem; font-weight: 600;
-          color: #fff;
+        .hero-white-info-item .value {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #1e293b;
           display: block;
         }
 
-        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-
-        .hero-img-col { position: relative; }
-
-        .hero-img-glass {
-          background: rgba(255,255,255,.05); backdrop-filter: blur(20px);
-          border: 1px solid rgba(255,255,255,.12); border-radius: 36px;
-          padding: 40px 32px; text-align: center;
-          position: relative; overflow: hidden;
-          box-shadow: 0 8px 40px rgba(0,0,0,.35);
-          transition: transform .3s ease, box-shadow .3s ease;
-        }
-        .hero-img-glass:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 56px rgba(0,0,0,.45);
-        }
-
-        .hero-glow {
-          position: absolute; top: -60px; left: 50%;
-          transform: translateX(-50%);
-          width: 300px; height: 300px;
-          background: rgba(80,110,228,.2); filter: blur(80px);
-          pointer-events: none; border-radius: 50%;
-        }
-
-        .hero-img {
-          max-width: 100%; height: auto; position: relative; z-index: 1;
-          filter: drop-shadow(0 12px 32px rgba(0,0,0,.4));
-        }
-
-        .hero-badge {
-          position: absolute; bottom: -20px; right: 20px;
-          background: rgba(255,255,255,.08); backdrop-filter: blur(16px);
-          border: 1px solid rgba(255,255,255,.18); border-radius: 18px;
-          padding: 12px 18px; display: flex; align-items: center; gap: 10px;
-          font-size: .78rem; font-weight: 600; line-height: 1.3;
-          color: rgba(255,255,255,.9); box-shadow: 0 4px 20px rgba(0,0,0,.3);
-        }
-        .hero-badge i { font-size: 1.4rem; color: #f59e0b; flex-shrink: 0; }
-
-        /* ─── DETAILS ───────────────────────────────────────────── */
-        .details-grid {
-          display: grid; grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-        }
-
-        .details-card {
-          background: rgba(255,255,255,.05); backdrop-filter: blur(16px);
-          border: 1px solid rgba(255,255,255,.1); border-radius: 28px;
-          padding: 32px 28px;
-          transition: all .25s ease;
-        }
-        .details-card:hover {
-          background: rgba(255,255,255,.08);
-          border-color: rgba(80,110,228,.35);
-          transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(0,0,0,.3);
-        }
-
-        .details-icon {
-          width: 52px; height: 52px;
-          background: rgba(80,110,228,.15);
-          border: 1px solid rgba(80,110,228,.25);
-          border-radius: 16px;
-          display: flex; align-items: center; justify-content: center;
-          margin-bottom: 16px;
-        }
-        .details-icon i { font-size: 1.5rem; color: #506ee4; }
-
-        .details-title {
-          font-size: 1.12rem; font-weight: 700;
-          color: #fff; margin: 0 0 12px;
-        }
-
-        .details-body {
-          font-size: .9rem; color: rgba(255,255,255,.6);
-          line-height: 1.65; margin: 0;
-        }
-
-        .details-list {
-          list-style: none; padding: 0; margin: 0;
-        }
-        .details-list li {
-          display: flex; align-items: center; gap: 10px;
-          font-size: .9rem; color: rgba(255,255,255,.6);
-          padding: 4px 0;
-        }
-        .details-list li i {
-          color: #4ade80; font-size: 1rem;
-        }
-
-        .details-note {
-          font-size: .8rem; color: rgba(255,255,255,.4);
-          margin: 12px 0 0;
-          display: flex; align-items: center; gap: 6px;
-        }
-        .details-note i { color: #506ee4; }
-
-        /* ─── CTA ────────────────────────────────────────────────── */
-        .cta-card {
-          background: rgba(80,110,228,.08); backdrop-filter: blur(20px);
-          border: 1px solid rgba(80,110,228,.25); border-radius: 36px;
-          padding: 64px 80px; text-align: center;
-          position: relative; overflow: hidden;
-          box-shadow: 0 8px 40px rgba(0,0,0,.3);
-        }
-
-        .cta-glow {
-          position: absolute; top: 50%; left: 50%;
-          transform: translate(-50%,-50%);
-          width: 500px; height: 300px;
-          background: rgba(80,110,228,.15); filter: blur(80px);
-          pointer-events: none; border-radius: 50%;
-        }
-
-        .cta-title {
-          font-size: clamp(2.5rem, 4vw, 3.5rem);
-          font-weight: 900; letter-spacing: -.025em;
-          color: #fff; margin: 0 0 8px; position: relative;
-        }
-        .cta-subtitle {
-          font-size: 1.2rem; font-weight: 400;
-          color: rgba(255,255,255,.5);
-        }
-
-        .cta-body {
-          font-size: 1rem; color: rgba(255,255,255,.65);
-          line-height: 1.75; max-width: 520px;
-          margin: 0 auto 24px; position: relative;
-        }
-
-        .cta-features {
-          display: flex; justify-content: center;
-          gap: 24px; margin-bottom: 32px;
+        .hero-white-actions {
+          display: flex;
+          gap: 14px;
           flex-wrap: wrap;
         }
-        .cta-feature {
-          display: flex; align-items: center; gap: 8px;
-          font-size: .9rem; color: rgba(255,255,255,.7);
-        }
-        .cta-feature i {
-          color: #4ade80; font-size: 1.1rem;
-        }
 
-        .cta-actions {
+        .hero-white-img-col {
           position: relative;
         }
 
-        .cta-note {
-          font-size: .8rem; color: rgba(255,255,255,.4);
+        .hero-white-img-glass {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 36px;
+          padding: 40px 32px;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hero-white-img-glass:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 20px 56px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-white-glow {
+          position: absolute;
+          top: -60px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 300px;
+          height: 300px;
+          background: rgba(89, 66, 48, 0.08);
+          filter: blur(80px);
+          pointer-events: none;
+          border-radius: 50%;
+        }
+
+        .hero-white-img {
+          max-width: 100%;
+          height: auto;
+          position: relative;
+          z-index: 1;
+          filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.1));
+        }
+
+        .hero-white-badge {
+          position: absolute;
+          bottom: -20px;
+          right: 20px;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 18px;
+          padding: 12px 18px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          line-height: 1.3;
+          color: #1e293b;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .hero-white-badge i {
+          font-size: 1.4rem;
+          color: #f59e0b;
+          flex-shrink: 0;
+        }
+
+        /* ─── DETAILS ───────────────────────────────────────────── */
+        .details-white-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+        }
+
+        .details-white-card {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 28px;
+          padding: 32px 28px;
+          transition: all 0.25s ease;
+        }
+        .details-white-card:hover {
+          border-color: #594230;
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .details-white-icon {
+          width: 52px;
+          height: 52px;
+          background: rgba(89, 66, 48, 0.1);
+          border: 1px solid rgba(89, 66, 48, 0.2);
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 16px;
+        }
+        .details-white-icon i {
+          font-size: 1.5rem;
+          color: #594230;
+        }
+
+        .details-white-title {
+          font-size: 1.12rem;
+          font-weight: 700;
+          color: #1e293b;
+          margin: 0 0 12px;
+        }
+
+        .details-white-body {
+          font-size: 0.9rem;
+          color: #64748b;
+          line-height: 1.65;
+          margin: 0;
+        }
+
+        .details-white-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .details-white-list li {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 0.9rem;
+          color: #64748b;
+          padding: 4px 0;
+        }
+        .details-white-list li i {
+          color: #22c55e;
+          font-size: 1rem;
+        }
+
+        .details-white-note {
+          font-size: 0.8rem;
+          color: #94a3b8;
+          margin: 12px 0 0;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .details-white-note i {
+          color: #594230;
+        }
+
+        /* ─── CTA ────────────────────────────────────────────────── */
+        .cta-white-card {
+          background: rgba(89, 66, 48, 0.04);
+          border: 1px solid rgba(89, 66, 48, 0.15);
+          border-radius: 36px;
+          padding: 64px 80px;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.03);
+        }
+
+        .cta-white-glow {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 500px;
+          height: 300px;
+          background: rgba(89, 66, 48, 0.05);
+          filter: blur(80px);
+          pointer-events: none;
+          border-radius: 50%;
+        }
+
+        .cta-white-title {
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 900;
+          letter-spacing: -0.025em;
+          color: #1e293b;
+          margin: 0 0 8px;
+          position: relative;
+        }
+        .cta-white-subtitle {
+          font-size: 1.2rem;
+          font-weight: 400;
+          color: #94a3b8;
+        }
+
+        .cta-white-body {
+          font-size: 1rem;
+          color: #475569;
+          line-height: 1.75;
+          max-width: 520px;
+          margin: 0 auto 24px;
+          position: relative;
+        }
+
+        .cta-white-features {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          margin-bottom: 32px;
+          flex-wrap: wrap;
+        }
+        .cta-white-feature {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.9rem;
+          color: #475569;
+        }
+        .cta-white-feature i {
+          color: #22c55e;
+          font-size: 1.1rem;
+        }
+
+        .cta-white-actions {
+          position: relative;
+        }
+
+        .cta-white-note {
+          font-size: 0.8rem;
+          color: #94a3b8;
           margin: 12px 0 0;
         }
-        .cta-note i { color: #506ee4; }
+        .cta-white-note i {
+          color: #594230;
+        }
 
         /* ─── DEBUG ────────────────────────────────────────────── */
-        .tryout-debug {
+        .tryout-white-debug {
           margin-top: 40px;
         }
-        .debug-card {
-          background: rgba(255,255,255,.05);
-          border: 1px solid rgba(255,255,255,.1);
+        .debug-white-card {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 16px 20px;
         }
-        .debug-card pre {
+        .debug-white-card pre {
           margin: 8px 0 0;
           font-size: 11px;
-          color: rgba(255,255,255,.5);
+          color: #64748b;
           overflow: auto;
         }
 
         /* ─── Responsive ───────────────────────────────────────── */
         @media (max-width: 1024px) {
-          .details-grid { grid-template-columns: repeat(2,1fr); }
-          .cta-card { padding: 48px 40px; }
+          .details-white-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .cta-white-card {
+            padding: 48px 40px;
+          }
         }
 
         @media (max-width: 768px) {
-          .tryout-wrap { gap: 56px; padding: 40px 16px 60px; }
-          .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-          .hero-img-col { order: -1; }
-          .hero-badge { bottom: -14px; right: 12px; font-size: .72rem; }
-          .hero-info-grid { grid-template-columns: 1fr; }
-          .details-grid { grid-template-columns: 1fr; }
-          .cta-card { padding: 40px 24px; }
-          .cta-features { flex-direction: column; align-items: center; }
+          .tryout-white-wrap {
+            gap: 56px;
+            padding: 40px 16px 60px;
+          }
+          .hero-white-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+          .hero-white-img-col {
+            order: -1;
+          }
+          .hero-white-badge {
+            bottom: -14px;
+            right: 12px;
+            font-size: 0.72rem;
+          }
+          .hero-white-info-grid {
+            grid-template-columns: 1fr;
+          }
+          .details-white-grid {
+            grid-template-columns: 1fr;
+          }
+          .cta-white-card {
+            padding: 40px 24px;
+          }
+          .cta-white-features {
+            flex-direction: column;
+            align-items: center;
+          }
         }
 
         @media (max-width: 480px) {
-          .hero-actions { flex-direction: column; }
-          .btn-primary-glass,
-          .btn-ghost-glass { justify-content: center; }
-          .btn-primary-glass.btn-large { padding: 14px 28px; font-size: .95rem; }
+          .hero-white-actions {
+            flex-direction: column;
+          }
+          .btn-primary-white,
+          .btn-ghost-white {
+            justify-content: center;
+          }
+          .btn-primary-white.btn-white-large {
+            padding: 14px 28px;
+            font-size: 0.95rem;
+          }
+          .hero-white-title {
+            font-size: 1.8rem;
+          }
+          .hero-white-lead {
+            font-size: 0.9rem;
+          }
+          .details-white-card {
+            padding: 24px 20px;
+          }
+          .details-white-icon {
+            width: 44px;
+            height: 44px;
+          }
+          .details-white-icon i {
+            font-size: 1.2rem;
+          }
+          .cta-white-title {
+            font-size: 2rem;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .tryout-orb { animation: none; }
-          .hero-img-glass { transition: none; }
-          .details-card { transition: none; }
+          .hero-white-img-glass,
+          .details-white-card {
+            transition: none;
+          }
+          .hero-white-img-glass:hover,
+          .details-white-card:hover {
+            transform: none;
+          }
         }
       `}</style>
     </div>

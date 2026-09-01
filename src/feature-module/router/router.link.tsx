@@ -562,19 +562,19 @@ export const protectedRoutes = [
     route: Route,
   },
   {
-    path: all_routes.adminMarketing,
+    path: '/admin/ticket-dashboard',
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
-        <MarketingDashboard />
+        <TicketList />
       </ProtectedRoute>
     ),
     route: Route,
   },
   {
-    path: '/admin/ticket-dashboard',
+    path: routes.adminMarketing,
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
-        <TicketList />
+        <MarketingDashboard />
       </ProtectedRoute>
     ),
     route: Route,

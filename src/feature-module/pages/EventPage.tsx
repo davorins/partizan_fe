@@ -70,7 +70,7 @@ const EventPage: React.FC<EventPageProps> = ({
   useEffect(() => {
     if (config) {
       ReactPixel.track('ViewContent', {
-        content_name: `${title} Page - Bothell Select`,
+        content_name: `${title} Page - Partizan AAU`,
         content_category: `Basketball ${title}`,
         content_type: 'landing_page',
         event_type: eventType,

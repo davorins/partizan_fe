@@ -138,7 +138,7 @@ const MarketingDashboard: React.FC = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-primary-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/players.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/players.png'
                       alt='Registrations'
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -180,7 +180,7 @@ const MarketingDashboard: React.FC = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-success-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/revenue.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/revenue.png'
                       alt='Revenue'
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -224,7 +224,7 @@ const MarketingDashboard: React.FC = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-warning-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/source.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/source.png'
                       alt='Top Source'
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -275,7 +275,7 @@ const MarketingDashboard: React.FC = () => {
                 <div className='d-flex align-items-center'>
                   <div className='avatar avatar-xl bg-info-transparent me-2 p-1'>
                     <img
-                      src='https://bothell-select.onrender.com/uploads/avatars/campaign.png'
+                      src='https://partizan-be.onrender.com/uploads/avatars/campaign.png'
                       alt='Top Campaign'
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -571,7 +571,7 @@ const MarketingDashboard: React.FC = () => {
                       <li>
                         Example:{' '}
                         <code className='bg-white p-1 rounded'>
-                          https://bothellselect.com/tryout-registration?utm_source=instagram&utm_medium=paid_social&utm_campaign=fall_tryouts_2026
+                          https://partizanhoops.com/tryout-registration?utm_source=instagram&utm_medium=paid_social&utm_campaign=fall_tryouts_2026
                         </code>
                       </li>
                     </ul>

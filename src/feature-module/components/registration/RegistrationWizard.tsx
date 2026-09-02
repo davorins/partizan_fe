@@ -182,9 +182,9 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
     // Fallback to old hardcoded values
     return {
-      season: 'Bothell Select Team',
+      season: 'Partizan AAU Team',
       year: new Date().getFullYear(),
-      eventId: 'bothellselect-2026',
+      eventId: 'partizan-aau-2026',
     };
   }, [seasonEvent, seasonEvents, registrationType]);
 
@@ -334,7 +334,7 @@ const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       ReactPixel.track('Purchase', {
         value: data.payment.amount,
         currency: 'USD',
-        content_name: `${registrationType} Registration - Bothell Select`,
+        content_name: `${registrationType} Registration - Partizan AAU`,
         content_category: 'Sports Registration',
       });
     }

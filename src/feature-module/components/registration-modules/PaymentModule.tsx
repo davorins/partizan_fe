@@ -648,7 +648,7 @@ const PaymentModule: React.FC<EnhancedPaymentModuleProps> = ({
           ReactPixel.track('Purchase', {
             value: paymentData.amount / 100, // Amount in dollars
             currency: 'USD',
-            content_name: `${registrationType} Registration - Bothell Select`,
+            content_name: `${registrationType} Registration - Partizan AAU`,
             content_category: 'Sports Registration',
             content_type: 'product',
             num_items: paymentData.players?.length || 1,

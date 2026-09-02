@@ -49,8 +49,8 @@ const AdminEventConfig: React.FC<AdminEventConfigProps> = ({
 }) => {
   const [config, setConfig] = useState<EventConfig>({
     eventType,
-    title: `Bothell Select ${title}`,
-    description: `Join Bothell Select Basketball for ${title.toLowerCase()}.`,
+    title: `Partizan AAU ${title}`,
+    description: `Join Partizan AAU Basketball for ${title.toLowerCase()}.`,
     startDate: new Date().toISOString().split('T')[0],
     startTime: '09:00',
     endTime: '12:00',

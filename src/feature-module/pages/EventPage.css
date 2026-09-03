@@ -14,55 +14,6 @@
     sans-serif;
 }
 
-.event-background-image {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: scale(1.1);
-  transition:
-    opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.event-background-image.loaded {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.event-bg-parallax {
-  width: 110%;
-  height: 110%;
-  position: relative;
-  top: -5%;
-  left: -5%;
-  transition: transform 0.1s ease-out;
-  will-change: transform;
-}
-
-.event-bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  display: block;
-  filter: brightness(1);
-  animation: slowZoom 20s ease-in-out infinite alternate;
-}
-
-@keyframes slowZoom {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
-}
-
 /* Background gradient - Partizan dark/red */
 .event-bg-gradient {
   position: fixed;
@@ -410,43 +361,6 @@
 .event-form-glass:hover {
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-}
-
-/* ── Form Header ──────────────────────────────────────────── */
-.event-form-header {
-  text-align: center;
-  margin-bottom: 24px;
-  flex-shrink: 0;
-}
-
-.event-form-header-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(200, 16, 46, 0.15);
-}
-
-.event-form-header-icon i {
-  font-size: 28px;
-  color: #c8102e;
-}
-
-.event-form-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 6px;
-}
-
-.event-form-subtitle {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1.5;
 }
 
 /* ── Registration Container ──────────────────────────────── */
@@ -1227,6 +1141,35 @@
   .event-form-title {
     font-size: 1.3rem;
   }
+
+  .event-image-wrapper {
+    display: none !important;
+  }
+
+  .event-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .event-image-glass {
+    display: none !important;
+  }
+
+  .event-image-container {
+    display: none !important;
+  }
+
+  .event-form-wrapper {
+    width: 100%;
+  }
+
+  .event-form-glass {
+    border-radius: 32px;
+    padding: 24px 20px;
+  }
+
+  .event-main-grid {
+    gap: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1333,4 +1276,78 @@
   .event-details-body {
     transition: none !important;
   }
+}
+
+/* ─── Step Labels and Form Header Text Color ──────────────── */
+
+.event-form-glass .step-label,
+.event-form-glass .step-indicator .step-label,
+.event-form-glass .step-indicator span,
+.event-form-glass .step .step-label,
+.event-registration-container .step-label,
+.event-registration-container .step-indicator .step-label,
+.event-registration-container .step-indicator span,
+.event-registration-container .step .step-label,
+.tryout-registration-form .step-label,
+.tryout-registration-form .step-indicator .step-label,
+.tryout-registration-form .step-indicator span,
+.tryout-registration-form .step .step-label {
+  color: #ffffff !important;
+}
+
+.step-label,
+.step-indicator .step-label,
+.step .step-label {
+  color: #ffffff !important;
+}
+
+.step-indicator,
+.step-indicator *,
+.step-indicator .step,
+.step-indicator .step-label,
+.step-indicator .step-icon-wrapper i {
+  color: #ffffff !important;
+}
+
+.form-header h2,
+.form-header .mt-3,
+.tryout-registration-form .form-header h2,
+.tryout-registration-form .form-header .mt-3 {
+  color: #ffffff !important;
+}
+
+.form-header p,
+.tryout-registration-form .form-header p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.step-icon-wrapper i,
+.step-indicator .step-icon-wrapper i {
+  color: #ffffff !important;
+}
+
+.step.active .step-label,
+.step.active .step-icon-wrapper i {
+  color: #c8102e !important;
+}
+
+.step.completed .step-label,
+.step.completed .step-icon-wrapper i {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.step-connector {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.step-connector.active {
+  background: #c8102e !important;
+}
+
+.tryout-registration-form .form-header h2 {
+  color: #ffffff !important;
+}
+
+.tryout-registration-form .form-header p {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
